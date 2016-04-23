@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AsyncPoco;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,9 +7,11 @@ using System.Threading.Tasks;
 
 namespace PokerTracker.DAL.DAO
 {
+    [TableName("Sessions")]
+    [PrimaryKey("Id")]
     public class Session
     {
-        public Guid? Id { get; set; }
+        public Guid Id { get; set; }
         public Guid CardRoomId { get; set; }
         public int SmallBlind { get; set; }
         public int BigBlind { get; set; }

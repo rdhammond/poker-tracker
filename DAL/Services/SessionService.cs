@@ -1,118 +1,156 @@
-﻿using PokerTracker.Config;
-using System;
-using System.Linq;
+﻿using System;
 using System.Threading.Tasks;
-using Dapper;
-using System.Data;
+using PokerTracker.DAL.DAO;
+using AsyncPoco;
 
 namespace PokerTracker.DAL.Services
 {
-    public interface ISessionService
+    public interface ISessionService : IDisposable
     {
-        Guid StartSession(DateTime startTime, Guid cardRoomId, Guid gameId, int smallBlind, int bigBlind, int startingStackSize);
-        Guid InsertTimeEntry(Guid sessionId, DateTime currentTime, int stackSize, int dealerTokes, int serverTips);
-        void FinalizeSession(Guid sessionId, DateTime endTime, Decimal hoursActive, string optionalNotes);
+        void StartSession(Session session);
+        Task StartSessionAsync(Session session);
 
-        Task<Guid> StartSessionAsync(DateTime startTime, Guid cardRoomId, Guid gameId, int smallBlind, int bigBlind, int startingStackSize);
-        Task<Guid> InsertTimeEntryAsync(Guid sessionId, DateTime currentTime, int stackSize, int dealerTokes, int serverTips);
-        Task FinalizeSessionAsync(Guid sessionId, DateTime endTime, Decimal hoursActive, string optionalNotes);
+        Guid InsertTimeEntry(TimeEntry timeEntry);
+        Task<Guid> InsertTimeEntryAsync(TimeEntry timeEntry);
+
+        void FinalizeSession(DateTime endTime, Decimal hoursActive, string optionalNotes);
+        Task FinalizeSessionAsync(DateTime endTime, Decimal hoursActive, string optionalNotes);
     }
 
-    public class SessionService : DataService, ISessionService
+    public class SessionService : ISessionService
     {
-        private readonly IConfig Config;
+        private bool _disposed;
 
-        public SessionService(IConfig config)
-            :base (config)
-        { }
+        private string _connectionString;
+        private Database _db;
+        private ITransaction _transaction;
+        private Guid? _sessionId;
 
-        public Guid StartSession(DateTime startTime, Guid cardRoomId, Guid gameId, int smallBlind, int bigBlind, int startingStackSize)
+        internal SessionService(string connectionString)
         {
-            return AsyncHelper.RunSync(() => StartSessionAsync(
-                startTime,
-                cardRoomId,
-                gameId,
-                smallBlind,
-                bigBlind,
-                startingStackSize
-            ));
+            _connectionString = connectionString;
         }
 
-        public async Task<Guid> StartSessionAsync(DateTime startTime, Guid cardRoomId, Guid gameId, int smallBlind, int bigBlind, int startingStackSize)
+        ~SessionService()
         {
-            return await RunQueryAsync(async (connection) => {
-                return (await connection.QueryAsync<Guid>(
-                    "usp_StartSession",
-                    new
-                    {
-                        StartTime = startTime,
-                        CardRoomId = cardRoomId,
-                        GameId = gameId,
-                        SmallBlind = smallBlind,
-                        BigBlind = bigBlind,
-                        StartingStackSize = startingStackSize
-                    },
-                    commandType: CommandType.StoredProcedure
-                )).FirstOrDefault();
-            });
+            Dispose(false);
         }
 
-        public Guid InsertTimeEntry(Guid sessionId, DateTime currentTime, int stackSize, int dealerTokes, int serverTips)
+        public void Dispose()
         {
-            return AsyncHelper.RunSync(() => InsertTimeEntryAsync(
-                sessionId,
-                currentTime,
-                stackSize,
-                dealerTokes,
-                serverTips
-            ));
+            Dispose(true);
         }
 
-        public async Task<Guid> InsertTimeEntryAsync(Guid sessionId, DateTime currentTime, int stackSize, int dealerTokes, int serverTips)
+        private void Dispose(bool disposing)
         {
-            return await RunQueryAsync(async (connection) =>
+            if (_disposed)
+                return;
+
+            DisconnectFromDb();
+
+            _disposed = true;
+        }
+
+        private void CheckSessionInactive()
+        {
+            if (_sessionId.HasValue)
+                throw new InvalidOperationException("Another session is already active.");
+        }
+
+        public void CheckSessionActive()
+        {
+            if (!_sessionId.HasValue)
+                throw new InvalidOperationException("No active sessions.");
+        }
+
+        private async Task ConnectToDb()
+        {
+            _db = new Database(_connectionString);
+
+            try
             {
-                return (await connection.QueryAsync<Guid>(
-                    "usp_Insert_TimeEntry",
-                    new
-                    {
-                        SessionId = sessionId,
-                        CurrentTime = currentTime,
-                        StackSize = stackSize,
-                        DealerTokes = dealerTokes,
-                        ServerTips = serverTips
-                    },
-                    commandType: CommandType.StoredProcedure
-                )).FirstOrDefault();
-            });
-        }
-
-        public void FinalizeSession(Guid sessionId, DateTime endTime, Decimal hoursActive, string optionalNotes)
-        {
-            AsyncHelper.RunSync(() => FinalizeSessionAsync(
-                sessionId,
-                endTime,
-                hoursActive,
-                optionalNotes
-            ));
-        }
-
-        public async Task FinalizeSessionAsync(Guid sessionId, DateTime endTime, Decimal hoursActive, string optionalNotes)
-        {
-            await RunQueryAsync(async (connection) =>
+                _transaction = await _db.GetTransactionAsync();
+            }
+            catch
             {
-                await connection.QueryAsync<bool>(
-                    "usp_FinalizeSession",
-                    new
-                    {
-                        SessionId = sessionId,
-                        EndTime = endTime,
-                        HoursActive = hoursActive,
-                        OptionalNotes = optionalNotes
-                    },
-                    commandType: CommandType.StoredProcedure
+                _db.Dispose();
+                throw;
+            }
+        }
+
+        private void DisconnectFromDb(bool commit = false)
+        {
+            if (_transaction != null)
+            {
+                if (commit) _transaction.Complete();
+                _transaction.Dispose();
+                _transaction = null;
+            }
+
+            if (_db != null)
+            {
+                _db.Dispose();
+                _db = null;
+            }
+        }
+
+        public void StartSession(Session session)
+        {
+            AsyncHelper.RunSync(() => StartSessionAsync(session));
+        }
+
+        public async Task StartSessionAsync(Session session)
+        {
+            CheckSessionInactive();
+            await ConnectToDb();
+
+            try
+            {
+                _db.EnableAutoSelect = false;
+
+                _sessionId = await _db.ExecuteScalarAsync<Guid>(
+                    "EXEC usp_StartSession @StartTime, @CardRoomId, @GameId, @SmallBlind, @BigBlind, @StartingStackSize",
+                    session
                 );
-            });
+            }
+            catch
+            {
+                DisconnectFromDb();
+                throw;
+            }
+        }
+
+        public Guid InsertTimeEntry(TimeEntry timeEntry)
+        {
+            return AsyncHelper.RunSync(() => InsertTimeEntryAsync(timeEntry));
+        }
+
+        public async Task<Guid> InsertTimeEntryAsync(TimeEntry timeEntry)
+        {
+            CheckSessionActive();
+
+            return await _db.ExecuteScalarAsync<Guid>(
+                "EXEC usp_Insert_TimeEntry @SessionId, @CurrentTime, @StackSize, @DealerTokes, @ServerTips",
+                timeEntry
+            );
+        }
+
+        public void FinalizeSession(DateTime endTime, Decimal hoursActive, string optionalNotes)
+        {
+            AsyncHelper.RunSync(() => FinalizeSessionAsync(endTime, hoursActive, optionalNotes));
+        }
+
+        public async Task FinalizeSessionAsync(DateTime endTime, Decimal hoursActive, string optionalNotes)
+        {
+            CheckSessionActive();
+
+            await _db.ExecuteAsync(
+                "EXEC usp_FinalizeSession @sessionId, @endTime, @hoursActive, @optionalNotes",
+                new { sessionId = _sessionId, endTime, hoursActive, optionalNotes }
+            );
+
+            DisconnectFromDb(true);
+            _sessionId = null;
         }
     }
 }

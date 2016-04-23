@@ -1,56 +1,57 @@
-﻿using Dapper;
-using PokerTracker.Config;
-using System;
-using System.Linq;
+﻿using AsyncPoco;
+using PokerTracker.DAL.DAO;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace PokerTracker.DAL.Services
 {
     public interface IIdService
     {
-        Guid? CardRoomIdByName(string name);
-        Guid? GameIdByName(string name);
+        IEnumerable<Game> GetGames();
+        Task<IEnumerable<Game>> GetGamesAsync();
 
-        Task<Guid?> CardRoomIdByNameAsync(string name);
-        Task<Guid?> GameIdByNameAsync(string name);
+        IEnumerable<CardRoom> GetCardRooms();
+        Task<IEnumerable<CardRoom>> GetCardRoomsAsync();
     }
 
-    public class IdService : DataService, IIdService
+    public class IdService : IIdService
     {
+        private readonly string _connectionString;
+
         public IdService(IConfig config)
-            :base (config)
-        { }
-
-        public Guid? CardRoomIdByName(string name)
         {
-            return AsyncHelper.RunSync(() => CardRoomIdByNameAsync(name));
+            _connectionString = config.ConnectionString;
         }
 
-        public async Task<Guid?> CardRoomIdByNameAsync(string name)
+        public IdService(string connectionString)
         {
-            return await RunQueryAsync(async (connection) =>
+            _connectionString = connectionString;
+        }
+
+        public IEnumerable<Game> GetGames()
+        {
+            return AsyncHelper.RunSync(() => GetGamesAsync());
+        }
+
+        public async Task<IEnumerable<Game>> GetGamesAsync()
+        {
+            using (var db = new Database(_connectionString))
             {
-                return (await connection.QueryAsync<Guid?>(
-                    "SELECT dbo.udf_CardRoomIdByName(@Name)",
-                    new { Name = name }
-                )).FirstOrDefault();
-            });
+                return await db.FetchAsync<Game>(string.Empty);
+            }
         }
 
-        public Guid? GameIdByName(string name)
+        public IEnumerable<CardRoom> GetCardRooms()
         {
-            return AsyncHelper.RunSync(() => GameIdByNameAsync(name));
+            return AsyncHelper.RunSync(() => GetCardRoomsAsync());
         }
 
-        public async Task<Guid?> GameIdByNameAsync(string name)
+        public async Task<IEnumerable<CardRoom>> GetCardRoomsAsync()
         {
-            return await RunQueryAsync(async (connection) =>
+            using (var db = new Database(_connectionString))
             {
-                return (await connection.QueryAsync<Guid?>(
-                    "SELECT dbo.udf_GameIdByNameAsync(@Name)",
-                    new { Name = name }
-                )).FirstOrDefault();
-            });
+                return await db.FetchAsync<CardRoom>(string.Empty);
+            }
         }
     }
 }

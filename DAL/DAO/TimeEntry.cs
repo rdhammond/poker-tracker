@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AsyncPoco;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,9 +7,11 @@ using System.Threading.Tasks;
 
 namespace PokerTracker.DAL.DAO
 {
+    [TableName("TimeEntries")]
+    [PrimaryKey("Id")]
     public class TimeEntry
     {
-        public Guid? Id { get; set; }
+        public Guid Id { get; set; }
         public Guid SessionId { get; set; }
         public DateTime RecordedAt { get; set; }
         public int StackSize { get; set; }
