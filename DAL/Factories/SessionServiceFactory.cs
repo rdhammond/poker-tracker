@@ -1,10 +1,5 @@
-﻿using PokerTracker.Config;
+﻿using PokerTracker.Common;
 using PokerTracker.DAL.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PokerTracker.DAL.Factories
 {
@@ -16,11 +11,16 @@ namespace PokerTracker.DAL.Factories
 
     public class SessionServiceFactory : ISessionServiceFactory
     {
-        private readonly IConfig Config;
+        private readonly string _connectionString;
+
+        public SessionServiceFactory(IConfig config)
+        {
+            _connectionString = config.ConnectionString;
+        }
 
         public ISessionService Create()
         {
-            return Create(Config.ConnectionString);
+            return Create(_connectionString);
         }
 
         public ISessionService Create(string connectionString)
