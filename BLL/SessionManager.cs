@@ -1,4 +1,5 @@
-﻿using PokerTracker.DAL.DAO;
+﻿using PokerTracker.Common;
+using PokerTracker.DAL.DAO;
 using PokerTracker.DAL.Factories;
 using System;
 using System.Collections.Generic;

@@ -2,6 +2,8 @@
 using System.Threading.Tasks;
 using PokerTracker.DAL.DAO;
 using AsyncPoco;
+using PokerTracker.Common;
+using System.Collections.Generic;
 
 namespace PokerTracker.DAL.Services
 {
@@ -106,12 +108,8 @@ namespace PokerTracker.DAL.Services
 
             try
             {
-                _db.EnableAutoSelect = false;
-
-                _sessionId = await _db.ExecuteScalarAsync<Guid>(
-                    "EXEC usp_StartSession @StartTime, @CardRoomId, @GameId, @SmallBlind, @BigBlind, @StartingStackSize",
-                    session
-                );
+                await _db.InsertAsync(session);
+                _sessionId = session.Id;
             }
             catch
             {
@@ -129,10 +127,8 @@ namespace PokerTracker.DAL.Services
         {
             CheckSessionActive();
 
-            return await _db.ExecuteScalarAsync<Guid>(
-                "EXEC usp_Insert_TimeEntry @SessionId, @CurrentTime, @StackSize, @DealerTokes, @ServerTips",
-                timeEntry
-            );
+            await _db.InsertAsync(timeEntry);
+            return timeEntry.Id;
         }
 
         public void FinalizeSession(DateTime endTime, Decimal hoursActive, string optionalNotes)

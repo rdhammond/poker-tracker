@@ -1,4 +1,5 @@
 ﻿using AsyncPoco;
+using PokerTracker.Common;
 using PokerTracker.DAL.DAO;
 using System.Collections.Generic;
 using System.Threading.Tasks;
