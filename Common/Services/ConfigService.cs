@@ -1,19 +1,19 @@
 ﻿using System.Configuration;
 
-namespace PokerTracker.Common
+namespace PokerTracker.Common.Services
 {
-    public interface IConfig
+    public interface IConfigService
     {
         string ConnectionString { get; }
     }
 
-    public class Config : IConfig
+    public class ConfigService : IConfigService
     {
         private const string CONN_STR_NAME = "PokerTracker";
 
         public string ConnectionString { get; private set; }
 
-        public Config()
+        public ConfigService()
         {
             ConnectionString = ConfigurationManager.ConnectionStrings[CONN_STR_NAME].ConnectionString;
         }

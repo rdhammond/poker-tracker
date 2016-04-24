@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace PokerTracker.DAL.DAO
 {
     [TableName("vw_Summaries")]
-    public class Summary
+    public class SummaryDao
     {
         public string Cardroom { get; set; }
         public string Game { get; set; }

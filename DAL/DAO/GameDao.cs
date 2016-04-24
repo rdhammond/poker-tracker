@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace PokerTracker.DAL.DAO
 {
-    [TableName("CardRooms")]
+    [TableName("Games")]
     [PrimaryKey("Id")]
-    public class CardRoom
+    public class GameDao
     {
         public Guid Id { get; set; }
         public string Name { get; set; }

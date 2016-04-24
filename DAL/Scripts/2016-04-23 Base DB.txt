@@ -169,10 +169,11 @@ GO
 CREATE VIEW [dbo].[vw_Summary]
 AS
 SELECT
+	NEWID() As Id,
 	cr.Name As Cardroom,
 	g.Name As Game,
 	CONCAT('$', s.BigBlind, '/$', s.BigBlind*2) As Limit,
-	ROUND(CAST(s.MinutesActive AS FLOAT) / 60, 2) As HoursPlayed,
+	HoursActive As HoursPlayed,
 	DATEPART(day, s.StartTime) As [DayOfMonth],
 	CASE DATEPART(weekday, s.StartTime)
 		WHEN 1 THEN 'U'
@@ -185,10 +186,10 @@ SELECT
 	END As [DayOfWeek],
 	s.StartTime,
 	s.EndTime,
-	SUM(COALESCE(te.StackDifferential,0)) As WinLoss,
-	ROUND(SUM(COALESCE(te.StackDifferential,0)) / CAST(s.BigBlind AS FLOAT), 2) As WinLossBB,
-	CEILING(SUM(COALESCE(te.StackDifferential,0)) / (CAST(s.MinutesActive AS FLOAT) / 60)) As HourlyRate,
-	ROUND(SUM(COALESCE(te.StackDifferential,0)) / (CAST(s.MinutesActive AS FLOAT) / 60) / s.BigBlind, 2) As HourlyRateBB
+	SUM(te.StackDifferential) As WinLoss,
+	ROUND(SUM(te.StackDifferential) / CAST(s.BigBlind AS FLOAT), 2) As WinLossBB,
+	ROUND(SUM(te.StackDifferential) / CAST(s.HoursActive AS FLOAT), 2) As HourlyRate,
+	ROUND(SUM(te.StackDifferential) / CAST(s.HoursActive AS FLOAT) / s.BigBlind, 2) As HourlyRateBB
 FROM
 	dbo.[Sessions] s
 	INNER JOIN dbo.Games g ON s.GameId = g.Id
@@ -197,7 +198,7 @@ FROM
 WHERE
 	s.EndTime IS NOT NULL
 GROUP BY
-	cr.Name, g.Name, s.BigBlind, s.MinutesActive, s.StartTime, s.EndTime
+	cr.Name, g.Name, s.BigBlind, s.HoursActive, s.StartTime, s.EndTime
 
 
 
