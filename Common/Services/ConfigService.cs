@@ -1,4 +1,5 @@
-﻿using System.Configuration;
+﻿using PokerTracker.Common.Proxies;
+using System.Configuration;
 
 namespace PokerTracker.Common.Services
 {
@@ -9,13 +10,13 @@ namespace PokerTracker.Common.Services
 
     public class ConfigService : IConfigService
     {
-        private const string CONN_STR_NAME = "PokerTracker";
+        public const string CONN_STR_NAME = "PokerTracker";
 
         public string ConnectionString { get; private set; }
 
-        public ConfigService()
+        public ConfigService(IConfigurationManagerProxy configManProxy)
         {
-            ConnectionString = ConfigurationManager.ConnectionStrings[CONN_STR_NAME].ConnectionString;
+            ConnectionString = configManProxy.ConnectionStrings[CONN_STR_NAME].ConnectionString;
         }
     }
 }
