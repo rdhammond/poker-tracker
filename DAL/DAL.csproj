@@ -68,18 +68,14 @@
     <Compile Include="Repositories\SessionRepository.cs" />
     <Compile Include="Repositories\SummaryRepository.cs" />
     <Compile Include="Repositories\TimeEntryRepository.cs" />
+    <Compile Include="Wrappers\DatabaseWrapper.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Common\Common.csproj">
-      <Project>{c5f75989-f4fc-43ab-b508-f5bd459be598}</Project>
-      <Name>Common</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Scripts\2016-04-23 Base DB.txt" />
+    <Content Include="Scripts\2016-04-23 01 Base DB.sql" />
+    <Content Include="Scripts\2016-04-23 02 Load Lookups.sql" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

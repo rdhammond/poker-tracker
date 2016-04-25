@@ -1,59 +1,5 @@
 ﻿USE [PokerTracker]
 GO
-/****** Object:  UserDefinedFunction [dbo].[udf_CardRoomIdByName]    Script Date: 4/23/2016 2:26:43 AM ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-CREATE FUNCTION [dbo].[udf_CardRoomIdByName]
-(
-	@Name VARCHAR(64)
-)
-RETURNS UNIQUEIDENTIFIER AS
-BEGIN
-	DECLARE @Id UNIQUEIDENTIFIER
-	SELECT TOP 1 @Id = Id FROM dbo.CardRooms WHERE Name = @Name
-
-	Return @Id
-END
-
-GO
-/****** Object:  UserDefinedFunction [dbo].[udf_GameIdByName]    Script Date: 4/23/2016 2:26:43 AM ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-CREATE FUNCTION [dbo].[udf_GameIdByName]
-(
-	@Name VARCHAR(64)
-)
-RETURNS UNIQUEIDENTIFIER AS
-BEGIN
-	DECLARE @Id UNIQUEIDENTIFIER
-	SELECT TOP 1 @Id = Id FROM dbo.Games WHERE Name = @Name
-
-	Return @Id
-END
-
-GO
-/****** Object:  UserDefinedFunction [dbo].[udf_TotalHourlyRate]    Script Date: 4/23/2016 2:26:43 AM ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-CREATE FUNCTION [dbo].[udf_TotalHourlyRate]()
-RETURNS FLOAT AS
-BEGIN
-	DECLARE @Result FLOAT
-
-	SELECT @Result = ROUND(SUM(te.StackDifferential) / (CAST(SUM(s.MinutesActive) AS FLOAT) / 60), 2)
-	FROM dbo.[Sessions] s
-	INNER JOIN dbo.TimeEntries te ON s.Id = te.SessionId
-	WHERE s.EndTime IS NOT NULL
-
-	RETURN @Result
-END
-GO
 /****** Object:  Table [dbo].[CardRooms]    Script Date: 4/23/2016 2:26:43 AM ******/
 SET ANSI_NULLS ON
 GO
@@ -132,7 +78,7 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[TimeEntries](
-	[Id] [uniqueidentifier] NOT NULL DEFAULT (newid()),
+	[Id] [uniqueidentifier] NOT NULL, 
 	[SessionId] [uniqueidentifier] NOT NULL,
 	[RecordedAt] [datetime] NOT NULL,
 	[StackSize] [int] NOT NULL,
@@ -145,15 +91,6 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 
-GO
-/****** Object:  UserDefinedFunction [dbo].[udf_LatestBankroll]    Script Date: 4/23/2016 2:26:43 AM ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-CREATE FUNCTION [dbo].[udf_LatestBankroll]()
-RETURNS TABLE AS RETURN
-SELECT TOP 1 StackSize FROM dbo.TimeEntries ORDER BY RecordedAt DESC
 GO
 /****** Object:  View [dbo].[vw_Summary]    Script Date: 4/23/2016 2:26:43 AM ******/
 SET ANSI_NULLS ON
@@ -169,7 +106,7 @@ GO
 CREATE VIEW [dbo].[vw_Summary]
 AS
 SELECT
-	NEWID() As Id,
+	s.Id As SessionId,
 	cr.Name As Cardroom,
 	g.Name As Game,
 	CONCAT('$', s.BigBlind, '/$', s.BigBlind*2) As Limit,
@@ -187,9 +124,9 @@ SELECT
 	s.StartTime,
 	s.EndTime,
 	SUM(te.StackDifferential) As WinLoss,
-	ROUND(SUM(te.StackDifferential) / CAST(s.BigBlind AS FLOAT), 2) As WinLossBB,
-	ROUND(SUM(te.StackDifferential) / CAST(s.HoursActive AS FLOAT), 2) As HourlyRate,
-	ROUND(SUM(te.StackDifferential) / CAST(s.HoursActive AS FLOAT) / s.BigBlind, 2) As HourlyRateBB
+	ROUND(SUM(COALESCE(te.StackDifferential,0)) / CAST(s.BigBlind AS FLOAT), 2) As WinLossBB,
+	ROUND(SUM(COALESCE(te.StackDifferential,0)) / CAST(s.HoursActive AS FLOAT), 2) As HourlyRate,
+	ROUND(SUM(COALESCE(te.StackDifferential,0)) / CAST(s.HoursActive AS FLOAT) / s.BigBlind, 2) As HourlyRateBB
 FROM
 	dbo.[Sessions] s
 	INNER JOIN dbo.Games g ON s.GameId = g.Id
@@ -198,8 +135,7 @@ FROM
 WHERE
 	s.EndTime IS NOT NULL
 GROUP BY
-	cr.Name, g.Name, s.BigBlind, s.HoursActive, s.StartTime, s.EndTime
-
+	s.Id, cr.Name, g.Name, s.BigBlind, s.HoursActive, s.StartTime, s.EndTime
 
 
 
@@ -238,111 +174,4 @@ GO
 ALTER TABLE [dbo].[TimeEntries]  WITH CHECK ADD  CONSTRAINT [CK_ServerTips] CHECK  (([ServerTips]>=(0)))
 GO
 ALTER TABLE [dbo].[TimeEntries] CHECK CONSTRAINT [CK_ServerTips]
-GO
-/****** Object:  StoredProcedure [dbo].[usp_FinalizeSession]    Script Date: 4/23/2016 2:26:43 AM ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-CREATE PROCEDURE [dbo].[usp_FinalizeSession]
-(
-	@SessionId UNIQUEIDENTIFIER,
-	@EndTime DATETIME,
-	@HoursActive DECIMAL(5,2),
-	@OptionalNotes TEXT
-)
-AS
-BEGIN
-	SET NOCOUNT ON
-
-	DECLARE @Msg VARCHAR(128) = CONCAT('Session ', @SessionId, ' does not exist.')
-	IF NOT EXISTS(SELECT 1 FROM dbo.[Sessions] WHERE Id = @SessionId)
-	THROW 51000, @Msg, 1
-
-	SET @Msg = CONCAT('Session ', @SessionId, ' is already closed.')
-	IF EXISTS(SELECT 1 FROM dbo.[Sessions] WHERE Id = @SessionId AND EndTime IS NOT NULL)
-	THROW 51000, @Msg, 1
-
-	CREATE TABLE #StackDifferentials
-	(
-		Id UNIQUEIDENTIFIER NOT NULL PRIMARY KEY,
-		StackDifferential INT NOT NULL
-	)
-	
-	DECLARE DIFF_CURSOR CURSOR FAST_FORWARD FOR
-		SELECT Id, StackSize
-		FROM dbo.TimeEntries
-		WHERE SessionId = @SessionId
-		ORDER BY RecordedAt
-
-	DECLARE @Id UNIQUEIDENTIFIER
-	DECLARE @StackSize INT
-
-	OPEN DIFF_CURSOR
-	FETCH FROM DIFF_CURSOR INTO @Id, @StackSize
-
-	DECLARE @StackDifferential INT = 0
-	DECLARE @LastStackSize INT = NULL
-
-	WHILE @@FETCH_STATUS = 0
-	BEGIN
-		IF @LastStackSize IS NOT NULL
-		SET @StackDifferential = @StackSize - @LastStackSize
-
-		INSERT INTO #StackDifferentials(Id, StackDifferential)
-		VALUES(@Id, @StackDifferential)
-
-		SET @LastStackSize = @StackSize
-		FETCH FROM DIFF_CURSOR INTO @Id, @StackSize
-	END
-
-	CLOSE DIFF_CURSOR
-	DEALLOCATE DIFF_CURSOR
-	BEGIN TRANSACTION
-
-	MERGE INTO dbo.TimeEntries te USING #StackDifferentials sd ON te.Id = sd.Id
-	WHEN MATCHED THEN UPDATE SET te.StackDifferential = sd.StackDifferential;
-
-	UPDATE dbo.[Sessions]
-		SET EndTime = @EndTime, Notes = @OptionalNotes, HoursActive = @HoursActive
-		WHERE Id = @SessionId
-
-	COMMIT TRANSACTION
-	DROP TABLE #StackDifferentials
-END
-
-GO
-/****** Object:  StoredProcedure [dbo].[usp_StartSession]    Script Date: 4/23/2016 2:26:43 AM ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
---SELECT * FROM [Sessions]
-
-CREATE PROCEDURE [dbo].[usp_StartSession]
-(
-	@StartTime DATETIME,
-	@CardRoomId UNIQUEIDENTIFIER,
-	@GameId UNIQUEIDENTIFIER,
-	@SmallBlind INT,
-	@BigBlind INT,
-	@StartingStackSize INT
-)
-AS
-BEGIN
-	SET NOCOUNT ON
-	DECLARE @SessionId UNIQUEIDENTIFIER
-	DECLARE @TimeEntryId UNIQUEIDENTIFIER
-	BEGIN TRANSACTION
-
-	INSERT INTO dbo.[Sessions](Id, CardRoomId, GameId, SmallBlind, BigBlind, StartTime, EndTime, MinutesActive, Notes)
-	VALUES(@SessionId, @CardRoomId, @GameId, @SmallBlind, @BigBlind, @StartTime, NULL, NULL, NULL)
-	
-	INSERT INTO dbo.TimeEntries(Id, SessionId, RecordedAt, StackSize, StackDifferential, DealerTokes, ServerTips)
-	VALUES (@TimeEntryId, @SessionId, @StartTime, @StartingStackSize, 0, 0, 0)
-
-	COMMIT TRANSACTION
-	SELECT @SessionId AS Id
-END
-
 GO

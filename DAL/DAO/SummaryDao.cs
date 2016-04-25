@@ -10,16 +10,17 @@ namespace PokerTracker.DAL.DAO
     [TableName("vw_Summaries")]
     public class SummaryDao
     {
-        public string Cardroom { get; set; }
-        public string Game { get; set; }
-        public string Limit { get; set; }
-        public int HoursPlayed { get; set; }
-        public int DayOfMonth { get; set; }
-        public DateTime StartTime { get; set; }
-        public DateTime EndTime { get; set; }
-        public int WinLoss { get; set; }
-        public Decimal WinLossBB { get; set; }
-        public int HourlyRate { get; set; }
-        public Decimal HourlyRateBB { get; set; }
+        [ResultColumn] public Guid SessionId { get; set; }
+        [ResultColumn] public string Cardroom { get; set; }
+        [ResultColumn] public string Game { get; set; }
+        [ResultColumn] public string Limit { get; set; }
+        [ResultColumn] public int HoursPlayed { get; set; }
+        [ResultColumn] public int DayOfMonth { get; set; }
+        [ResultColumn] public DateTime StartTime { get; set; }
+        [ResultColumn] public DateTime EndTime { get; set; }
+        [ResultColumn] public int WinLoss { get; set; }
+        [ResultColumn] public decimal WinLossBB { get; set; }
+        [ResultColumn] public int HourlyRate { get; set; }
+        [ResultColumn] public decimal HourlyRateBB { get; set; }
     }
 }

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using PokerTracker.DAL.DAO;
+using System.Linq;
 
 namespace PokerTracker.BLL.Services
 {
@@ -34,21 +35,43 @@ namespace PokerTracker.BLL.Services
             TimeEntryRepo = timeEntryRepo;
         }
 
+        private IEnumerable<TimeEntry> FinalizeTimeEntries(Session session)
+        {
+            int? lastValue = null;
+
+            foreach (var timeEntry in session.TimeEntries.OrderBy(x => x.RecordedAt))
+            {
+                timeEntry.SessionId = session.Id;
+
+                if (!lastValue.HasValue)
+                {
+                    lastValue = timeEntry.StackSize;
+                    yield return timeEntry;
+                    continue;
+                }
+
+                timeEntry.StackDifferential = timeEntry.StackSize - lastValue.Value;
+                lastValue = timeEntry.StackSize;
+                yield return timeEntry;
+            }
+        }
+
         public async Task SaveSessionAsync(Session session, DateTime endTime, decimal hoursActive, string optionalNotes = null)
         {
             using (var database = DbFactory.Create())
             using (var transaction = await database.GetTransactionAsync())
             {
                 var sessionDao = Mapper.Map<SessionDao>(session);
-                await SessionRepo.StartSessionAsync(sessionDao, database);
+                sessionDao.EndTime = endTime;
+                sessionDao.HoursActive = hoursActive;
+                sessionDao.Notes = optionalNotes;
+                await SessionRepo.SaveAsync(sessionDao, database);
 
-                foreach (var timeEntryDao in Mapper.Map<IEnumerable<TimeEntryDao>>(session.TimeEntries))
-                {
-                    timeEntryDao.SessionId = session.Id;
-                    await TimeEntryRepo.SaveAsync(timeEntryDao, database);
-                }
+                var timeEntryDaos = Mapper.Map<IEnumerable<TimeEntryDao>>(
+                    FinalizeTimeEntries(session)
+                );
+                await TimeEntryRepo.SaveAsync(timeEntryDaos, database);
 
-                await SessionRepo.FinalizeSessionAsync(sessionDao, endTime, hoursActive, optionalNotes, database);
                 transaction.Complete();
             }
         }

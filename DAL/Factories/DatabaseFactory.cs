@@ -1,25 +1,19 @@
-﻿using AsyncPoco;
-using PokerTracker.Common.Services;
+﻿using PokerTracker.DAL.Wrappers;
 
 namespace PokerTracker.DAL.Factories
 {
     public interface IDatabaseFactory
     {
-        Database Create();
+        IDatabaseWrapper Create();
     }
-    
+
     public class DatabaseFactory : IDatabaseFactory
     {
-        private readonly IConfigService Config;
+        public const string CONN_STR_NAME = "PokerTracker";
 
-        public DatabaseFactory(IConfigService config)
+        public IDatabaseWrapper Create()
         {
-            Config = config;
-        }
-
-        public Database Create()
-        {
-            return new Database(Config.ConnectionString);
+            return new DatabaseWrapper(CONN_STR_NAME);
         }
     }
 }
