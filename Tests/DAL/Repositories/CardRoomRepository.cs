@@ -11,18 +11,8 @@ using System.Threading.Tasks;
 namespace PokerTracker.Tests.DAL.Repositories
 {
     [TestClass]
-    public class CardRoomRepositoryTests
+    public class CardRoomRepositoryTests : RepositoryTests<CardRoomDao,CardRoomRepository>
     {
-        private readonly List<CardRoomDao> DaoList = new List<CardRoomDao>();
-        private readonly DatabaseFactoryMock DbFactMock = new DatabaseFactoryMock();
-        private readonly DatabaseWrapperMock DbWrapperMock = new DatabaseWrapperMock();
-
-        public CardRoomRepositoryTests()
-        {
-            DbWrapperMock.AddList(DaoList);
-            DbFactMock.Database = DbWrapperMock.Object;
-        }
-
         [TestCleanup]
         public void TearDown()
         {
@@ -32,16 +22,12 @@ namespace PokerTracker.Tests.DAL.Repositories
         [TestMethod]
         public void FindAllAsync_Works()
         {
-            DaoList.AddRange(new[]
+            TestFindAllAsync(new[]
             {
-                new CardRoomDao { Id = Guid.NewGuid(), Name = "Test Room" },
-                new CardRoomDao { Id = Guid.NewGuid(), Name = "Another Test" }
+                new CardRoomDao { Id = Guid.NewGuid(), Name = "Atlantic City" },
+                new CardRoomDao { Id = Guid.NewGuid(), Name = "Golden Nugget" },
+                new CardRoomDao { Id = Guid.NewGuid(), Name = "Horseshoe Casino" }
             });
-
-            var repository = new CardRoomRepository(DbFactMock.Object);
-            var actual = repository.FindAllAsync().Result;
-            Assert.IsNotNull(actual);
-            Assert.AreSame(DaoList, actual);
         }
     }
 }

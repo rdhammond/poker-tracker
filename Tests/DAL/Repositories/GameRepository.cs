@@ -6,7 +6,7 @@ using System;
 namespace PokerTracker.Tests.DAL.Repositories
 {
     [TestClass]
-    public class GameRepositoryTests : RepositoryTests<CardRoomDao>
+    public class GameRepositoryTests : RepositoryTests<GameDao,GameRepository>
     {
         [TestCleanup]
         public void TearDown()
@@ -17,16 +17,11 @@ namespace PokerTracker.Tests.DAL.Repositories
         [TestMethod]
         public void FindAllAsync_Works()
         {
-            DaoList.AddRange(new[]
+            TestFindAllAsync(new[]
             {
-                new CardRoomDao { Id = Guid.NewGuid(), Name = "Five Card Stud" },
-                new CardRoomDao { Id = Guid.NewGuid(), Name = "Texas Hold 'Em" },
+                new GameDao { Id = Guid.NewGuid(), Name = "Limit Hold 'Em" },
+                new GameDao { Id = Guid.NewGuid(), Name = "No Limit Hold 'Em" }
             });
-
-            var repository = new CardRoomRepository(DbFactMock.Object);
-            var actual = repository.FindAllAsync().Result;
-            Assert.IsNotNull(actual);
-            Assert.AreSame(DaoList, actual);
         }
     }
 }

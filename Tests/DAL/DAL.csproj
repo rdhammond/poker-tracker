@@ -70,6 +70,8 @@
     <Compile Include="Repositories\CardRoomRepository.cs" />
     <Compile Include="Repositories\Repository.cs" />
     <Compile Include="Repositories\SessionRepository.cs" />
+    <Compile Include="Repositories\SummaryRepository.cs" />
+    <Compile Include="Repositories\TimeEntryRepository.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

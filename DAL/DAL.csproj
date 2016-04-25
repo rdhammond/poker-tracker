@@ -74,8 +74,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Scripts\2016-04-23 01 Base DB.sql" />
-    <Content Include="Scripts\2016-04-23 02 Load Lookups.sql" />
+    <Content Include="Scripts\2016-04-23 01 Create Database.sql" />
+    <Content Include="Scripts\2016-04-23 02 Base DB.sql" />
+    <Content Include="Scripts\2016-04-23 03 Load Lookups.sql" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

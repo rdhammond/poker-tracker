@@ -134,5 +134,6 @@ namespace PokerTracker.DAL.Wrappers
 
         public DatabaseWrapper(string connectionString, string providerName)
             : base(connectionString, providerName)
+        { }
     }
 }
