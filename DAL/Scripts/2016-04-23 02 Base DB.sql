@@ -142,6 +142,19 @@ GROUP BY
 
 
 GO
+/****** Object: View [dbo].[vw_TotalHourlyRate] Script Date: 4/26/2016 1:36:51 PM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE VIEW vw_TotalHourlyRate
+AS
+SELECT CAST(COALESCE(sd.Total / NULLIF(ha.Total,0),0) AS DECIMAL(5,2)) As TotalHourlyRate
+FROM (SELECT SUM(COALESCE(StackDifferential,0)) As Total FROM dbo.TimeEntries) As sd
+CROSS JOIN (SELECT SUM(COALESCE(HoursActive,0)) As Total FROM dbo.[Sessions]) As ha
+GO
 ALTER TABLE [dbo].[TimeEntries]  WITH CHECK ADD  CONSTRAINT [FK_TimeEntries_Sessions] FOREIGN KEY([SessionId])
 REFERENCES [dbo].[Sessions] ([Id])
 GO

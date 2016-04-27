@@ -13,10 +13,11 @@ namespace PokerTracker.BLL
     {
         protected override void Configure()
         {
-            CreateMap<CardRoom, CardRoomDao>();
-            CreateMap<Game, GameDao>();
-            CreateMap<TimeEntry, TimeEntryDao>();
+            CreateMap<CardRoomDao, CardRoom>();
+            CreateMap<GameDao, Game>();
+            CreateMap<SummaryDao, Summary>();
 
+            CreateMap<TimeEntry, TimeEntryDao>();
             CreateMap<Session, SessionDao>()
                 .ForMember(dest => dest.CardRoomId, m => m.MapFrom(src => src.CardRoom.Id))
                 .ForMember(dest => dest.GameId, m => m.MapFrom(src => src.Game.Id));

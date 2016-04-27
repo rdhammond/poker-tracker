@@ -5,7 +5,7 @@ namespace PokerTracker.BLL.Objects
 {
     public class Session
     {
-        private readonly IList<TimeEntry> _timeEntries;
+        private readonly IList<TimeEntry> _timeEntries = new List<TimeEntry>();
 
         public IList<TimeEntry> TimeEntries
         {

@@ -20,7 +20,7 @@ namespace PokerTracker.Tests.DAL.Repositories
             DbFactMock.Database = DbWrapperMock.Object;
         }
 
-        private TRepository CreateRepository()
+        public TRepository CreateRepository()
         {
             return (TRepository)typeof(TRepository)
                 .GetConstructor(new[] { typeof(IDatabaseFactory) })

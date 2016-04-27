@@ -68,8 +68,9 @@
     <Compile Include="BLLRegistry.cs" />
     <Compile Include="Services\CardRoomsService.cs" />
     <Compile Include="Services\GamesService.cs" />
-    <Compile Include="Services\IdNameService.cs" />
+    <Compile Include="Services\LookupService.cs" />
     <Compile Include="Services\SessionService.cs" />
+    <Compile Include="Services\SummaryService.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

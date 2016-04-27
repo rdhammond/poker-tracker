@@ -1,12 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using PokerTracker.DAL.DAO;
 using PokerTracker.DAL.Repositories;
-using PokerTracker.Tests.DAL.Mocks;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PokerTracker.Tests.DAL.Repositories
 {

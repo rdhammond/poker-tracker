@@ -1,9 +1,5 @@
 ﻿using AsyncPoco;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PokerTracker.DAL.DAO
 {
@@ -14,7 +10,7 @@ namespace PokerTracker.DAL.DAO
         [ResultColumn] public string Cardroom { get; set; }
         [ResultColumn] public string Game { get; set; }
         [ResultColumn] public string Limit { get; set; }
-        [ResultColumn] public int HoursPlayed { get; set; }
+        [ResultColumn] public decimal HoursPlayed { get; set; }
         [ResultColumn] public int DayOfMonth { get; set; }
         [ResultColumn] public DateTime StartTime { get; set; }
         [ResultColumn] public DateTime EndTime { get; set; }

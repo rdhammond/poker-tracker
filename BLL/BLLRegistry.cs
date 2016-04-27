@@ -6,9 +6,10 @@ namespace PokerTracker.BLL
     {
         public BLLRegistry()
         {
-            For<IGamesService>().Use<GamesService>();
             For<ICardRoomsService>().Use<CardRoomsService>();
+            For<IGamesService>().Use<GamesService>();
             For<ISessionService>().Use<SessionService>();
+            For<ISummaryService>().Use<SummaryService>();
         }
     }
 }
