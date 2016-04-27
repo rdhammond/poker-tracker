@@ -88,6 +88,11 @@ CREATE TABLE [dbo].[TimeEntries](
 PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY],
+ CONSTRAINT [UQ_SessionId_RecordedAt] UNIQUE NONCLUSTERED 
+(
+	[SessionId],
+	[RecordedAt] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 
@@ -155,6 +160,75 @@ SELECT CAST(COALESCE(sd.Total / NULLIF(ha.Total,0),0) AS DECIMAL(5,2)) As TotalH
 FROM (SELECT SUM(COALESCE(StackDifferential,0)) As Total FROM dbo.TimeEntries) As sd
 CROSS JOIN (SELECT SUM(COALESCE(HoursActive,0)) As Total FROM dbo.[Sessions]) As ha
 GO
+/****** Object:  StoredProcedure [dbo].[usp_RepairSession]    Script Date: 4/27/2016 2:19:15 AM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE PROCEDURE [dbo].[usp_RepairSession]
+(
+	@SessionId UNIQUEIDENTIFIER,
+	@EndTime DATETIME,
+	@HoursActive DECIMAL(5,2),
+	@Notes TEXT
+)
+AS
+BEGIN
+	SET NOCOUNT ON
+
+	CREATE TABLE #StackDifferentials
+	(
+		[Id] UNIQUEIDENTIFIER PRIMARY KEY NOT NULL,
+		[StackDifferential] INT NOT NULL
+	)
+
+	DECLARE TIMEENTRY_CURSOR CURSOR FAST_FORWARD FOR
+	SELECT Id, StackSize
+	FROM dbo.TimeEntries
+	WHERE SessionId = @SessionId
+	ORDER BY RecordedAt ASC
+
+	OPEN TIMEENTRY_CURSOR
+
+	DECLARE @Id UNIQUEIDENTIFIER, @StackSize INT
+	FETCH NEXT FROM TIMEENTRY_CURSOR INTO @Id, @StackSize 
+
+	DECLARE @LastStackSize INT, @StackDifferential INT
+
+	WHILE @@FETCH_STATUS = 0
+	BEGIN
+		IF @LastStackSize IS NULL
+			SET @LastStackSize = @StackSize
+		ELSE
+		BEGIN
+			SET @StackDifferential = @StackSize - @LastStackSize
+			SET @LastStackSize = @StackSize
+			
+			INSERT INTO #StackDifferentials(Id, StackDifferential)
+			VALUES(@Id, @StackDifferential)
+		END
+		
+		FETCH NEXT FROM TIMEENTRY_CURSOR INTO @Id, @StackSize
+	END
+
+	CLOSE TIMEENTRY_CURSOR
+	DEALLOCATE TIMEENTRY_CURSOR
+	BEGIN TRANSACTION
+
+	MERGE INTO dbo.TimeEntries te USING #StackDifferentials sd
+	ON te.Id = sd.Id
+	WHEN MATCHED THEN UPDATE SET te.StackDifferential = sd.StackDifferential;
+
+	UPDATE dbo.[Sessions]
+	SET EndTime = @EndTime, Notes = @Notes, HoursActive = @HoursActive
+	WHERE Id = @SessionId
+
+	COMMIT TRANSACTION
+END
+GO
+
 ALTER TABLE [dbo].[TimeEntries]  WITH CHECK ADD  CONSTRAINT [FK_TimeEntries_Sessions] FOREIGN KEY([SessionId])
 REFERENCES [dbo].[Sessions] ([Id])
 GO
