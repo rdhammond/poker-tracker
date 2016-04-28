@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 namespace PokerTracker.Tests.BLL.Mocks
 {
     public class ReadOnlyRepositoryMock<TRepo,TEntity> : Mock<TRepo>
-        where TRepo : ReadOnlyRepository<TEntity>
+        where TRepo : class, IReadOnlyRepository<TEntity>
     {
         public readonly List<TEntity> DaoList = new List<TEntity>();
 

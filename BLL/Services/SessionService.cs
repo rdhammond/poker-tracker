@@ -35,24 +35,25 @@ namespace PokerTracker.BLL.Services
             TimeEntryRepo = timeEntryRepo;
         }
 
-        private IEnumerable<TimeEntry> FinalizeTimeEntries(Session session)
+        private IEnumerable<TimeEntryDao> FinalizeTimeEntries(Session session)
         {
             int? lastValue = null;
 
             foreach (var timeEntry in session.TimeEntries.OrderBy(x => x.RecordedAt))
             {
-                timeEntry.SessionId = session.Id;
+                var dao = Mapper.Map<TimeEntryDao>(timeEntry);
+                dao.SessionId = session.Id;
 
                 if (!lastValue.HasValue)
                 {
-                    lastValue = timeEntry.StackSize;
-                    yield return timeEntry;
+                    lastValue = dao.StackSize;
+                    yield return dao;
                     continue;
                 }
 
-                timeEntry.StackDifferential = timeEntry.StackSize - lastValue.Value;
-                lastValue = timeEntry.StackSize;
-                yield return timeEntry;
+                dao.StackDifferential = dao.StackSize - lastValue.Value;
+                lastValue = dao.StackSize;
+                yield return dao;
             }
         }
 
@@ -67,11 +68,7 @@ namespace PokerTracker.BLL.Services
                 sessionDao.Notes = optionalNotes;
                 await SessionRepo.SaveAsync(sessionDao, database);
 
-                var timeEntryDaos = Mapper.Map<IEnumerable<TimeEntryDao>>(
-                    FinalizeTimeEntries(session)
-                );
-                await TimeEntryRepo.SaveAsync(timeEntryDaos, database);
-
+                await TimeEntryRepo.SaveAsync(FinalizeTimeEntries(session), database);
                 transaction.Complete();
             }
         }
