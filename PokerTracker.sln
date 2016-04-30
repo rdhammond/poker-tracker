@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DAL", "Tests\DAL\DAL.csproj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GUI", "GUI\GUI.csproj", "{0130D634-68A0-46BE-815B-950C4BD66EFF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WCF", "WCF\WCF.csproj", "{D22CEF65-15AC-4650-9431-BC1C9C18A559}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,6 +43,10 @@ Global
 		{0130D634-68A0-46BE-815B-950C4BD66EFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0130D634-68A0-46BE-815B-950C4BD66EFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0130D634-68A0-46BE-815B-950C4BD66EFF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D22CEF65-15AC-4650-9431-BC1C9C18A559}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D22CEF65-15AC-4650-9431-BC1C9C18A559}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D22CEF65-15AC-4650-9431-BC1C9C18A559}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D22CEF65-15AC-4650-9431-BC1C9C18A559}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

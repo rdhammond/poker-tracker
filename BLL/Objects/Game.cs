@@ -1,4 +1,9 @@
-﻿namespace PokerTracker.BLL.Objects
+﻿using System.Runtime.Serialization;
+
+namespace PokerTracker.BLL.Objects
 {
-    public class Game : IdNameObject { }
+    [DataContract]
+    public class Game : IdNameObject
+    {
+    }
 }

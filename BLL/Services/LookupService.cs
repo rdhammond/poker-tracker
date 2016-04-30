@@ -9,7 +9,7 @@ namespace PokerTracker.BLL.Services
     public interface ILookupService<TIn, TOut, TRepo>
         where TRepo : IReadOnlyRepository<TIn>
     {
-        Task<IList<TOut>> GetAllAsync();
+        Task<IReadOnlyList<TOut>> GetAllAsync();
     }
 
     public abstract class LookupService<TIn, TOut, TRepo> : ILookupService<TIn, TOut, TRepo>
@@ -18,16 +18,18 @@ namespace PokerTracker.BLL.Services
         private readonly IMapper Mapper;
         protected readonly TRepo Repository;
 
-        protected LookupService(IMapper Mapper, TRepo repository)
+        protected LookupService(IMapper mapper, TRepo repository)
         {
+            Mapper = mapper;
             Repository = repository;
         }
 
-        public async Task<IList<TOut>> GetAllAsync()
+        public async Task<IReadOnlyList<TOut>> GetAllAsync()
         {
             return (await Repository.FindAllAsync())
                 .Select(x => Mapper.Map<TOut>(x))
-                .ToList();
+                .ToList()
+                .AsReadOnly();
         }
     }
 }

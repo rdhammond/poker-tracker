@@ -4,19 +4,21 @@ using System;
 namespace PokerTracker.DAL.DAO
 {
     [TableName("vw_Summaries")]
+    [PrimaryKey("SessionId")]
     public class SummaryDao
     {
-        [ResultColumn] public Guid SessionId { get; set; }
-        [ResultColumn] public string Cardroom { get; set; }
-        [ResultColumn] public string Game { get; set; }
-        [ResultColumn] public string Limit { get; set; }
-        [ResultColumn] public decimal HoursPlayed { get; set; }
-        [ResultColumn] public int DayOfMonth { get; set; }
-        [ResultColumn] public DateTime StartTime { get; set; }
-        [ResultColumn] public DateTime EndTime { get; set; }
-        [ResultColumn] public int WinLoss { get; set; }
-        [ResultColumn] public decimal WinLossBB { get; set; }
-        [ResultColumn] public int HourlyRate { get; set; }
-        [ResultColumn] public decimal HourlyRateBB { get; set; }
+        public Guid SessionId { get; set; }
+        public string Cardroom { get; set; }
+        public string Game { get; set; }
+        public string Limit { get; set; }
+        public decimal HoursPlayed { get; set; }
+        public int DayOfMonth { get; set; }
+        public string DayOfWeek { get; set; }
+        public DateTime StartTime { get; set; }
+        public DateTime EndTime { get; set; }
+        public int WinLoss { get; set; }
+        public decimal WinLossBB { get; set; }
+        public int HourlyRate { get; set; }
+        public decimal HourlyRateBB { get; set; }
     }
 }
