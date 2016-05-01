@@ -4,11 +4,10 @@ using System;
 namespace PokerTracker.DAL.DAO
 {
     [TableName("vw_Summaries")]
-    [PrimaryKey("SessionId")]
-    public class SummaryDao
+    [PrimaryKey("Id")]
+    public class SummaryDao : IdDao
     {
-        public Guid SessionId { get; set; }
-        public string Cardroom { get; set; }
+        public string Cardroom { get; set; } 
         public string Game { get; set; }
         public string Limit { get; set; }
         public decimal HoursPlayed { get; set; }

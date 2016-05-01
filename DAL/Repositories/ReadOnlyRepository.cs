@@ -6,7 +6,7 @@ namespace PokerTracker.DAL.Repositories
 {
     public interface IReadOnlyRepository<T>
     {
-        Task<IList<T>> FindAllAsync();
+        Task<List<T>> FindAllAsync();
     }
 
     public abstract class ReadOnlyRepository<T> : IReadOnlyRepository<T>
@@ -18,7 +18,7 @@ namespace PokerTracker.DAL.Repositories
             DbFactory = dbFactory;
         }
 
-        public async Task<IList<T>> FindAllAsync()
+        public async Task<List<T>> FindAllAsync()
         {
             using (var database = DbFactory.Create())
             {

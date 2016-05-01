@@ -2,45 +2,56 @@
 using PokerTracker.DAL.DAO;
 using PokerTracker.DAL.Repositories;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PokerTracker.Tests.DAL.Repositories
 {
-    public class SessionRepositoryTests : RepositoryTests<SessionDao,SessionRepository>
+    public class SessionRepositoryTests
+        : RepositoryTests<SessionRepository,SessionDao>
     {
-        [TestCleanup]
-        public void TearDown()
+        [TestInitialize]
+        public void SetUp()
         {
-            DaoList.Clear();
+            Setup();
         }
 
         [TestMethod]
         public void FindAll_Works()
         {
-            TestFindAllAsync(new[]
-            {
-                new SessionDao
+            TestFindAllAsync(
+                new[]
                 {
-                    Id = Guid.NewGuid(),
-                    BigBlind = 3,
-                    CardRoomId = Guid.NewGuid(),
-                    GameId = Guid.NewGuid(),
-                    SmallBlind = 1,
-                    StartTime = DateTime.Now
+                    new SessionDao
+                    {
+                        Id = Guid.NewGuid(),
+                        BigBlind = 3,
+                        CardRoomId = Guid.NewGuid(),
+                        GameId = Guid.NewGuid(),
+                        SmallBlind = 1,
+                        StartTime = DateTime.Now
+                    },
+                    new SessionDao
+                    {
+                        Id = Guid.NewGuid(),
+                        BigBlind = 3,
+                        CardRoomId = Guid.NewGuid(),
+                        GameId = Guid.NewGuid(),
+                        SmallBlind = 1,
+                        StartTime = DateTime.Now
+                    }
                 },
-                new SessionDao
+                (e, a) =>
                 {
-                    Id = Guid.NewGuid(),
-                    BigBlind = 3,
-                    CardRoomId = Guid.NewGuid(),
-                    GameId = Guid.NewGuid(),
-                    SmallBlind = 1,
-                    StartTime = DateTime.Now
+                    return e.BigBlind == a.BigBlind
+                        && e.CardRoomId == a.CardRoomId
+                        && e.EndTime == a.EndTime
+                        && e.GameId == a.GameId
+                        && e.HoursActive == a.HoursActive
+                        && e.Id == a.Id
+                        && e.Notes == a.Notes
+                        && e.SmallBlind == a.SmallBlind
+                        && e.StartTime == a.StartTime;
                 }
-            });
+            );
         }
 
         [TestMethod]

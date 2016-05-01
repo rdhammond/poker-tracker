@@ -5,20 +5,13 @@ using PokerTracker.DAL.Repositories;
 namespace PokerTracker.Tests.DAL.Repositories
 {
     [TestClass]
-    public class TotalHourlyRateRepositoryTests : RepositoryTests<TotalHourlyRateDao, TotalHourlyRateRepository>
+    public class TotalHourlyRateRepositoryTests
+        : ReadOnlyRepositoryTests<TotalHourlyRateRepository, TotalHourlyRateDao>
     {
-        [TestCleanup]
-        public void TearDown()
+        [TestInitialize]
+        public void SetUp()
         {
-            DaoList.Clear();
-        }
-
-        [TestMethod]
-        public void FindAllAsync_Works()
-        {
-            TestFindAllAsync(
-               new[] { new TotalHourlyRateDao { TotalHourlyRate = 41.2m } }
-           );
+            Setup();
         }
 
         [TestMethod]
@@ -30,7 +23,6 @@ namespace PokerTracker.Tests.DAL.Repositories
 
             var repo = CreateRepository();
             var actual = repo.GetTotalHourlyRateAsync().Result;
-
             Assert.AreEqual(TEST_HOURLY_RATE, actual);
         }
     }

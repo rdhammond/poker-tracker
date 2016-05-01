@@ -9,18 +9,18 @@ namespace PokerTracker.Tests.DAL.Factories
     [TestClass]
     public class DatabaseFactoryTests
     {
-        private IDatabaseFactory DbFact;
+        private IDatabaseFactory _dbFact;
 
         [TestInitialize]
         public void SetUp()
         {
-            DbFact = new DatabaseFactory();
+            _dbFact = new DatabaseFactory();
         }
 
         [TestMethod]
         public void Create_Works()
         {
-            Assert.IsNotNull(DbFact.Create());
+            Assert.IsNotNull(_dbFact.Create());
         }
     }
 }

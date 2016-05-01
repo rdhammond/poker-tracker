@@ -10,7 +10,8 @@ namespace PokerTracker.DAL.Repositories
         Task<decimal> GetTotalHourlyRateAsync();
     }
 
-    public class TotalHourlyRateRepository : Repository<TotalHourlyRateDao>, ITotalHourlyRateRepository
+    public class TotalHourlyRateRepository
+        : Repository<TotalHourlyRateDao>, ITotalHourlyRateRepository
     {
         public TotalHourlyRateRepository(IDatabaseFactory dbFactory)
             : base(dbFactory)

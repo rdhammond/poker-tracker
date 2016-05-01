@@ -1,13 +1,21 @@
 ﻿using System;
+using System.Runtime.Serialization;
 
 namespace PokerTracker.BLL.Objects
 {
-    public class TimeEntry
+    [DataContract]
+    public class TimeEntry : IdObject
     {
-        public Guid Id { get; set; }
+        [DataMember]
         public DateTime RecordedAt { get; set; }
+
+        [DataMember]
         public int StackSize { get; set; }
+
+        [DataMember]
         public int DealerTokes { get; set; }
+
+        [DataMember]
         public int ServerTips { get; set; }
     }
 }

@@ -26,16 +26,24 @@ namespace PokerTracker.WCF
         [OperationContract]
         Session CreateSession();
 
-        [WebInvoke(Method = "POST", UriTemplate = "SessionPOST",
+        [WebInvoke(
+            Method = "POST",
+            UriTemplate = "SessionPOST",
             BodyStyle = WebMessageBodyStyle.WrappedRequest,
-            RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
+            RequestFormat = WebMessageFormat.Json,
+            ResponseFormat = WebMessageFormat.Json
+        )]
         [OperationContract]
-        Task SaveSessionAsync(Session session, DateTime endTime,
-            decimal hoursActive, string optionalNotes = null);
+        Task SaveSessionAsync(
+            Session session,
+            DateTime endTime,
+            decimal hoursActive,
+            string optionalNotes = null
+        );
 
         [WebGet(UriTemplate = "Summaries", ResponseFormat = WebMessageFormat.Json)]
         [OperationContract]
-        Task<IEnumerable<Summary>> GetSessionSummariesAsync();
+        Task<Dictionary<Guid,Summary>> GetSessionSummariesAsync();
 
         [WebGet(UriTemplate = "TotalHourlyRate", ResponseFormat = WebMessageFormat.Json)]
         [OperationContract]
@@ -45,20 +53,43 @@ namespace PokerTracker.WCF
     [AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Allowed)]
     public class PokerTrackerService : IPokerTrackerService
     {
-        private readonly ICardRoomsService CardRoomsSvc;
-        private readonly IGamesService GamesSvc;
-        private readonly ISessionService SessionSvc;
-        private readonly ISummaryService SummarySvc;
+        private ICardRoomsService CardRoomsSvc;
+        private IGamesService GamesSvc;
+        private ISessionService SessionSvc;
+        private ISummaryService SummarySvc;
 
         public PokerTrackerService()
         {
             using (var container = new Container(new WCFRegistry()))
             {
-                CardRoomsSvc = container.GetInstance<ICardRoomsService>();
-                GamesSvc = container.GetInstance<IGamesService>();
-                SessionSvc = container.GetInstance<ISessionService>();
-                SummarySvc = container.GetInstance<ISummaryService>();
+                Initialize(container.GetInstance<ICardRoomsService>(),
+                    container.GetInstance<IGamesService>(),
+                    container.GetInstance<ISessionService>(),
+                    container.GetInstance<ISummaryService>());
             }
+        }
+
+        public PokerTrackerService(
+            ICardRoomsService cardRoomsSvc,
+            IGamesService gamesSvc,
+            ISessionService sessionSvc,
+            ISummaryService summarySvc
+        )
+        {
+            Initialize(cardRoomsSvc, gamesSvc, sessionSvc, summarySvc);
+        }
+
+        private void Initialize(
+            ICardRoomsService cardRoomsSvc,
+            IGamesService gamesSvc,
+            ISessionService sessionSvc,
+            ISummaryService summarySvc
+        )
+        {
+            CardRoomsSvc = cardRoomsSvc;
+            GamesSvc = gamesSvc;
+            SessionSvc = sessionSvc;
+            SummarySvc = summarySvc;
         }
 
         public Session CreateSession()
@@ -92,11 +123,12 @@ namespace PokerTracker.WCF
             }
         }
 
-        public async Task<IEnumerable<Summary>> GetSessionSummariesAsync()
+        public async Task<Dictionary<Guid,Summary>> GetSessionSummariesAsync()
         {
             try
             {
-                return await SummarySvc.GetAllAsync();
+                return (await SummarySvc.GetAllAsync())
+                    .ToDictionary(x => x.Id);
             }
             catch (Exception e)
             {
@@ -116,7 +148,12 @@ namespace PokerTracker.WCF
             }
         }
 
-        public async Task SaveSessionAsync(Session session, DateTime endTime, decimal hoursActive, string optionalNotes = null)
+        public async Task SaveSessionAsync(
+            Session session,
+            DateTime endTime,
+            decimal hoursActive,
+            string optionalNotes = null
+        )
         {
             try
             {

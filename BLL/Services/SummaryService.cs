@@ -6,27 +6,29 @@ using System.Threading.Tasks;
 
 namespace PokerTracker.BLL.Services
 {
-    public interface ISummaryService : ILookupService<SummaryDao, Summary, ISummaryRepository>
+    public interface ISummaryService : ILookupService<Summary>
     {
         Task<decimal> GetTotalHourlyRateAsync();
     }
 
-    public class SummaryService : LookupService<SummaryDao, Summary, ISummaryRepository>, ISummaryService
+    public class SummaryService
+        : LookupService<SummaryDao, Summary, ISummaryRepository>, ISummaryService
     {
-        private ITotalHourlyRateRepository TotalHourlyRateRepo;
+        private readonly ITotalHourlyRateRepository _totalHourlyRateRepo;
 
         public SummaryService(
-            IMapper mapper, ISummaryRepository repository,
+            IMapper mapper,
+            ISummaryRepository repository,
             ITotalHourlyRateRepository totalHourlyRateRepo
         )
             : base(mapper, repository)
         {
-            TotalHourlyRateRepo = totalHourlyRateRepo;
+            _totalHourlyRateRepo = totalHourlyRateRepo;
         }
 
-        public async Task<decimal> GetTotalHourlyRateAsync()
+        public Task<decimal> GetTotalHourlyRateAsync()
         {
-            return await TotalHourlyRateRepo.GetTotalHourlyRateAsync();
+            return _totalHourlyRateRepo.GetTotalHourlyRateAsync();
         }
     }
 }

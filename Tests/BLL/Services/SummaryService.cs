@@ -1,46 +1,36 @@
 ﻿using PokerTracker.DAL.DAO;
-using PokerTracker.DAL.Repositories;
 using PokerTracker.Tests.BLL.Mocks;
 using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using PokerTracker.BLL.Services;
+using PokerTracker.DAL.Repositories;
+using System.Linq;
 
 namespace PokerTracker.Tests.BLL.Services
 {
-    using SummaryRepositoryMock = ReadOnlyRepositoryMock<SummaryRepository, SummaryDao>;
-
-    using TotalHourlyRateRepositoryMock = ReadOnlyRepositoryMock<
-        TotalHourlyRateRepository, TotalHourlyRateDao>;
-
     public class SummaryServiceTests
+        : LookupServiceTests<ISummaryRepository,SummaryDao,SummaryRepositoryMock>
     {
-        private readonly SummaryRepositoryMock SummaryRepoMock = new SummaryRepositoryMock();
-
-        private readonly TotalHourlyRateRepositoryMock TotalHourlyRateRepoMock =
-            new TotalHourlyRateRepositoryMock();
-
-        private ISummaryService Service;
-
-        public object TotalHourlySummaryRepoMock { get; private set; }
+        private TotalHourlyRateRepositoryMock _totalHourlyRateRepoMock;
+        private ISummaryService _summarySvc;
 
         [TestInitialize]
         public void SetUp()
         {
-            Service = new SummaryService(
-                GlobalMapper.Mapper, SummaryRepoMock.Object, TotalHourlyRateRepoMock.Object);
-        }
+            Setup();
+            _totalHourlyRateRepoMock = new TotalHourlyRateRepositoryMock();
 
-        [TestCleanup]
-        public void TearDown()
-        {
-            SummaryRepoMock.DaoList.Clear();
-            Service = null;
+            _summarySvc = new SummaryService(
+                Mapper,
+                RepoMock.Object,
+                _totalHourlyRateRepoMock.Object
+            );
         }
 
         [TestMethod]
         public void FindAllAsync_Works()
         {
-            SummaryRepoMock.DaoList.AddRange(new[] {
+            var daos = new[] {
                 new SummaryDao
                 {
                     Cardroom = "Beltera",
@@ -51,7 +41,7 @@ namespace PokerTracker.Tests.BLL.Services
                     HourlyRateBB = 4.1m,
                     HoursPlayed = 1.4m,
                     Limit = "$1/$2",
-                    SessionId = Guid.NewGuid(),
+                    Id = Guid.NewGuid(),
                     StartTime = DateTime.Now.AddHours(-8),
                     WinLoss = 140,
                     WinLossBB = 70
@@ -66,15 +56,33 @@ namespace PokerTracker.Tests.BLL.Services
                     HourlyRateBB = -1.5m,
                     HoursPlayed = 3m,
                     Limit = "$2/$4",
-                    SessionId = Guid.NewGuid(),
+                    Id = Guid.NewGuid(),
                     StartTime = DateTime.Now.AddDays(-1),
                     WinLoss = -280,
                     WinLossBB = -20
                 }
-            });
+            };
+            DaoList.AddRange(daos);
 
-            var actual = Service.GetAllAsync().Result;
-            Assert.AreSame(SummaryRepoMock.DaoList, actual);
+            var objects = _summarySvc.GetAllAsync().Result
+                .ToDictionary(x => x.Id);
+
+            AssertListEquals(daos, objects, (e, a) =>
+            {
+                return e.Cardroom == a.Cardroom
+                    && e.DayOfMonth == a.DayOfMonth
+                    && e.DayOfWeek == a.DayOfWeek
+                    && e.EndTime == a.EndTime
+                    && e.Game == a.Game
+                    && e.HourlyRate == a.HourlyRate
+                    && e.HourlyRateBB == a.HourlyRateBB
+                    && e.HoursPlayed == a.HoursPlayed
+                    && e.Id == a.Id
+                    && e.Limit == a.Limit
+                    && e.StartTime == a.StartTime
+                    && e.WinLoss == a.WinLoss
+                    && e.WinLossBB == a.WinLossBB;
+            });
         }
 
         [TestMethod]
@@ -82,12 +90,12 @@ namespace PokerTracker.Tests.BLL.Services
         {
             const decimal TEST_HOURLY_RATE = 14.1m;
 
-            TotalHourlyRateRepoMock.DaoList.Add(new TotalHourlyRateDao
+            _totalHourlyRateRepoMock.DaoList.Add(new TotalHourlyRateDao
             {
                 TotalHourlyRate = TEST_HOURLY_RATE
             });
 
-            var actual = Service.GetTotalHourlyRateAsync().Result;
+            var actual = _summarySvc.GetTotalHourlyRateAsync().Result;
             Assert.AreEqual(TEST_HOURLY_RATE, actual);
         }
     }

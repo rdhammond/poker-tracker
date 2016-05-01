@@ -8,7 +8,13 @@ namespace PokerTracker.Tests.DAL.Mocks
 {
     public class DatabaseWrapperMock : Mock<IDatabaseWrapper>
     {
-        private readonly IDictionary<string, IEnumerable> Lists = new Dictionary<string, IEnumerable>();
+        private readonly Dictionary<string, IEnumerable> _lists =
+            new Dictionary<string, IEnumerable>();
+
+        public Dictionary<string, IEnumerable> Lists
+        {
+            get { return _lists; }
+        }
 
         public void AddList<T>(List<T> list)
         {
@@ -22,14 +28,14 @@ namespace PokerTracker.Tests.DAL.Mocks
             return (List<T>)Lists[typeof(T).Name];
         }
 
-        private async Task<List<T>> GetListAsync<T>()
+        private Task<List<T>> GetListAsync<T>()
         {
-            return await Task.Run(() => GetList<T>());
+            return Task.Run(() => GetList<T>());
         }
 
-        private async Task SaveToListAsync<T>(T entity)
+        private Task SaveToListAsync<T>(T entity)
         {
-            await Task.Run(() => GetList<T>().Add(entity));
+            return Task.Run(() => GetList<T>().Add(entity));
         }
     }
 }

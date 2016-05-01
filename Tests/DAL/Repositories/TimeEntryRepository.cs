@@ -2,47 +2,56 @@
 using PokerTracker.DAL.DAO;
 using PokerTracker.DAL.Repositories;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PokerTracker.Tests.DAL.Repositories
 {
-    public class TimeEntryRepositoryTests : RepositoryTests<TimeEntryDao,TimeEntryRepository>
+    public class TimeEntryRepositoryTests
+        : RepositoryTests<TimeEntryRepository, TimeEntryDao>
     {
-        [TestCleanup]
-        public void TearDown()
+        [TestInitialize]
+        public void SetUp()
         {
-            DaoList.Clear();
+            Setup();
         }
 
         [TestMethod]
         public void FindAllAsync_Works()
         {
-            TestFindAllAsync(new[]
-            {
-                new TimeEntryDao
+            TestFindAllAsync(
+                new[]
                 {
-                    DealerTokes = 2,
-                    Id = Guid.NewGuid(),
-                    RecordedAt = DateTime.Now,
-                    ServerTips = 1,
-                    SessionId = Guid.NewGuid(),
-                    StackDifferential = -4,
-                    StackSize = 12
+                    new TimeEntryDao
+                    {
+                        DealerTokes = 2,
+                        Id = Guid.NewGuid(),
+                        RecordedAt = DateTime.Now,
+                        ServerTips = 1,
+                        SessionId = Guid.NewGuid(),
+                        StackDifferential = -4,
+                        StackSize = 12
+                    },
+                    new TimeEntryDao
+                    {
+                        DealerTokes = 0,
+                        Id = Guid.NewGuid(),
+                        RecordedAt = DateTime.Now.AddDays(-2),
+                        ServerTips = 1,
+                        SessionId = Guid.NewGuid(),
+                        StackDifferential = 40,
+                        StackSize = 140
+                    }
                 },
-                new TimeEntryDao
+                (e,a) =>
                 {
-                    DealerTokes = 0,
-                    Id = Guid.NewGuid(),
-                    RecordedAt = DateTime.Now.AddDays(-2),
-                    ServerTips = 1,
-                    SessionId = Guid.NewGuid(),
-                    StackDifferential = 40,
-                    StackSize = 140
+                    return e.DealerTokes == a.DealerTokes
+                        && e.Id == a.Id
+                        && e.RecordedAt == a.RecordedAt
+                        && e.ServerTips == a.ServerTips
+                        && e.SessionId == a.SessionId
+                        && e.StackDifferential == a.StackDifferential
+                        && e.StackSize == a.StackSize;
                 }
-            });
+            );
         }
 
         [TestMethod]

@@ -1,18 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PokerTracker.BLL.Objects
 {
     [DataContract]
-    public class Summary
+    public class Summary : IdObject
     {
-        [DataMember]
-        public Guid SessionId { get; set; }
-
         [DataMember]
         public string Cardroom { get; set; }
 

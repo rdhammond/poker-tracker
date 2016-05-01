@@ -5,7 +5,7 @@ using System.Runtime.Serialization;
 namespace PokerTracker.BLL.Objects
 {
     [DataContract]
-    public class Session
+    public class Session : IdObject
     {
         private readonly List<TimeEntry> _timeEntries = new List<TimeEntry>();
 
@@ -14,9 +14,6 @@ namespace PokerTracker.BLL.Objects
         {
             get { return _timeEntries; }
         }
-
-        [DataMember]
-        public Guid Id { get; set; }
 
         [DataMember]
         public int SmallBlind { get; set; }

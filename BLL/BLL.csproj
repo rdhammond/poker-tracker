@@ -61,6 +61,7 @@
     <Compile Include="Objects\CardRoom.cs" />
     <Compile Include="Objects\Game.cs" />
     <Compile Include="Objects\IdNameObject.cs" />
+    <Compile Include="Objects\IdObject.cs" />
     <Compile Include="Objects\Session.cs" />
     <Compile Include="Objects\Summary.cs" />
     <Compile Include="Objects\TimeEntry.cs" />

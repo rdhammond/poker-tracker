@@ -9,22 +9,21 @@ namespace PokerTracker.Tests.BLL.Mocks
 {
     public class DatabaseWrapperMock : Mock<IDatabaseWrapper>
     {
-        public Stack<TransactionMock> Transactions = new Stack<TransactionMock>();
+        private Stack<TransactionMock> _transactions = new Stack<TransactionMock>();
+
+        public Stack<TransactionMock> Transactions
+        {
+            get { return _transactions; }
+        }
 
         public bool AllTransactionComplete
         {
-            get
-            {
-                return Transactions.All(x => x.IsComplete);
-            }
+            get { return Transactions.All(x => x.IsCompleted); }
         }
 
         public bool AllTransactionsDisposed
         {
-            get
-            {
-                return Transactions.All(x => x.IsDisposed);
-            }
+            get { return Transactions.All(x => x.IsDisposed); }
         }
         
         public DatabaseWrapperMock()

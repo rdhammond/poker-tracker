@@ -55,6 +55,8 @@
   <ItemGroup>
     <Compile Include="DAO\CardRoomDao.cs" />
     <Compile Include="DAO\GameDao.cs" />
+    <Compile Include="DAO\IdDao.cs" />
+    <Compile Include="DAO\IdNameDao.cs" />
     <Compile Include="DAO\SessionDao.cs" />
     <Compile Include="DAO\SummaryDao.cs" />
     <Compile Include="DAO\TimeEntryDao.cs" />

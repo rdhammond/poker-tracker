@@ -5,11 +5,12 @@ using PokerTracker.DAL.DAO;
 
 namespace PokerTracker.BLL.Services
 {
-    public interface ICardRoomsService : ILookupService<CardRoomDao, CardRoom, ICardRoomRepository>
-    {
-    }
+    public interface ICardRoomsService : ILookupService<CardRoom>
+    { }
 
-    public class CardRoomsService : LookupService<CardRoomDao, CardRoom, ICardRoomRepository>, ICardRoomsService
+    public class CardRoomsService
+        : LookupService<CardRoomDao, CardRoom, ICardRoomRepository>,
+            ICardRoomsService
     {
         public CardRoomsService(IMapper mapper, ICardRoomRepository repository)
             : base(mapper, repository)

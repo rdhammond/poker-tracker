@@ -6,12 +6,13 @@ using System;
 namespace PokerTracker.Tests.DAL.Repositories
 {
     [TestClass]
-    public class GameRepositoryTests : RepositoryTests<GameDao,GameRepository>
+    public class GameRepositoryTests
+        : ReadOnlyRepositoryTests<GameRepository, GameDao>
     {
-        [TestCleanup]
-        public void TearDown()
+        [TestInitialize]
+        public void SetUp()
         {
-            DaoList.Clear();
+            Setup();
         }
 
         [TestMethod]

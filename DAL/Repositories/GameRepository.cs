@@ -4,8 +4,7 @@ using PokerTracker.DAL.Factories;
 namespace PokerTracker.DAL.Repositories
 {
     public interface IGameRepository : IReadOnlyRepository<GameDao>
-    {
-    }
+    { }
 
     public class GameRepository : ReadOnlyRepository<GameDao>, IGameRepository
     {

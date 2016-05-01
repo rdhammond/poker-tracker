@@ -12,7 +12,12 @@ namespace PokerTracker.BLL.Services
 {
     public interface ISessionService
     {
-        Task SaveSessionAsync(Session session, DateTime endTime, decimal hoursPlayed, string optionalNotes = null);
+        Task SaveSessionAsync(
+            Session session,
+            DateTime endTime,
+            decimal hoursPlayed,
+            string optionalNotes = null
+        );
     }
 
     public class SessionService : ISessionService

@@ -1,43 +1,38 @@
 ﻿using PokerTracker.DAL.DAO;
-using PokerTracker.DAL.Repositories;
 using PokerTracker.Tests.BLL.Mocks;
 using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using PokerTracker.BLL.Services;
+using PokerTracker.DAL.Repositories;
+using System.Linq;
 
 namespace PokerTracker.Tests.BLL.Services
 {
-    using CardRoomRepositoryMock = ReadOnlyRepositoryMock<CardRoomRepository, CardRoomDao>;
-
     public class CardRoomsServiceTests
+        : LookupServiceTests<ICardRoomRepository, CardRoomDao, CardRoomRepositoryMock>
     {
-        private readonly CardRoomRepositoryMock RepoMock = new CardRoomRepositoryMock();
-
-        private ICardRoomsService Service;
+        private ICardRoomsService _service;
 
         [TestInitialize]
         public void SetUp()
         {
-            Service = new CardRoomsService(GlobalMapper.Mapper, RepoMock.Object);
-        }
-
-        [TestCleanup]
-        public void TearDown()
-        {
-            RepoMock.DaoList.Clear();
-            Service = null;
+            Setup();
+            _service = new CardRoomsService(Mapper, RepoMock.Object);
         }
 
         [TestMethod]
         public void FindAllAsync_Works()
         {
-            RepoMock.DaoList.AddRange(new[] {
+            var daos = new[] {
                 new CardRoomDao { Id = Guid.NewGuid(), Name = "Golden Nugget" },
                 new CardRoomDao { Id = Guid.NewGuid(), Name = "Caesar's" }
-            });
+            };
+            DaoList.AddRange(daos);
 
-            var actual = Service.GetAllAsync().Result;
-            Assert.AreSame(RepoMock.DaoList, actual);
+            var objects = _service.GetAllAsync().Result
+                .ToDictionary(x => x.Id);
+
+            AssertListEquals(daos, objects);
         }
     }
 }

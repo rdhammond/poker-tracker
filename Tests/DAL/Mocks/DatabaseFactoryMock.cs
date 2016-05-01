@@ -6,11 +6,9 @@ namespace PokerTracker.Tests.DAL.Mocks
 {
     public class DatabaseFactoryMock : Mock<IDatabaseFactory>
     {
-        public IDatabaseWrapper Database { get; set; }
-
-        public DatabaseFactoryMock()
+        public DatabaseFactoryMock(IDatabaseWrapper database)
         {
-            Setup(x => x.Create()).Returns(() => Database);
+            Setup(x => x.Create()).Returns(database);
         }
     }
 }

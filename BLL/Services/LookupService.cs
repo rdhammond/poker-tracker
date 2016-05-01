@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using PokerTracker.BLL.Objects;
 using PokerTracker.DAL.Repositories;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,30 +7,29 @@ using System.Threading.Tasks;
 
 namespace PokerTracker.BLL.Services
 {
-    public interface ILookupService<TIn, TOut, TRepo>
-        where TRepo : IReadOnlyRepository<TIn>
+    public interface ILookupService<TOut>
     {
-        Task<IReadOnlyList<TOut>> GetAllAsync();
+        Task<TOut[]> GetAllAsync();
     }
 
-    public abstract class LookupService<TIn, TOut, TRepo> : ILookupService<TIn, TOut, TRepo>
+    public abstract class LookupService<TIn, TOut, TRepo>
+        : ILookupService<TOut>
         where TRepo : IReadOnlyRepository<TIn>
     {
-        private readonly IMapper Mapper;
-        protected readonly TRepo Repository;
+        protected readonly IMapper _mapper;
+        protected readonly TRepo _repo;
 
         protected LookupService(IMapper mapper, TRepo repository)
         {
-            Mapper = mapper;
-            Repository = repository;
+            _mapper = mapper;
+            _repo = repository;
         }
 
-        public async Task<IReadOnlyList<TOut>> GetAllAsync()
+        public async Task<TOut[]> GetAllAsync()
         {
-            return (await Repository.FindAllAsync())
-                .Select(x => Mapper.Map<TOut>(x))
-                .ToList()
-                .AsReadOnly();
+            return (await _repo.FindAllAsync())
+                .Select(x => _mapper.Map<TOut>(x))
+                .ToArray();
         }
     }
 }

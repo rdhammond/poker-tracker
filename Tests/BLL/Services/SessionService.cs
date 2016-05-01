@@ -1,61 +1,58 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using PokerTracker.BLL.Services;
-using PokerTracker.DAL.DAO;
-using PokerTracker.DAL.Repositories;
 using PokerTracker.Tests.BLL.Mocks;
 using System;
 using System.Linq;
 using PokerTracker.BLL.Objects;
+using AutoMapper;
+using PokerTracker.BLL.Services;
 
-namespace PokerTracker.Tests.BLL.Services
+namespace PokerTracker.Tests.BLL._sessionSvcs
 {
-    using SessionRepositoryMock = RepositoryMock<ISessionRepository, SessionDao>;
-    using TimeEntryRepositoryMock = RepositoryMock<ITimeEntryRepository, TimeEntryDao>;
-
     [TestClass]
     public class SessionServiceTests
     {
-        private DatabaseFactoryMock DbFactMock;
-        private DatabaseWrapperMock DbMock;
-        private SessionRepositoryMock SessionRepoMock;
-        private TimeEntryRepositoryMock TimeEntryRepoMock;
-        private SessionService Service;
+        private IMapper _mapper;
+        private DatabaseFactoryMock _dbFactMock;
+        private DatabaseWrapperMock _dbMock;
+        private SessionRepositoryMock _sessionRepoMock;
+        private TimeEntryRepositoryMock _timeEntryRepoMock;
+        private ISessionService _sessionSvc;
 
         [TestInitialize]
         public void SetUp()
         {
-            DbFactMock = new DatabaseFactoryMock();
-            DbMock = DbFactMock.DatabaseWrapperMock;
-            SessionRepoMock = new SessionRepositoryMock();
-            TimeEntryRepoMock = new TimeEntryRepositoryMock();
+            _mapper = MapperFactory.Create();
+            _dbFactMock = new DatabaseFactoryMock();
+            _dbMock = _dbFactMock.DatabaseWrapperMock;
+            _sessionRepoMock = new SessionRepositoryMock();
+            _timeEntryRepoMock = new TimeEntryRepositoryMock();
 
-            Service = new SessionService(
-                GlobalMapper.Mapper, DbFactMock.Object, SessionRepoMock.Object,
-                TimeEntryRepoMock.Object);
-        }
-
-        [TestCleanup]
-        public void TearDown()
-        {
-            Service = null;
-            TimeEntryRepoMock = null;
-            SessionRepoMock = null;
-            DbFactMock = null;
+            _sessionSvc = new SessionService(
+                _mapper,
+                _dbFactMock.Object,
+                _sessionRepoMock.Object,
+                _timeEntryRepoMock.Object
+            );
         }
 
         [TestMethod]
         public void SaveSessionAsync_NullSessionThrows()
         {
             AssertHelper.Throws(() => 
-                Service.SaveSessionAsync(null, DateTime.Now, 1).Wait());
+                _sessionSvc.SaveSessionAsync(null, DateTime.Now, 1).Wait()
+            );
         }
 
-        private void AssertSessionSaved(Session expected, DateTime endTime,
-            decimal hoursActive, string notes)
+        private void AssertSessionSaved(
+            Session expected,
+            DateTime endTime,
+            decimal hoursActive,
+            string notes
+        )
         {
-            Assert.IsTrue(SessionRepoMock.DaoList.Count == 1);
+            Assert.IsTrue(_sessionRepoMock.DaoList.Count == 1);
 
-            var actual = SessionRepoMock.DaoList.First();
+            var actual = _sessionRepoMock.DaoList.First();
             Assert.IsNotNull(actual);
 
             Assert.AreEqual(expected.BigBlind, actual.BigBlind);
@@ -74,9 +71,9 @@ namespace PokerTracker.Tests.BLL.Services
             decimal? lastStackSize = null;
 
             var expectedTimeEntriesDict = expectedSession.TimeEntries.ToDictionary(x => x.Id);
-            Assert.AreEqual(expectedTimeEntriesDict.Count, TimeEntryRepoMock.DaoList.Count);
+            Assert.AreEqual(expectedTimeEntriesDict.Count, _timeEntryRepoMock.DaoList.Count);
 
-            foreach (var actual in TimeEntryRepoMock.DaoList.OrderBy(x => x.RecordedAt))
+            foreach (var actual in _timeEntryRepoMock.DaoList.OrderBy(x => x.RecordedAt))
             {
                 Assert.IsNotNull(actual);
 
@@ -105,9 +102,9 @@ namespace PokerTracker.Tests.BLL.Services
 
         public void AssertTransactionSuccessful()
         {
-            Assert.IsTrue(DbMock.Transactions.Count == 1);
-            Assert.IsTrue(DbMock.AllTransactionComplete);
-            Assert.IsTrue(DbMock.AllTransactionsDisposed);
+            Assert.IsTrue(_dbMock.Transactions.Count == 1);
+            Assert.IsTrue(_dbMock.AllTransactionComplete);
+            Assert.IsTrue(_dbMock.AllTransactionsDisposed);
         }
 
         [TestMethod]
@@ -127,10 +124,13 @@ namespace PokerTracker.Tests.BLL.Services
             };
 
             var expectedEndTime = DateTime.Now;
-            Service.SaveSessionAsync(expectedSession, expectedEndTime, HOURS_ACTIVE, NOTES).Wait();
+
+            _sessionSvc
+                .SaveSessionAsync(expectedSession, expectedEndTime, HOURS_ACTIVE, NOTES)
+                .Wait();
 
             AssertSessionSaved(expectedSession, expectedEndTime, HOURS_ACTIVE, NOTES);
-            Assert.IsTrue(!TimeEntryRepoMock.DaoList.Any());
+            Assert.IsTrue(!_timeEntryRepoMock.DaoList.Any());
             AssertTransactionSuccessful();
         }
 
@@ -162,7 +162,10 @@ namespace PokerTracker.Tests.BLL.Services
             });
 
             var expectedEndTime = DateTime.Now.AddHours(-1);
-            Service.SaveSessionAsync(expectedSession, expectedEndTime, HOURS_ACTIVE).Wait();
+
+            _sessionSvc
+                .SaveSessionAsync(expectedSession, expectedEndTime, HOURS_ACTIVE)
+                .Wait();
 
             AssertSessionSaved(expectedSession, expectedEndTime, HOURS_ACTIVE, null);
             AssertTimeEntriesCorrect(expectedSession);
@@ -213,7 +216,10 @@ namespace PokerTracker.Tests.BLL.Services
             });
 
             var expectedEndTime = DateTime.Now.AddHours(-1);
-            Service.SaveSessionAsync(expectedSession, expectedEndTime, HOURS_ACTIVE).Wait();
+
+            _sessionSvc
+                .SaveSessionAsync(expectedSession, expectedEndTime, HOURS_ACTIVE)
+                .Wait();
 
             AssertSessionSaved(expectedSession, expectedEndTime, HOURS_ACTIVE, null);
             AssertTimeEntriesCorrect(expectedSession);

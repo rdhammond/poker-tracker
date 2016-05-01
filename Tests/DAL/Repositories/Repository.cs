@@ -1,54 +1,28 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using PokerTracker.DAL.Factories;
 using PokerTracker.DAL.Repositories;
-using PokerTracker.Tests.DAL.Mocks;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace PokerTracker.Tests.DAL.Repositories
 {
-    public abstract class RepositoryTests<TEntity,TRepository>
-        where TRepository : ReadOnlyRepository<TEntity>
+    public abstract class RepositoryTests<TRepo,TEntity>
+        : ReadOnlyRepositoryTests<TRepo,TEntity>
+        where TRepo : ReadOnlyRepository<TEntity>
     {
-        protected readonly List<TEntity> DaoList = new List<TEntity>();
-        protected readonly DatabaseFactoryMock DbFactMock = new DatabaseFactoryMock();
-        protected readonly DatabaseWrapperMock DbWrapperMock = new DatabaseWrapperMock();
-
-        protected RepositoryTests()
-        {
-            DbWrapperMock.AddList(DaoList);
-            DbFactMock.Database = DbWrapperMock.Object;
-        }
-
-        public TRepository CreateRepository()
-        {
-            return (TRepository)typeof(TRepository)
-                .GetConstructor(new[] { typeof(IDatabaseFactory) })
-                .Invoke(new[] { DbFactMock.Object });
-        }
-
-        protected void TestFindAllAsync(IEnumerable<TEntity> entityList)
-        {
-            DaoList.AddRange(entityList);
-            var actual = CreateRepository().FindAllAsync().Result;
-
-            Assert.IsNotNull(actual);
-            Assert.AreSame(DaoList, actual);
-        }
-
         protected void TestSaveAsync(TEntity entity)
         {
-            var repo = (IRepository<TEntity>)CreateRepository();
-            repo.SaveAsync(entity).Wait();
+            var repo = (IRepository<TEntity>)Repo;
 
+            repo.SaveAsync(entity).Wait();
             Assert.IsTrue(DaoList.Contains(entity));
         }
 
-        protected void TestSaveAsync(IEnumerable<TEntity> entities)
+        protected void TestSaveAsync(IEnumerable<TEntity> entitiesEnum)
         {
-            var repo = (IRepository<TEntity>)CreateRepository();
-            repo.SaveAsync(entities).Wait();
+            var entities = entitiesEnum as TEntity[] ?? entitiesEnum.ToArray();
+            var repo = (IRepository<TEntity>)Repo;
 
+            repo.SaveAsync(entities).Wait();
             Assert.IsTrue(entities.All(x => DaoList.Contains(x)));
         }
     }

@@ -1,6 +1,6 @@
 ﻿USE [PokerTracker]
 GO
-/****** Object:  Table [dbo].[CardRooms]    Script Date: 4/23/2016 2:26:43 AM ******/
+/****** Object:  Table [dbo].[CardRooms]    Script Date: 5/1/2016 1:12:18 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -27,7 +27,7 @@ PRIMARY KEY CLUSTERED
 GO
 SET ANSI_PADDING OFF
 GO
-/****** Object:  Table [dbo].[Games]    Script Date: 4/23/2016 2:26:43 AM ******/
+/****** Object:  Table [dbo].[Games]    Script Date: 5/1/2016 1:12:18 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -50,7 +50,7 @@ PRIMARY KEY CLUSTERED
 GO
 SET ANSI_PADDING OFF
 GO
-/****** Object:  Table [dbo].[Sessions]    Script Date: 4/23/2016 2:26:43 AM ******/
+/****** Object:  Table [dbo].[Sessions]    Script Date: 5/1/2016 1:12:18 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -72,13 +72,13 @@ PRIMARY KEY CLUSTERED
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 
 GO
-/****** Object:  Table [dbo].[TimeEntries]    Script Date: 4/23/2016 2:26:43 AM ******/
+/****** Object:  Table [dbo].[TimeEntries]    Script Date: 5/1/2016 1:12:18 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[TimeEntries](
-	[Id] [uniqueidentifier] NOT NULL, 
+	[Id] [uniqueidentifier] NOT NULL,
 	[SessionId] [uniqueidentifier] NOT NULL,
 	[RecordedAt] [datetime] NOT NULL,
 	[StackSize] [int] NOT NULL,
@@ -91,24 +91,18 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY],
  CONSTRAINT [UQ_SessionId_RecordedAt] UNIQUE NONCLUSTERED 
 (
-	[SessionId],
+	[SessionId] ASC,
 	[RecordedAt] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 
 GO
-/****** Object:  View [dbo].[vw_Summary]    Script Date: 4/23/2016 2:26:43 AM ******/
+/****** Object:  View [dbo].[vw_Summaries]    Script Date: 5/1/2016 1:12:18 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-
-
-
-
-
-
-CREATE VIEW [dbo].[vw_Summary]
+CREATE VIEW [dbo].[vw_Summaries]
 AS
 SELECT
 	s.Id As SessionId,
@@ -142,31 +136,56 @@ WHERE
 GROUP BY
 	s.Id, cr.Name, g.Name, s.BigBlind, s.HoursActive, s.StartTime, s.EndTime
 
-
-
-
-
 GO
-/****** Object: View [dbo].[vw_TotalHourlyRate] Script Date: 4/26/2016 1:36:51 PM ******/
+/****** Object:  View [dbo].[vw_TotalHourlyRate]    Script Date: 5/1/2016 1:12:18 AM ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
-
-CREATE VIEW vw_TotalHourlyRate
+CREATE VIEW [dbo].[vw_TotalHourlyRate]
 AS
 SELECT CAST(COALESCE(sd.Total / NULLIF(ha.Total,0),0) AS DECIMAL(5,2)) As TotalHourlyRate
 FROM (SELECT SUM(COALESCE(StackDifferential,0)) As Total FROM dbo.TimeEntries) As sd
 CROSS JOIN (SELECT SUM(COALESCE(HoursActive,0)) As Total FROM dbo.[Sessions]) As ha
 GO
-/****** Object:  StoredProcedure [dbo].[usp_RepairSession]    Script Date: 4/27/2016 2:19:15 AM ******/
+ALTER TABLE [dbo].[TimeEntries]  WITH CHECK ADD  CONSTRAINT [FK_TimeEntries_Sessions] FOREIGN KEY([SessionId])
+REFERENCES [dbo].[Sessions] ([Id])
+GO
+ALTER TABLE [dbo].[TimeEntries] CHECK CONSTRAINT [FK_TimeEntries_Sessions]
+GO
+ALTER TABLE [dbo].[Sessions]  WITH CHECK ADD  CONSTRAINT [CK_BigBlind] CHECK  (([BigBlind]>(0)))
+GO
+ALTER TABLE [dbo].[Sessions] CHECK CONSTRAINT [CK_BigBlind]
+GO
+ALTER TABLE [dbo].[Sessions]  WITH CHECK ADD  CONSTRAINT [CK_Sessions_HoursActive] CHECK  ((dateadd(minute,coalesce([HoursActive],(0))*(60),[StartTime])<=[EndTime]))
+GO
+ALTER TABLE [dbo].[Sessions] CHECK CONSTRAINT [CK_Sessions_HoursActive]
+GO
+ALTER TABLE [dbo].[Sessions]  WITH CHECK ADD  CONSTRAINT [CK_SmallBlind] CHECK  (([SmallBlind]>(0)))
+GO
+ALTER TABLE [dbo].[Sessions] CHECK CONSTRAINT [CK_SmallBlind]
+GO
+ALTER TABLE [dbo].[Sessions]  WITH CHECK ADD  CONSTRAINT [CK_SmallBlind_BigBlind] CHECK  (([SmallBlind]<=[BigBlind]))
+GO
+ALTER TABLE [dbo].[Sessions] CHECK CONSTRAINT [CK_SmallBlind_BigBlind]
+GO
+ALTER TABLE [dbo].[Sessions]  WITH CHECK ADD  CONSTRAINT [CK_StartTime_EndTime] CHECK  (([StartTime]<[EndTime]))
+GO
+ALTER TABLE [dbo].[Sessions] CHECK CONSTRAINT [CK_StartTime_EndTime]
+GO
+ALTER TABLE [dbo].[TimeEntries]  WITH CHECK ADD  CONSTRAINT [CK_DealerTokes] CHECK  (([DealerTokes]>=(0)))
+GO
+ALTER TABLE [dbo].[TimeEntries] CHECK CONSTRAINT [CK_DealerTokes]
+GO
+ALTER TABLE [dbo].[TimeEntries]  WITH CHECK ADD  CONSTRAINT [CK_ServerTips] CHECK  (([ServerTips]>=(0)))
+GO
+ALTER TABLE [dbo].[TimeEntries] CHECK CONSTRAINT [CK_ServerTips]
+GO
+/****** Object:  StoredProcedure [dbo].[usp_RepairSession]    Script Date: 5/1/2016 1:12:18 AM ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
-
 CREATE PROCEDURE [dbo].[usp_RepairSession]
 (
 	@SessionId UNIQUEIDENTIFIER,
@@ -227,38 +246,5 @@ BEGIN
 
 	COMMIT TRANSACTION
 END
-GO
 
-ALTER TABLE [dbo].[TimeEntries]  WITH CHECK ADD  CONSTRAINT [FK_TimeEntries_Sessions] FOREIGN KEY([SessionId])
-REFERENCES [dbo].[Sessions] ([Id])
-GO
-ALTER TABLE [dbo].[TimeEntries] CHECK CONSTRAINT [FK_TimeEntries_Sessions]
-GO
-ALTER TABLE [dbo].[Sessions]  WITH CHECK ADD  CONSTRAINT [CK_BigBlind] CHECK  (([BigBlind]>(0)))
-GO
-ALTER TABLE [dbo].[Sessions] CHECK CONSTRAINT [CK_BigBlind]
-GO
-ALTER TABLE [dbo].[Sessions]  WITH CHECK ADD  CONSTRAINT [CK_Sessions_HoursActive] CHECK  ((dateadd(minute,coalesce([HoursActive],(0))*(60),[StartTime])<=[EndTime]))
-GO
-ALTER TABLE [dbo].[Sessions] CHECK CONSTRAINT [CK_Sessions_HoursActive]
-GO
-ALTER TABLE [dbo].[Sessions]  WITH CHECK ADD  CONSTRAINT [CK_SmallBlind] CHECK  (([SmallBlind]>(0)))
-GO
-ALTER TABLE [dbo].[Sessions] CHECK CONSTRAINT [CK_SmallBlind]
-GO
-ALTER TABLE [dbo].[Sessions]  WITH CHECK ADD  CONSTRAINT [CK_SmallBlind_BigBlind] CHECK  (([SmallBlind]<=[BigBlind]))
-GO
-ALTER TABLE [dbo].[Sessions] CHECK CONSTRAINT [CK_SmallBlind_BigBlind]
-GO
-ALTER TABLE [dbo].[Sessions]  WITH CHECK ADD  CONSTRAINT [CK_StartTime_EndTime] CHECK  (([StartTime]<[EndTime]))
-GO
-ALTER TABLE [dbo].[Sessions] CHECK CONSTRAINT [CK_StartTime_EndTime]
-GO
-ALTER TABLE [dbo].[TimeEntries]  WITH CHECK ADD  CONSTRAINT [CK_DealerTokes] CHECK  (([DealerTokes]>=(0)))
-GO
-ALTER TABLE [dbo].[TimeEntries] CHECK CONSTRAINT [CK_DealerTokes]
-GO
-ALTER TABLE [dbo].[TimeEntries]  WITH CHECK ADD  CONSTRAINT [CK_ServerTips] CHECK  (([ServerTips]>=(0)))
-GO
-ALTER TABLE [dbo].[TimeEntries] CHECK CONSTRAINT [CK_ServerTips]
 GO

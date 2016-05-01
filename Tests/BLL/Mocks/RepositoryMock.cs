@@ -18,11 +18,13 @@ namespace PokerTracker.Tests.BLL.Mocks
             Setup(x => x.SaveAsync(It.IsAny<TEntity>(), It.IsAny<IDatabaseWrapper>()))
                 .Returns<TEntity,IDatabaseWrapper>((e,d) => Task.Run(() => DaoList.Add(e)));
 
-            Setup(x => x.SaveAsync(It.IsAny<IEnumerable<TEntity>>(),
+            Setup(x => x.SaveAsync(
+                It.IsAny<IEnumerable<TEntity>>(),
                 It.IsAny<IDatabaseWrapper>())
             )
                 .Returns<IEnumerable<TEntity>, IDatabaseWrapper>((l, d) =>
-                     Task.Run(() => DaoList.AddRange(l)));
+                     Task.Run(() => DaoList.AddRange(l))
+                 );
         }
     }
 }

@@ -5,15 +5,21 @@ using System.Threading.Tasks;
 
 namespace PokerTracker.Tests.BLL.Mocks
 {
-    public class ReadOnlyRepositoryMock<TRepo,TEntity> : Mock<TRepo>
+    public abstract class ReadOnlyRepositoryMock<TRepo,TEntity>
+        : Mock<TRepo>
         where TRepo : class, IReadOnlyRepository<TEntity>
     {
-        public readonly List<TEntity> DaoList = new List<TEntity>();
+        private readonly List<TEntity> _daoList = new List<TEntity>();
+
+        public List<TEntity> DaoList
+        {
+            get { return _daoList; }
+        }
 
         public ReadOnlyRepositoryMock()
         {
             Setup(x => x.FindAllAsync())
-                .Returns(() => Task.FromResult<IList<TEntity>>(DaoList));
+                .Returns(() => Task.FromResult(DaoList));
         }
     }
 }

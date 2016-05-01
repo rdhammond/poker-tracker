@@ -9,9 +9,8 @@ namespace PokerTracker.DAL.DAO
 {
     [TableName("TimeEntries")]
     [PrimaryKey("Id")]
-    public class TimeEntryDao
+    public class TimeEntryDao : IdDao
     {
-        public Guid Id { get; set; }
         public Guid SessionId { get; set; }
         public DateTime RecordedAt { get; set; }
         public int StackSize { get; set; }

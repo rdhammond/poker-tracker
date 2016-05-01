@@ -1,43 +1,39 @@
 ﻿using PokerTracker.DAL.DAO;
-using PokerTracker.DAL.Repositories;
 using PokerTracker.Tests.BLL.Mocks;
 using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using PokerTracker.BLL.Services;
+using PokerTracker.DAL.Repositories;
+using System.Linq;
 
 namespace PokerTracker.Tests.BLL.Services
 {
-    using GameRepositoryMock = ReadOnlyRepositoryMock<GameRepository, GameDao>;
-
     public class GamesServiceTests
+        : LookupServiceTests<IGameRepository, GameDao, GameRepositoryMock>
     {
-        private readonly GameRepositoryMock RepoMock = new GameRepositoryMock();
-
-        private IGamesService Service;
+        private IGamesService _service;
 
         [TestInitialize]
         public void SetUp()
         {
-            Service = new GamesService(GlobalMapper.Mapper, RepoMock.Object);
-        }
-
-        [TestCleanup]
-        public void TearDown()
-        {
-            RepoMock.DaoList.Clear();
-            Service = null;
+            Setup();
+            _service = new GamesService(Mapper, RepoMock.Object);
         }
 
         [TestMethod]
         public void FindAllAsync_Works()
         {
-            RepoMock.DaoList.AddRange(new[] {
+            var daos = new[] {
                 new GameDao { Id = Guid.NewGuid(), Name = "Limit Hold 'Em" },
                 new GameDao { Id = Guid.NewGuid(), Name = "Razz" }
-            });
+            };
 
-            var actual = Service.GetAllAsync().Result;
-            Assert.AreSame(RepoMock.DaoList, actual);
+            DaoList.AddRange(daos);
+
+            var objects = _service.GetAllAsync().Result
+                .ToDictionary(x => x.Id);
+
+            AssertListEquals(daos, objects);
         }
     }
 }

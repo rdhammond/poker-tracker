@@ -5,12 +5,15 @@ namespace PokerTracker.Tests.BLL.Mocks
 {
     public class TransactionMock : Mock<ITransaction>
     {
-        public bool IsComplete, IsDisposed;
+        private bool _isCompleted, _isDisposed;
+
+        public bool IsCompleted {  get { return _isCompleted; } }
+        public bool IsDisposed {  get { return _isDisposed; } }
 
         public TransactionMock()
         {
-            Setup(x => x.Complete()).Callback(() => IsComplete = true);
-            Setup(x => x.Dispose()).Callback(() => IsDisposed = true);
+            Setup(x => x.Complete()).Callback(() => _isCompleted = true);
+            Setup(x => x.Dispose()).Callback(() => _isDisposed = true);
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using AsyncPoco;
-using PokerTracker.DAL.Factories;
+﻿using PokerTracker.DAL.Factories;
 using PokerTracker.DAL.Wrappers;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -28,9 +27,9 @@ namespace PokerTracker.DAL.Repositories
             }
         }
 
-        public async Task SaveAsync(T entity, IDatabaseWrapper database)
+        public Task SaveAsync(T entity, IDatabaseWrapper database)
         {
-            await database.SaveAsync(entity);
+            return database.SaveAsync(entity);
         }
 
         public async Task SaveAsync(IEnumerable<T> entities)
