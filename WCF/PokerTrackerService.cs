@@ -29,17 +29,11 @@ namespace PokerTracker.WCF
         [WebInvoke(
             Method = "POST",
             UriTemplate = "Session",
-            BodyStyle = WebMessageBodyStyle.WrappedRequest,
             RequestFormat = WebMessageFormat.Json,
             ResponseFormat = WebMessageFormat.Json
         )]
         [OperationContract]
-        Task SaveSessionAsync(
-            Session session,
-            DateTime endTime,
-            decimal hoursActive,
-            string optionalNotes = null
-        );
+        Task SaveSessionAsync(Session session);
 
         [WebGet(UriTemplate = "Summaries", ResponseFormat = WebMessageFormat.Json)]
         [OperationContract]
@@ -148,16 +142,11 @@ namespace PokerTracker.WCF
             }
         }
 
-        public async Task SaveSessionAsync(
-            Session session,
-            DateTime endTime,
-            decimal hoursActive,
-            string optionalNotes = null
-        )
+        public async Task SaveSessionAsync(Session session)
         {
             try
             {
-                await SessionSvc.SaveSessionAsync(session, endTime, hoursActive, optionalNotes);
+                await SessionSvc.SaveSessionAsync(session);
             }
             catch (Exception e)
             {

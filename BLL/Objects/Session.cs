@@ -25,9 +25,18 @@ namespace PokerTracker.BLL.Objects
         public DateTime StartTime { get; set; }
 
         [DataMember]
-        public Game Game { get; set; }
+        public DateTime? EndTime { get; set; }
 
         [DataMember]
-        public CardRoom CardRoom { get; set; }
+        public decimal? HoursActive { get; set; }
+
+        [DataMember]
+        public string Notes { get; set; }
+
+        [DataMember]
+        public Guid GameId { get; set; }
+
+        [DataMember]
+        public Guid CardRoomId { get; set; }
     }
 }

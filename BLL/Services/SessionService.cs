@@ -12,12 +12,7 @@ namespace PokerTracker.BLL.Services
 {
     public interface ISessionService
     {
-        Task SaveSessionAsync(
-            Session session,
-            DateTime endTime,
-            decimal hoursPlayed,
-            string optionalNotes = null
-        );
+        Task SaveSessionAsync(Session session);
     }
 
     public class SessionService : ISessionService
@@ -62,15 +57,12 @@ namespace PokerTracker.BLL.Services
             }
         }
 
-        public async Task SaveSessionAsync(Session session, DateTime endTime, decimal hoursActive, string optionalNotes = null)
+        public async Task SaveSessionAsync(Session session)
         {
             using (var database = DbFactory.Create())
             using (var transaction = await database.GetTransactionAsync())
             {
                 var sessionDao = Mapper.Map<SessionDao>(session);
-                sessionDao.EndTime = endTime;
-                sessionDao.HoursActive = hoursActive;
-                sessionDao.Notes = optionalNotes;
                 await SessionRepo.SaveAsync(sessionDao, database);
 
                 await TimeEntryRepo.SaveAsync(FinalizeTimeEntries(session), database);

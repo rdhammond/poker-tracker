@@ -109,7 +109,7 @@ namespace PokerTracker.Tests.WCF
         public void SaveSessionAsync_Works()
         {
             Service
-                .SaveSessionAsync(new Session(), DateTime.Now, 4, "Test Note")
+                .SaveSessionAsync(new Session())
                 .Wait();
 
             SessionSvcMock.VerifyAll();

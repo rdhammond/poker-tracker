@@ -18,9 +18,7 @@ namespace PokerTracker.BLL
             CreateMap<SummaryDao, Summary>();
 
             CreateMap<TimeEntry, TimeEntryDao>();
-            CreateMap<Session, SessionDao>()
-                .ForMember(dest => dest.CardRoomId, m => m.MapFrom(src => src.CardRoom.Id))
-                .ForMember(dest => dest.GameId, m => m.MapFrom(src => src.Game.Id));
+            CreateMap<Session, SessionDao>();
         }
     }
 }

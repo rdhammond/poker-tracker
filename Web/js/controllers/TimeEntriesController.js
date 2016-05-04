@@ -1,6 +1,6 @@
 ﻿angular.module('pokerTracker', [])
     .controller('PokerTracker', ['$scope', '$rootScope', '$http', 'ms', 'actionUrls',
-    function($scope, $rootScope, $http, ms, actionUrls) {
+    function ($scope, $rootScope, $http, ms, actionUrls) {
         var local = {
             newTimeEntry: function () {
                 return {
@@ -19,20 +19,30 @@
             $scope.timeEntry = newTimeEntry();
         };
 
-        $scope.saveSession = function () {
-            $rootScope.$emit('saveSession', $scope.session);
-        };
-
         $rootScope.$on('sessionStarted', function (event, data) {
             $scope.session = data;
+
+            $scope.session.timeEntries.push({
+                RecordedAt: ms.date(newDate()),
+                StackSize: $scope.session.StartingStackSize,
+                DealerTokes: 0,
+                ServerTips: 0
+            });
+
+            delete $scope.session.StartingStackSize;
             $('#frmTimeEntries').removeClass('hidden');
         });
 
         $rootScope.$on('sessionSaved', function (event, data) {
             $scope.timeEntry = newTimeEntry();
-            $('#frmTimeEntries').removeClass();
+            $('#frmTimeEntries').removeClass('hidden');
+        });
+
+        $rootScope.$on('sessionCanceled', function (event, data) {
+            $scope.timeEntry = newTimeEntry();
+            $('#frmTimeEntries').removeClass('hidden');
         });
 
         $scope.timeEntry = newTimeEntry();
     }
-])
+]);

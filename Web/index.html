@@ -22,7 +22,7 @@
                     <div>
                         <label>
                             Card Room
-                            <select id="ddlCardRoom" required ng-model="CardRoom">
+                            <select id="ddlCardRoom" required ng-model="CardRoomId">
                                 <option ng-repeat="option in cardRooms" value="{{option.Key}}">{{option.Value}}</option>
                             </select>
                         </label>
@@ -30,7 +30,7 @@
                     <div>
                         <label>
                             Game
-                            <select id="ddlGame" required ng-model="Game">
+                            <select id="ddlGame" required ng-model="GameId">
                                 <option ng-repeat="option in games" value="{{option.Key}}">{{option.Value}}</option>
                             </select>
                         </label>
@@ -54,13 +54,14 @@
                         </label>
                     </div>
                     <div>
-                        <button id="btnStartSession" type="submit" class="button">Start Session</button>
+                        <button type="submit" class="button">Start Session</button>
                     </div>
                 </fieldset>
             </form>
         </div>
         <div class="row column hide">
-            <form id="frmTimeEntries" ng-controller="TimeEntriesController as timeEntries">
+            <form id="frmTimeEntries" ng-controller="TimeEntriesController as timeEntries"
+                  ng-submit="timeEntries.addTimeEntry()">
                 <fieldset>
                     <legend>Time Entry</legend>
                     <div>
@@ -85,34 +86,54 @@
                         </label>
                     </div>
                     <div>
-                        <button id="btnAddTimeEntry" type="button" class="button">Add Time Entry</button>
-                        <button id="btnFinishSession" type="submit" class="success button">Finish Session</button>
-                        <button id="btnCancelSession" type="button" class="alert button">Cancel Session</button>
+                        <button id="btnAddTimeEntry" type="submit" class="button" ng-click="timeEntry.addTimeEntry()">Add Time Entry</button>
+                        <button id="btnFinishSession" type="button" class="success button" data-open="dlgFinish">Finish Session</button>
+                        <button id="btnCancelSession" type="button" class="alert button" data-open="dlgCancel">Cancel Session</button>
                     </div>
                 </fieldset>
             </form>
         </div>
     </main>
 
-    <section id="dlgFinished" class="reveal" data-reveal>
+    <section id="dlgFinish" class="reveal" data-reveal ng-controller="SessionController as session">
         <h1>Finish Session</h1>
-        <p class="lead">Do you want to save and end the current session?</p>
-        <div>
-            <button id="dlgFinished_btnYes" type="button" class="button">Yes, Save It</button>
-            <button id="dlgFinished_btnNo" type="button" class="secondary button" data-close>No, I'm Not Done</button>
-        </div>
+        <p class="lead">Fill out the following information to finish your session.</p>
+        <form ng-submit="session.saveSession()">
+            <fieldset>
+                <legend>End of Session</legend>
+                <div>
+                    <label>
+                        Hours Played
+                        <input id="txtHoursPlayed" type="number" min="0" required ng-model="HoursPlayed" placeholder="i.e. 1.25">
+                    </label>
+                </div>
+                <div>
+                    <label>
+                        Notes (optional)
+                        <textarea id="txtNotes" ng-model="Notes" placeholder="Optional Note"></textarea>
+                    </label>
+                </div>
+                <div>
+                    <button type="submit" class="button">Save It</button>
+                    <button type="button" class="secondary button" data-close>Wait, I'm Not Done</button>
+                </div>
+            </fieldset>
+        </form>
         <button class="close-button" data-close aria-label="Close modal" type="button">
-            <span aria-hidden="true">&times;</span>
+            <span aria-hide="true">&times;</span>
         </button>
     </section>
 
-    <section id="dlgCancel" class="reveal" data-reveal>
+    <section id="dlgCancel" class="reveal" data-reveal ng-controller="SessionController as session">
         <h1>Cancel Session</h1>
         <p class="lead"><strong>This will discard all time entries and stop the session.</strong> Are you sure this is what you want?</p>
         <div>
-            <button id="dlgCancel_btnYes" type="button" class="alert button">Yep, Do It</button>
+            <button id="dlgCancel_btnYes" type="button" class="alert button" ng-click="session.cancelSession()">Yep, Do It</button>
             <button id="dlgCancel_btnNo" type="button" class="secondary button" data-close>Never mind</button>
         </div>
+        <button class="close-button" data-close aria-label="Close modal" type="button">
+            <span aria-hide="true">&times;</span>
+        </button>
     </section>
 
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.2.3/jquery.min.js"></script>

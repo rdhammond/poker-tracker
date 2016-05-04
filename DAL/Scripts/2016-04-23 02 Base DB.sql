@@ -1,6 +1,6 @@
 ﻿USE [PokerTracker]
 GO
-/****** Object:  Table [dbo].[CardRooms]    Script Date: 5/1/2016 1:12:18 AM ******/
+/****** Object:  Table [dbo].[CardRooms]    Script Date: 5/4/2016 4:15:16 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -27,7 +27,7 @@ PRIMARY KEY CLUSTERED
 GO
 SET ANSI_PADDING OFF
 GO
-/****** Object:  Table [dbo].[Games]    Script Date: 5/1/2016 1:12:18 AM ******/
+/****** Object:  Table [dbo].[Games]    Script Date: 5/4/2016 4:15:16 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -50,7 +50,7 @@ PRIMARY KEY CLUSTERED
 GO
 SET ANSI_PADDING OFF
 GO
-/****** Object:  Table [dbo].[Sessions]    Script Date: 5/1/2016 1:12:18 AM ******/
+/****** Object:  Table [dbo].[Sessions]    Script Date: 5/4/2016 4:15:16 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -72,7 +72,7 @@ PRIMARY KEY CLUSTERED
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 
 GO
-/****** Object:  Table [dbo].[TimeEntries]    Script Date: 5/1/2016 1:12:18 AM ******/
+/****** Object:  Table [dbo].[TimeEntries]    Script Date: 5/4/2016 4:15:16 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -97,7 +97,7 @@ PRIMARY KEY CLUSTERED
 ) ON [PRIMARY]
 
 GO
-/****** Object:  View [dbo].[vw_Summaries]    Script Date: 5/1/2016 1:12:18 AM ******/
+/****** Object:  View [dbo].[vw_Summaries]    Script Date: 5/4/2016 4:15:16 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -137,7 +137,7 @@ GROUP BY
 	s.Id, cr.Name, g.Name, s.BigBlind, s.HoursActive, s.StartTime, s.EndTime
 
 GO
-/****** Object:  View [dbo].[vw_TotalHourlyRate]    Script Date: 5/1/2016 1:12:18 AM ******/
+/****** Object:  View [dbo].[vw_TotalHourlyRate]    Script Date: 5/4/2016 4:15:16 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -181,7 +181,7 @@ ALTER TABLE [dbo].[TimeEntries]  WITH CHECK ADD  CONSTRAINT [CK_ServerTips] CHEC
 GO
 ALTER TABLE [dbo].[TimeEntries] CHECK CONSTRAINT [CK_ServerTips]
 GO
-/****** Object:  StoredProcedure [dbo].[usp_RepairSession]    Script Date: 5/1/2016 1:12:18 AM ******/
+/****** Object:  StoredProcedure [dbo].[usp_RepairSession]    Script Date: 5/4/2016 4:15:16 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON

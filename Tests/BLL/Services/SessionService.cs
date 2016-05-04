@@ -39,16 +39,11 @@ namespace PokerTracker.Tests.BLL._sessionSvcs
         public void SaveSessionAsync_NullSessionThrows()
         {
             AssertHelper.Throws(() => 
-                _sessionSvc.SaveSessionAsync(null, DateTime.Now, 1).Wait()
+                _sessionSvc.SaveSessionAsync(null).Wait()
             );
         }
 
-        private void AssertSessionSaved(
-            Session expected,
-            DateTime endTime,
-            decimal hoursActive,
-            string notes
-        )
+        private void AssertSessionSaved(Session expected)
         {
             Assert.IsTrue(_sessionRepoMock.DaoList.Count == 1);
 
@@ -56,14 +51,14 @@ namespace PokerTracker.Tests.BLL._sessionSvcs
             Assert.IsNotNull(actual);
 
             Assert.AreEqual(expected.BigBlind, actual.BigBlind);
-            Assert.AreEqual(expected.CardRoom.Id, actual.CardRoomId);
-            Assert.AreEqual(expected.Game.Id, actual.GameId);
+            Assert.AreEqual(expected.CardRoomId, actual.CardRoomId);
+            Assert.AreEqual(expected.GameId, actual.GameId);
             Assert.AreEqual(expected.Id, actual.Id);
             Assert.AreEqual(expected.SmallBlind, actual.SmallBlind);
             Assert.AreEqual(expected.StartTime, actual.StartTime);
-            Assert.AreEqual(endTime, actual.EndTime);
-            Assert.AreEqual(hoursActive, actual.HoursActive);
-            Assert.AreEqual(notes, actual.Notes);
+            Assert.AreEqual(expected.EndTime, actual.EndTime);
+            Assert.AreEqual(expected.HoursActive, actual.HoursActive);
+            Assert.AreEqual(expected.Notes, actual.Notes);
         }
 
         public void AssertTimeEntriesCorrect(Session expectedSession)
@@ -116,20 +111,21 @@ namespace PokerTracker.Tests.BLL._sessionSvcs
             var expectedSession = new Session
             {
                 BigBlind = 1,
-                CardRoom = new CardRoom { Id = Guid.NewGuid() },
-                Game = new Game { Id = Guid.NewGuid() },
+                CardRoomId = Guid.NewGuid(),
+                GameId = Guid.NewGuid(),
                 Id = Guid.NewGuid(),
                 SmallBlind = 2,
-                StartTime = DateTime.Now.AddHours(-1)
+                StartTime = DateTime.Now.AddHours(-1),
+                EndTime = DateTime.Now,
+                HoursActive = HOURS_ACTIVE,
+                Notes = NOTES
             };
 
-            var expectedEndTime = DateTime.Now;
-
             _sessionSvc
-                .SaveSessionAsync(expectedSession, expectedEndTime, HOURS_ACTIVE, NOTES)
+                .SaveSessionAsync(expectedSession)
                 .Wait();
 
-            AssertSessionSaved(expectedSession, expectedEndTime, HOURS_ACTIVE, NOTES);
+            AssertSessionSaved(expectedSession);
             Assert.IsTrue(!_timeEntryRepoMock.DaoList.Any());
             AssertTransactionSuccessful();
         }
@@ -142,11 +138,13 @@ namespace PokerTracker.Tests.BLL._sessionSvcs
             var expectedSession = new Session
             {
                 BigBlind = 2,
-                CardRoom = new CardRoom { Id = Guid.NewGuid() },
-                Game = new Game { Id = Guid.NewGuid() },
+                CardRoomId = Guid.NewGuid(),
+                GameId = Guid.NewGuid(),
                 Id = Guid.NewGuid(),
                 SmallBlind = 4,
-                StartTime = DateTime.Now.AddHours(-2)
+                StartTime = DateTime.Now.AddHours(-2),
+                EndTime = DateTime.Now,
+                HoursActive = HOURS_ACTIVE
             };
 
             expectedSession.TimeEntries.AddRange(new[]
@@ -164,10 +162,10 @@ namespace PokerTracker.Tests.BLL._sessionSvcs
             var expectedEndTime = DateTime.Now.AddHours(-1);
 
             _sessionSvc
-                .SaveSessionAsync(expectedSession, expectedEndTime, HOURS_ACTIVE)
+                .SaveSessionAsync(expectedSession)
                 .Wait();
 
-            AssertSessionSaved(expectedSession, expectedEndTime, HOURS_ACTIVE, null);
+            AssertSessionSaved(expectedSession);
             AssertTimeEntriesCorrect(expectedSession);
             AssertTransactionSuccessful();
         }
@@ -180,11 +178,13 @@ namespace PokerTracker.Tests.BLL._sessionSvcs
             var expectedSession = new Session
             {
                 BigBlind = 20,
-                CardRoom = new CardRoom { Id = Guid.NewGuid() },
-                Game = new Game { Id = Guid.NewGuid() },
+                CardRoomId = Guid.NewGuid(),
+                GameId = Guid.NewGuid(),
                 Id = Guid.NewGuid(),
                 SmallBlind = 40,
-                StartTime = DateTime.Now.AddDays(-1)
+                StartTime = DateTime.Now.AddDays(-1),
+                EndTime = DateTime.Now.AddDays(-1).AddHours(2),
+                HoursActive = HOURS_ACTIVE
             };
 
             expectedSession.TimeEntries.AddRange(new[]
@@ -218,10 +218,10 @@ namespace PokerTracker.Tests.BLL._sessionSvcs
             var expectedEndTime = DateTime.Now.AddHours(-1);
 
             _sessionSvc
-                .SaveSessionAsync(expectedSession, expectedEndTime, HOURS_ACTIVE)
+                .SaveSessionAsync(expectedSession)
                 .Wait();
 
-            AssertSessionSaved(expectedSession, expectedEndTime, HOURS_ACTIVE, null);
+            AssertSessionSaved(expectedSession);
             AssertTimeEntriesCorrect(expectedSession);
             AssertTransactionSuccessful();
         }
