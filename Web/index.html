@@ -1,0 +1,126 @@
+﻿<!DOCTYPE html>
+<html class="no-js" lang="en" ng-app>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Foundation Starter Template</title>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/foundation/6.2.1/foundation.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.5/angular.min.js"></script>
+</head>
+<body>
+    <header class="top-bar">
+        <section class="top-bar-title">Poker Tracker</section>
+    </header>
+
+    <main class="container">
+        <div class="row column">
+            <form id="frmSession" ng-controller="SessionController as session"
+                  ng-submit="session.startSession()">
+                <fieldset>
+                    <legend>Start New Session</legend>
+                    <div>
+                        <label>
+                            Card Room
+                            <select id="ddlCardRoom" required ng-model="CardRoom">
+                                <option ng-repeat="option in cardRooms" value="{{option.Key}}">{{option.Value}}</option>
+                            </select>
+                        </label>
+                    </div>
+                    <div>
+                        <label>
+                            Game
+                            <select id="ddlGame" required ng-model="Game">
+                                <option ng-repeat="option in games" value="{{option.Key}}">{{option.Value}}</option>
+                            </select>
+                        </label>
+                    </div>
+                    <div>
+                        <label>
+                            Small Blind
+                            <input id="txtSmallBlind" type="number" min="1" ng-model="SmallBlind" required>
+                        </label>
+                    </div>
+                    <div>
+                        <label>
+                            Big Blind
+                            <input id="txtBigBlind" type="number" min="1" ng-model="BigBlind" required>
+                        </label>
+                    </div>
+                    <div>
+                        <label>
+                            Starting Stack Size
+                            <input id="txtStartingStackSize" type="number" min="1" ng-model="StartingStackSize" required>
+                        </label>
+                    </div>
+                    <div>
+                        <button id="btnStartSession" type="submit" class="button">Start Session</button>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+        <div class="row column hide">
+            <form id="frmTimeEntries" ng-controller="TimeEntriesController as timeEntries">
+                <fieldset>
+                    <legend>Time Entry</legend>
+                    <div>
+                        <label>
+                            Stack Size
+                            <input id="txtStackSize" type="number" min="0" ng-model="StackSize"
+                                   required>
+                        </label>
+                    </div>
+                    <div>
+                        <label>
+                            Dealer Tokes
+                            <input id="txtDealerTokes" type="number" min="0" ng-model="DealerTokes"
+                                   required>
+                        </label>
+                    </div>
+                    <div>
+                        <label>
+                            Server Tips
+                            <input id="txtServerTips" type="number" min="0" ng-model="ServerTips"
+                                   required>
+                        </label>
+                    </div>
+                    <div>
+                        <button id="btnAddTimeEntry" type="button" class="button">Add Time Entry</button>
+                        <button id="btnFinishSession" type="submit" class="success button">Finish Session</button>
+                        <button id="btnCancelSession" type="button" class="alert button">Cancel Session</button>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+    </main>
+
+    <section id="dlgFinished" class="reveal" data-reveal>
+        <h1>Finish Session</h1>
+        <p class="lead">Do you want to save and end the current session?</p>
+        <div>
+            <button id="dlgFinished_btnYes" type="button" class="button">Yes, Save It</button>
+            <button id="dlgFinished_btnNo" type="button" class="secondary button" data-close>No, I'm Not Done</button>
+        </div>
+        <button class="close-button" data-close aria-label="Close modal" type="button">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </section>
+
+    <section id="dlgCancel" class="reveal" data-reveal>
+        <h1>Cancel Session</h1>
+        <p class="lead"><strong>This will discard all time entries and stop the session.</strong> Are you sure this is what you want?</p>
+        <div>
+            <button id="dlgCancel_btnYes" type="button" class="alert button">Yep, Do It</button>
+            <button id="dlgCancel_btnNo" type="button" class="secondary button" data-close>Never mind</button>
+        </div>
+    </section>
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.2.3/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/what-input/2.0.1/what-input.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/foundation/6.2.1/foundation.min.js"></script>
+
+    <script>
+        $(document).foundation();
+    </script>
+</body>
+</html>

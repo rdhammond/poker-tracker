@@ -28,7 +28,7 @@ namespace PokerTracker.WCF
 
         [WebInvoke(
             Method = "POST",
-            UriTemplate = "SessionPOST",
+            UriTemplate = "Session",
             BodyStyle = WebMessageBodyStyle.WrappedRequest,
             RequestFormat = WebMessageFormat.Json,
             ResponseFormat = WebMessageFormat.Json

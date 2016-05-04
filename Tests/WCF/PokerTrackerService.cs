@@ -102,6 +102,7 @@ namespace PokerTracker.Tests.WCF
             var session = Service.CreateSession();
             Assert.IsInstanceOfType(session, typeof(Session));
             Assert.IsNotNull(session);
+            Assert.AreNotSame(Guid.Empty, session.Id);
         }
 
         [TestMethod]
