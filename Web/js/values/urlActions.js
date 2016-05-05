@@ -1,7 +1,7 @@
-﻿angular.module('pokerTracker', [])
+﻿angular.module('pokerTracker.values', [])
     .value('actionUrls', {
-        cardRooms: 'PokerTrackerService.svc/CardRooms',
-        games: 'PokerTrackerService.svc/GameTypes',
+        getCardRooms: 'PokerTrackerService.svc/CardRooms',
+        getGames: 'PokerTrackerService.svc/GameTypes',
         createSession: 'PokerTrackerService.svc/Session/New',
         saveSession: 'PokerTrackerService.svc/Session'
     });

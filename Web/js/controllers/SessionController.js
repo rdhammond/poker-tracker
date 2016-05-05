@@ -1,41 +1,37 @@
-﻿angular.module('pokerTracker', [])
-    .controller('SessionController', ['$scope', '$rootScope', '$http', '$ms', 'actionUrls',
-    function ($scope, $rootScope, $http, $ms, actionUrls) {
-        function startNewSession() {
-            $http.get(urlActions.createSession).success(function (data) {
-                data.StartingStackSize = null;
-                $scope.session = data;
-                $('#frmSession').removeClass('hidden');
-            });
-        }
+﻿angular.module('pokerTracker.controllers', ['pokerTracker.services'])
+    .controller('SessionController', ['$scope', '$rootScope', 'Session', 'CardRooms', 'GameTypes', 'actionUrls',
+    function ($scope, $rootScope, Session, CardRooms, GameTypes, actionUrls) {
+        $scope.isShown = true;
 
         $scope.startSession = function () {
+            $scope.isShown = false;
             $rootScope.$emit('sessionStarted', $scope.session);
-            $('#frmSession').addClass('hidden');
         };
 
-        $scope.saveSession = function () {
-            $http.post(urlActions.saveSession, data).success(function () {
-                startNewSession();
-                $rootScope.$emit('sessionSaved');
-                $('#dlgFinished').foundation('close');
+        $scope.cancelSession = function() {
+            Session.createSession().then(function (sesssion) {
+                $scope.session = session;
+                $rootScope.$emit('sessionCanceled');
             });
         };
 
-        $scope.cancelSession = function () {
-            startNewSession();
-            $rootScope.$emit('sessionCanceled');
-            $('#dlgCancel').foundation('close');
-        };
-
-        $http.get(urlActions.cardRooms).success(function (data) {
-            $scope.cardRooms = data;
+        $rootScope.$on('saveSession', function (event, data) {
+            Session.saveSession(session).then(function (newSession) {
+                $scope.session = newSession;
+                $rootScope.$emit('sessionSaved');
+            });
         });
 
-        $http.get(urlActions.games).success(function (data) {
-            $scope.rooms = data;
+        CardRooms.get().then(function (cardRooms) {
+            $scope.cardRooms = cardRooms;
         });
 
-        startNewSession();
+        Games.get().then(function (games) {
+            $scope.games = games;
+        })
+
+        Session.createSession().then(function (session) {
+            $scope.session = session;
+        });
     }
 ]);

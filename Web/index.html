@@ -14,8 +14,8 @@
     </header>
 
     <main class="container">
-        <div class="row column">
-            <form id="frmSession" ng-controller="SessionController as session"
+        <div class="row column" ng-controller="SessionController as session" ng-hide="!session.isShown">
+            <form id="frmSession"
                   ng-submit="session.startSession()">
                 <fieldset>
                     <legend>Start New Session</legend>
@@ -59,9 +59,9 @@
                 </fieldset>
             </form>
         </div>
-        <div class="row column hide">
-            <form id="frmTimeEntries" ng-controller="TimeEntriesController as timeEntries"
-                  ng-submit="timeEntries.addTimeEntry()">
+        <div class="row column" ng-controller="TimeEntriesController as timeEntries" ng-hide="!timeEntries.isShown">
+            <form id="frmTimeEntries">
+                ng-submit="timeEntries.addTimeEntry()">
                 <fieldset>
                     <legend>Time Entry</legend>
                     <div>
@@ -95,10 +95,10 @@
         </div>
     </main>
 
-    <section id="dlgFinish" class="reveal" data-reveal ng-controller="SessionController as session">
+    <section id="dlgFinish" class="reveal" data-reveal ng-controller="TimeEntriesController as timeEntries">
         <h1>Finish Session</h1>
         <p class="lead">Fill out the following information to finish your session.</p>
-        <form ng-submit="session.saveSession()">
+        <form ng-submit="timeEntries.saveSession()">
             <fieldset>
                 <legend>End of Session</legend>
                 <div>
@@ -114,7 +114,7 @@
                     </label>
                 </div>
                 <div>
-                    <button type="submit" class="button">Save It</button>
+                    <button type="submit" class="button" data-close>Save It</button>
                     <button type="button" class="secondary button" data-close>Wait, I'm Not Done</button>
                 </div>
             </fieldset>
@@ -127,10 +127,10 @@
     <section id="dlgCancel" class="reveal" data-reveal ng-controller="SessionController as session">
         <h1>Cancel Session</h1>
         <p class="lead"><strong>This will discard all time entries and stop the session.</strong> Are you sure this is what you want?</p>
-        <div>
-            <button id="dlgCancel_btnYes" type="button" class="alert button" ng-click="session.cancelSession()">Yep, Do It</button>
-            <button id="dlgCancel_btnNo" type="button" class="secondary button" data-close>Never mind</button>
-        </div>
+        <form ng-submit="session.cancelSession()">
+            <button type="submit" class="alert button">Yep, Do It</button>
+            <button type="button" class="secondary button" data-close>Never mind</button>
+        </form>
         <button class="close-button" data-close aria-label="Close modal" type="button">
             <span aria-hide="true">&times;</span>
         </button>
