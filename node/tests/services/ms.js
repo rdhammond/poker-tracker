@@ -1,7 +1,7 @@
 describe('ms', function() {
   var ms;
   
-  beforeEach(module('pokerTracker.services'));
+  beforeEach(module('pokerTracker'));
   beforeEach(inject(function (_ms_) {
     ms = _ms_;
   }));
