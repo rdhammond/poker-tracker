@@ -4,9 +4,8 @@
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Foundation Starter Template</title>
+    <title>Poker Tracker</title>
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/foundation/6.2.1/foundation.min.css">
-    <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.5/angular.min.js"></script>
 </head>
 <body>
     <header class="top-bar">
@@ -14,43 +13,42 @@
     </header>
 
     <main class="container">
-        <div class="row column" ng-controller="SessionController as session" ng-hide="!session.isShown">
-            <form id="frmSession"
-                  ng-submit="session.startSession()">
+        <section class="row column" ng-controller="SessionController as vm">
+            <form id="frmSession" ng-hide="!vm.isShown" ng-submit="vm.startSession()" ng->
                 <fieldset>
                     <legend>Start New Session</legend>
                     <div>
                         <label>
                             Card Room
-                            <select id="ddlCardRoom" required ng-model="CardRoomId">
-                                <option ng-repeat="option in cardRooms" value="{{option.Key}}">{{option.Value}}</option>
+                            <select id="ddlCardRoom" required ng-model="vm.session.CardRoomId">
+                                <option ng-repeat="option in vm.cardRooms" value="{{option.Key}}">{{option.Value}}</option>
                             </select>
                         </label>
                     </div>
                     <div>
                         <label>
                             Game
-                            <select id="ddlGame" required ng-model="GameId">
-                                <option ng-repeat="option in games" value="{{option.Key}}">{{option.Value}}</option>
+                            <select id="ddlGame" required ng-model="vm.session.GameId">
+                                <option ng-repeat="option in vm.games" value="{{option.Key}}">{{option.Value}}</option>
                             </select>
                         </label>
                     </div>
                     <div>
                         <label>
                             Small Blind
-                            <input id="txtSmallBlind" type="number" min="1" ng-model="SmallBlind" required>
+                            <input id="txtSmallBlind" type="number" min="1" ng-model="vm.session.SmallBlind" required>
                         </label>
                     </div>
                     <div>
                         <label>
                             Big Blind
-                            <input id="txtBigBlind" type="number" min="1" ng-model="BigBlind" required>
+                            <input id="txtBigBlind" type="number" min="1" ng-model="vm.session.BigBlind" required>
                         </label>
                     </div>
                     <div>
                         <label>
                             Starting Stack Size
-                            <input id="txtStartingStackSize" type="number" min="1" ng-model="StartingStackSize" required>
+                            <input id="txtStartingStackSize" type="number" min="1" ng-model="vm.StartingStackSize" required>
                         </label>
                     </div>
                     <div>
@@ -58,87 +56,84 @@
                     </div>
                 </fieldset>
             </form>
-        </div>
-        <div class="row column" ng-controller="TimeEntriesController as timeEntries" ng-hide="!timeEntries.isShown">
-            <form id="frmTimeEntries">
-                ng-submit="timeEntries.addTimeEntry()">
+
+            <zfDialog id="dlgFinish">
+                <h1>Finish Session</h1>
+                <p class="lead">Fill out the following information to finish your session.</p>
+                <form ng-submit="vm.saveSession()">
+                    <fieldset>
+                        <legend>End of Session</legend>
+                        <div>
+                            <label>
+                                Hours Played
+                                <input id="txtHoursPlayed" type="number" min="0" required ng-model="vm.session.HoursPlayed" placeholder="i.e. 1.25">
+                            </label>
+                        </div>
+                        <div>
+                            <label>
+                                Notes (optional)
+                                <textarea id="txtNotes" ng-model="vm.session.Notes" placeholder="Optional Note"></textarea>
+                            </label>
+                        </div>
+                        <div>
+                            <button type="submit" class="button" data-close>Save It</button>
+                            <button type="button" class="secondary button" data-close>Wait, I'm Not Done</button>
+                        </div>
+                    </fieldset>
+                </form>
+            </zfDialog>
+
+            <zfDialog id="dlgCancel">
+                <h1>Cancel Session</h1>
+                <p class="lead"><strong>This will discard all time entries and stop the session.</strong> Are you sure this is what you want?</p>
+                <form ng-submit="vm.cancelSession()">
+                    <fieldset>
+                        <legend>Cancel Session</legend>
+                        <div>
+                            <button type="submit" class="alert button" data-close>Yep, Do It</button>
+                            <button type="button" class="secondary button" data-close>Never mind</button>
+                        </div>
+                    </fieldset>
+                </form>
+            </zfDialog>
+        </section>
+
+        <section class="row column" ng-controller="TimeEntriesController as vm">
+            <form id="frmTimeEntries" ng-hide="!vm.isShown" ng-submit="vm.addTimeEntry()">
                 <fieldset>
                     <legend>Time Entry</legend>
                     <div>
                         <label>
                             Stack Size
-                            <input id="txtStackSize" type="number" min="0" ng-model="StackSize"
-                                   required>
+                            <input id="txtStackSize" type="number" min="0" ng-model="vm.timeEntry.StackSize" required>
                         </label>
                     </div>
                     <div>
                         <label>
                             Dealer Tokes
-                            <input id="txtDealerTokes" type="number" min="0" ng-model="DealerTokes"
-                                   required>
+                            <input id="txtDealerTokes" type="number" min="0" ng-model="vm.timeEntry.DealerTokes" required>
                         </label>
                     </div>
                     <div>
                         <label>
                             Server Tips
-                            <input id="txtServerTips" type="number" min="0" ng-model="ServerTips"
-                                   required>
+                            <input id="txtServerTips" type="number" min="0" ng-model="vm.timeEntry.ServerTips" required>
                         </label>
                     </div>
                     <div>
-                        <button id="btnAddTimeEntry" type="submit" class="button" ng-click="timeEntry.addTimeEntry()">Add Time Entry</button>
+                        <button id="btnAddTimeEntry" type="submit" class="button">Add Time Entry</button>
                         <button id="btnFinishSession" type="button" class="success button" data-open="dlgFinish">Finish Session</button>
                         <button id="btnCancelSession" type="button" class="alert button" data-open="dlgCancel">Cancel Session</button>
                     </div>
                 </fieldset>
             </form>
-        </div>
+        </section>
     </main>
-
-    <section id="dlgFinish" class="reveal" data-reveal ng-controller="TimeEntriesController as timeEntries">
-        <h1>Finish Session</h1>
-        <p class="lead">Fill out the following information to finish your session.</p>
-        <form ng-submit="timeEntries.saveSession()">
-            <fieldset>
-                <legend>End of Session</legend>
-                <div>
-                    <label>
-                        Hours Played
-                        <input id="txtHoursPlayed" type="number" min="0" required ng-model="HoursPlayed" placeholder="i.e. 1.25">
-                    </label>
-                </div>
-                <div>
-                    <label>
-                        Notes (optional)
-                        <textarea id="txtNotes" ng-model="Notes" placeholder="Optional Note"></textarea>
-                    </label>
-                </div>
-                <div>
-                    <button type="submit" class="button" data-close>Save It</button>
-                    <button type="button" class="secondary button" data-close>Wait, I'm Not Done</button>
-                </div>
-            </fieldset>
-        </form>
-        <button class="close-button" data-close aria-label="Close modal" type="button">
-            <span aria-hide="true">&times;</span>
-        </button>
-    </section>
-
-    <section id="dlgCancel" class="reveal" data-reveal ng-controller="SessionController as session">
-        <h1>Cancel Session</h1>
-        <p class="lead"><strong>This will discard all time entries and stop the session.</strong> Are you sure this is what you want?</p>
-        <form ng-submit="session.cancelSession()">
-            <button type="submit" class="alert button">Yep, Do It</button>
-            <button type="button" class="secondary button" data-close>Never mind</button>
-        </form>
-        <button class="close-button" data-close aria-label="Close modal" type="button">
-            <span aria-hide="true">&times;</span>
-        </button>
-    </section>
 
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.2.3/jquery.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/what-input/2.0.1/what-input.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/foundation/6.2.1/foundation.min.js"></script>
+    <script src="Scripts/angular.min.js"></script>
 
     <script>
         $(document).foundation();

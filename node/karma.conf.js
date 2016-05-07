@@ -18,7 +18,7 @@ module.exports = function(config) {
       'node_modules/angular/angular.js',
       'node_modules/angular-mocks/angular-mocks.js',
       '../web/js/app.js',
-      '../web/js/**/*.js',
+      '../web/js/services/msDate.js',
       './tests/**/*.js'
     ],
 

@@ -22,10 +22,6 @@ namespace PokerTracker.WCF
         [OperationContract]
         Task<Dictionary<Guid, string>> GetGameTypesAsync();
 
-        [WebGet(UriTemplate = "Session/New", ResponseFormat = WebMessageFormat.Json)]
-        [OperationContract]
-        Session CreateSession();
-
         [WebInvoke(
             Method = "POST",
             UriTemplate = "Session",
@@ -84,11 +80,6 @@ namespace PokerTracker.WCF
             GamesSvc = gamesSvc;
             SessionSvc = sessionSvc;
             SummarySvc = summarySvc;
-        }
-
-        public Session CreateSession()
-        {
-            return new Session { Id = Guid.NewGuid() };
         }
 
         public async Task<Dictionary<Guid, string>> GetCardRoomsAsync()

@@ -97,15 +97,6 @@ namespace PokerTracker.Tests.WCF
         }
 
         [TestMethod]
-        public void CreateSession_Works()
-        {
-            var session = Service.CreateSession();
-            Assert.IsInstanceOfType(session, typeof(Session));
-            Assert.IsNotNull(session);
-            Assert.AreNotSame(Guid.Empty, session.Id);
-        }
-
-        [TestMethod]
         public void SaveSessionAsync_Works()
         {
             Service
