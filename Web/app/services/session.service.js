@@ -5,7 +5,7 @@
         .module('app')
         .service('session', session);
 
-    session.$inject = ['$http', urlActions];
+    session.$inject = ['$http', 'urlActions'];
 
     function session($http, urlActions) {
         return { save: save };

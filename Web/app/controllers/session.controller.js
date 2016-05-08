@@ -3,13 +3,13 @@
     
     angular
         .module('app')
-        .controller('session', session);
+        .controller('SessionController', SessionController);
 
-    session.$inject = ['$rootScope', 'cardRooms', 'gameTyes', 'session', 'msDate'];
+    SessionController.$inject = ['$rootScope', 'cardRooms', 'gameTypes', 'session', 'msDate'];
 
-    function session($rootScope, cardRooms, gameTypes, session, msDate) {
+    function SessionController($rootScope, cardRooms, gameTypes, session, msDate) {
         var vm = this;
-        vm.isShown = false;
+        vm.isShown = true;
         vm.session = {};
         vm.startSession = startSession;
         vm.saveSession = saveSession;
@@ -22,14 +22,14 @@
         function startSession() {
             vm.session.StartDate = msDate.now();
             vm.isShown = false;
-            $rootScope.$emit('sessionStarted', vm.StartingStackSize);
+            $rootScope.$emit('sessionStarted', { StartingStackSize: vm.StartingStackSize });
         }
 
         function saveSession() {
             vm.session.EndDate = msDate.now();
 
-            session
-                .saveSession(vm.session)
+            return session
+                .save(vm.session)
                 .then(function () {
                     reset();
                     vm.isShown = true;
@@ -43,7 +43,7 @@
             $rootScope.$emit('sessionCanceled');
         }
 
-        function addTimeEntry(event, date) {
+        function addTimeEntry(event, data) {
             vm.session.TimeEntries = vm.session.TimeEntries || [];
             vm.session.TimeEntries.push(data.timeEntry);
         }
@@ -56,8 +56,6 @@
             gameTypes
                 .get()
                 .then(function (gameTypes) { vm.gameTypes = gameTypes; });
-
-            reset();
         }
 
         function reset() {

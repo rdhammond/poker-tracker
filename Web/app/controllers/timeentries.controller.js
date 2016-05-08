@@ -5,7 +5,7 @@
         .module('app')
         .controller('TimeEntries', TimeEntries);
 
-    TimeEntries.$inject = ['$rootScope', msDate];
+    TimeEntries.$inject = ['$rootScope', 'msDate'];
 
     function TimeEntries($rootScope, msDate) {
         var vm = $this;
