@@ -66,6 +66,21 @@ module.exports = function(config) {
 
     // Concurrency level
     // how many browser should be started simultaneous
-    concurrency: Infinity
+    concurrency: Infinity,
+
+    // Startup callback
+    callback: function() {
+      beforeEach(function() {
+        jasmine.addMatchers({ toDeepEqual: toDeepEqual });
+
+        function toNormalizedJSON() {
+          return JSON.stringify(obj).replace(/\t|\n/g, '');
+        }
+        
+        function toDeepEqual(expected) {
+          return toNormalizedJSON(this.actual) === toNormalizedJSON(expected);
+        }
+			});
+    }
   })
-}
+};

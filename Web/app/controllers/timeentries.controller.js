@@ -3,12 +3,12 @@
 
     angular
         .module('app')
-        .controller('TimeEntries', TimeEntries);
+        .controller('TimeEntriesController', TimeEntriesController);
 
-    TimeEntries.$inject = ['$rootScope', 'msDate'];
+    TimeEntriesController.$inject = ['$rootScope', 'msDate'];
 
-    function TimeEntries($rootScope, msDate) {
-        var vm = $this;
+    function TimeEntriesController($rootScope, msDate) {
+        var vm = this;
         vm.isShown = false;
         vm.timeEntry = {};
         vm.addTimeEntry = addTimeEntry;

@@ -69,6 +69,16 @@
     });
 
     describe('Constructor', function () {
+        it('shows form after', function () {
+            $rootScope.$digest();
+            expect(controller.isShown).toBe(true);
+        });
+
+        it('starts with empty sesion', function () {
+            $rootScope.$digest();
+            expectDeepEqual(controller.session, {});
+        });
+
         it('loads card rooms', function () {
             $rootScope.$digest();
             expect(controller.cardRooms).toBe(CARD_ROOMS);
@@ -77,11 +87,6 @@
         it('loads game types', function () {
             $rootScope.$digest();
             expect(controller.gameTypes).toBe(GAME_TYPES);
-        });
-
-        it('shows form after', function () {
-            $rootScope.$digest();
-            expect(controller.isShown).toBe(true);
         });
     });
 
@@ -98,6 +103,7 @@
 
         it('emits sessionStarted w/StartingStackSize', function () {
             var emitSpy = spyOn($rootScope, '$emit').and.callThrough();
+
             controller.StartingStackSize = 100;
 
             $rootScope.$on('sessionStarted', function (event, data) {
@@ -114,7 +120,6 @@
         it('initially sets session end date', function () {
             controller.saveSession();
             // NO $digest here!!!
-
             expect(controller.session.EndDate).toBe('mock');
         });
 
@@ -127,21 +132,24 @@
             expect(session.save).toHaveBeenCalled();
         });
 
-        it('resets session after save', function () {
-            controller.session = { mock: 1 };
-            controller.StartingStackSize = 100;
-
+        it('resets sessions', function () {
+            controller.session = { test: 1 };
             controller.saveSession();
             $rootScope.$digest();
+            expectDeepEqual(controller.session, {});
+        });
 
-            expect(controller.StartingStackSize).not.toBeDefined();
-            expect(controller.session.mock).not.toBeDefined();
+        it('resets StartingStackSize', function () {
+            controller.StartingStackSize = 100;
+            controller.saveSession();
+            $rootScope.$digest();
+            expect(typeof controller.StartingStackSize).toBe('undefined');
         });
 
         it('makes form visible after save', function () {
+            controller.isShown = false;
             controller.saveSession();
             $rootScope.$digest();
-
             expect(controller.isShown).toBe(true);
         });
 
@@ -157,16 +165,20 @@
     });
 
     describe('#cancelSession', function () {
-        it('resets session afterwards', function () {
-            controller.session = { mock: 1 };
-            controller.StartingStackSize = 100;
-
+        it('resets session', function () {
+            controller.session = { test: 1 };
             controller.cancelSession();
-            expect(controller.session.mock).not.toBeDefined();
-            expect(controller.StartingStackSize).not.toBeDefined();
+            expectDeepEqual(controller.session, {});
+        });
+
+        it('resets StartingStackSize', function () {
+            controller.StartingStackSize = 100;
+            controller.cancelSession();
+            expect(typeof controller.StartingStackSize).toBe('undefined');
         });
 
         it('makes form visible afterwards', function () {
+            controller.isShown = false;
             controller.cancelSession();
             expect(controller.isShown).toBe(true);
         });
@@ -180,20 +192,26 @@
         });
     });
 
-    describe('Event: addTimeEntry', function () {
-        it('initializes entries if first added', function () {
-            $rootScope.$emit('addTimeEntry', { timeEntry: 'test' });
-            expect(controller.session.TimeEntries).toBeDefined();
-            expect(controller.session.TimeEntries.length).toBe(1);
-            expect(controller.session.TimeEntries).toContain('test');
-        });
+    describe('Events', function () {
+        describe('#addTimeEntry', function () {
+            it('initializes entries if first added', function () {
+                $rootScope.$emit('addTimeEntry', { timeEntry: 'test' });
+                expect(controller.session.TimeEntries).toBeDefined();
+                expect(controller.session.TimeEntries.length).toBe(1);
+                expect(controller.session.TimeEntries).toContain('test');
+            });
 
-        it('adds to existing entries', function () {
-            controller.session.TimeEntries = ['test1'];
+            it('adds to existing entries', function () {
+                controller.session.TimeEntries = ['test1'];
 
-            $rootScope.$emit('addTimeEntry', { timeEntry: 'test2' });
-            expect(controller.session.TimeEntries.length).toBe(2);
-            expect(controller.session.TimeEntries).toContain('test2');
+                $rootScope.$emit('addTimeEntry', { timeEntry: 'test2' });
+                expect(controller.session.TimeEntries.length).toBe(2);
+                expect(controller.session.TimeEntries).toContain('test2');
+            });
         });
     });
+
+    function expectDeepEqual(actual, expected) {
+        return JSON.stringify(actual) === JSON.stringify(expected);
+    }
 });
