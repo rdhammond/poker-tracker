@@ -51,7 +51,7 @@
 
         function msDateMock() {
             return {
-                now: function () {
+                from: function (date) {
                     return 'mock';
                 }
             };

@@ -57,7 +57,7 @@
                 </fieldset>
             </form>
 
-            <zfDialog id="dlgFinish">
+            <zf-dialog id="dlgFinish">
                 <h1>Finish Session</h1>
                 <p class="lead">Fill out the following information to finish your session.</p>
                 <form ng-submit="vm.saveSession()">
@@ -81,9 +81,9 @@
                         </div>
                     </fieldset>
                 </form>
-            </zfDialog>
+            </zf-dialog>
 
-            <zfDialog id="dlgCancel">
+            <zf-dialog id="dlgCancel">
                 <h1>Cancel Session</h1>
                 <p class="lead"><strong>This will discard all time entries and stop the session.</strong> Are you sure this is what you want?</p>
                 <form ng-submit="vm.cancelSession()">
@@ -95,7 +95,7 @@
                         </div>
                     </fieldset>
                 </form>
-            </zfDialog>
+            </zf-dialog>
         </section>
 
         <section class="row column" ng-controller="TimeEntriesController as vm">

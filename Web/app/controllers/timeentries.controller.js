@@ -18,14 +18,14 @@
         $rootScope.$on('sessionCanceled', resetViewModel);
 
         function addTimeEntry() {
-            vm.timeEntry.RecordedAt = msDate.now();
+            vm.timeEntry.RecordedAt = msDate.from(new Date());
             $rootScope.$emit('addTimeEntry', vm.timeEntry);
             vm.timeEntry = {};
         }
 
         function addInitialEntry(event, data) {
             $rootScope.$emit('addTimeEntry', {
-                RecordedAt: msDate.now(),
+                RecordedAt: msDate.from(new Date()),
                 StackSize: data.StartingStackSize,
                 DealerTokes: 0,
                 ServerTips: 0

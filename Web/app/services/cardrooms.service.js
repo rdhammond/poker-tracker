@@ -11,7 +11,9 @@
         return { get: get };
 
         function get() {
-            return $http.get(urlActions.getCardRooms);
+            return $http
+                .get(urlActions.getCardRooms)
+                .then(function (response) { return response.data; });
         }
     }
 })();

@@ -6,10 +6,10 @@
         .service('msDate', msDate);
 
     function msDate() {
-        return { now: now };
+        return { from: from };
 
-        function now() {
-            return '/Date(' + Date.now.getTime() + ')/';
+        function from(date) {
+            return '/Date(' + date.getTime() + ')/';
         }
     }
 })();

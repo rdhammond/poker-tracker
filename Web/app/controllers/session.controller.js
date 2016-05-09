@@ -20,13 +20,13 @@
         activate();
 
         function startSession() {
-            vm.session.StartDate = msDate.now();
+            vm.session.StartDate = msDate.from(new Date());
             vm.isShown = false;
             $rootScope.$emit('sessionStarted', { StartingStackSize: vm.StartingStackSize });
         }
 
         function saveSession() {
-            vm.session.EndDate = msDate.now();
+            vm.session.EndDate = msDate.from(new Date());
 
             return session
                 .save(vm.session)

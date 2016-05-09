@@ -9,7 +9,11 @@
         return {
             restrict: 'E',
             transclude: true,
-            templateUrl: 'zfDialog.html'
+            replace: true,
+            template: '<div class="reveal" data-reveal><div ng-transclude></div>'
+                + '<button class="close-button" data-close aria-label="Close modal" type="button">'
+                + '<span aria-hide="true">&times;</span>'
+                + '</button></div>'
         };
     }
 })();
