@@ -69,13 +69,18 @@
     <Content Include="app\controllers\session.controller.spec.js" />
     <Content Include="app\controllers\timeentries.controller.spec.js" />
     <Content Include="app\directives\zfdialog.directive.spec.js" />
-    <Content Include="app\services\cardrooms.serice.js" />
+    <Content Include="app\services\cardrooms.service.js" />
     <Content Include="app\constants.js" />
-    <Content Include="app\services\games.service.js" />
+    <Content Include="app\services\cardrooms.service.spec.js" />
+    <Content Include="app\services\gametypes.service.js" />
+    <Content Include="app\services\gametypes.service.spec.js" />
     <Content Include="app\services\msDate.service.js" />
     <Content Include="app\controllers\session.controller.js" />
+    <Content Include="app\services\msDate.spec.js" />
     <Content Include="app\services\session.service.js" />
     <Content Include="app\controllers\timeentries.controller.js" />
+    <Content Include="app\services\session.service.spec.js" />
+    <Content Include="karma.conf.js" />
     <Content Include="packages.config" />
     <Content Include="Scripts\angular.min.js.map" />
     <None Include="Web.Debug.config">
@@ -96,6 +101,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

@@ -1,5 +1,5 @@
 // Karma configuration
-// Generated on Wed May 04 2016 21:09:42 GMT-0400 (Eastern Daylight Time)
+// Generated on Wed May 11 2016 15:36:46 GMT-0400 (Eastern Daylight Time)
 
 module.exports = function(config) {
   config.set({
@@ -15,9 +15,9 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-      '../Web/Scripts/angular.js',
-      '../Web/Scripts/angular-mocks.js',
-      '../Web/app/**/*.js'
+      'Scripts/angular.js',
+      'Scripts/angular-mocks.js',
+      'app/**/*.js'
     ],
 
 
@@ -66,21 +66,6 @@ module.exports = function(config) {
 
     // Concurrency level
     // how many browser should be started simultaneous
-    concurrency: Infinity,
-
-    // Startup callback
-    callback: function() {
-      beforeEach(function() {
-        jasmine.addMatchers({ toDeepEqual: toDeepEqual });
-
-        function toNormalizedJSON() {
-          return JSON.stringify(obj).replace(/\t|\n/g, '');
-        }
-        
-        function toDeepEqual(expected) {
-          return toNormalizedJSON(this.actual) === toNormalizedJSON(expected);
-        }
-			});
-    }
+    concurrency: Infinity
   })
-};
+}
