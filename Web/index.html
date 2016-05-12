@@ -1,5 +1,5 @@
 ﻿<!DOCTYPE html>
-<html class="no-js" lang="en" ng-app>
+<html class="no-js" lang="en" ng-app="app">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
@@ -19,7 +19,6 @@
                     <legend>Start New Session</legend>
                     <div>
                         <label>
-                            Card Room
                             <select id="ddlCardRoom" required ng-model="vm.session.CardRoomId">
                                 <option ng-repeat="option in vm.cardRooms" value="{{option.Key}}">{{option.Value}}</option>
                             </select>
@@ -29,7 +28,7 @@
                         <label>
                             Game
                             <select id="ddlGame" required ng-model="vm.session.GameId">
-                                <option ng-repeat="option in vm.games" value="{{option.Key}}">{{option.Value}}</option>
+                                <option ng-repeat="option in vm.gameTypes" value="{{option.Key}}">{{option.Value}}</option>
                             </select>
                         </label>
                     </div>
@@ -66,7 +65,7 @@
                         <div>
                             <label>
                                 Hours Played
-                                <input id="txtHoursPlayed" type="number" min="0" required ng-model="vm.session.HoursPlayed" placeholder="i.e. 1.25">
+                                <input id="txtHoursPlayed" type="number" min="0" step="any" required ng-model="vm.session.HoursPlayed" placeholder="i.e. 1.25">
                             </label>
                         </div>
                         <div>
@@ -122,8 +121,8 @@
                     </div>
                     <div>
                         <button id="btnAddTimeEntry" type="submit" class="button">Add Time Entry</button>
-                        <button id="btnFinishSession" type="button" class="success button" data-open="dlgFinish">Finish Session</button>
-                        <button id="btnCancelSession" type="button" class="alert button" data-open="dlgCancel">Cancel Session</button>
+                        <button id="btnFinishSession" type="button" class="success button" ng-click="vm.openFinishDialog()">Finish Session</button>
+                        <a id="btnCancelSession" href="#" class="alert button" ng-click="vm.openCancelDialog()">Cancel Session</a>
                     </div>
                 </fieldset>
             </form>
@@ -133,7 +132,9 @@
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.2.3/jquery.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/what-input/2.0.1/what-input.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/foundation/6.2.1/foundation.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/foundation/6.2.1/plugins/foundation.reveal.js"></script>
     <script src="Scripts/angular.min.js"></script>
+    <script src="Scripts/pokertracker.min.js"></script>
 
     <script>
         $(document).foundation();

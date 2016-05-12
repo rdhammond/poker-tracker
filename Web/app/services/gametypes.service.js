@@ -11,7 +11,9 @@
         return { get: get };
 
         function get() {
-            return $http.get(urlActions.getGameTypes);
+            return $http
+                .get(urlActions.getGameTypes)
+                .then(function(response) { return response.data; });
         }
     }
 })();

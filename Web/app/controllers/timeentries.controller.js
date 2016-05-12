@@ -1,4 +1,4 @@
-﻿(function () {
+﻿(function ($) {
     'use strict';
 
     angular
@@ -12,6 +12,8 @@
         vm.isShown = false;
         vm.timeEntry = {};
         vm.addTimeEntry = addTimeEntry;
+        vm.openFinishDialog = openFinishDialog;
+        vm.openCancelDialog = openCancelDialog;
 
         $rootScope.$on('sessionStarted', addInitialEntry);
         $rootScope.$on('sessionFinished', resetViewModel);
@@ -38,5 +40,13 @@
             vm.timeEntry = {};
             vm.isShown = false;
         }
+
+        function openFinishDialog() {
+            $('#dlgFinish').foundation('open');
+        }
+
+        function openCancelDialog() {
+            $('#dlgCancel').foundation('open');
+        }
     }
-})();
+})(jQuery);
