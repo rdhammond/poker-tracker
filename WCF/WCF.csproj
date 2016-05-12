@@ -70,9 +70,13 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="EnableCORSBehavior.cs" />
-    <Compile Include="HeaderMessageInspector.cs" />
+    <Compile Include="CustomHeaderMessageInspector.cs" />
+    <Compile Include="EnableCrossOriginResourceSharingBehavior.cs" />
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
     <Compile Include="WCFRegistry.cs" />
+    <Content Include="Global.asax" />
     <Content Include="PokerTrackerService.svc" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
