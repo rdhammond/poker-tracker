@@ -20,7 +20,7 @@ namespace PokerTracker.DAL.Repositories
 
         public async Task<List<T>> FindAllAsync()
         {
-            using (var database = DbFactory.Create())
+            using (var database = await DbFactory.CreateAsync())
             {
                 return await database.FetchAsync<T>(string.Empty);
             }

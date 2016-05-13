@@ -7,9 +7,12 @@ using System.Threading.Tasks;
 using AutoMapper;
 using PokerTracker.DAL.DAO;
 using System.Linq;
+using AsyncPoco;
 
 namespace PokerTracker.BLL.Services
 {
+    using IMapper = AutoMapper.IMapper;
+
     public interface ISessionService
     {
         Task SaveSessionAsync(Session session);
@@ -59,12 +62,12 @@ namespace PokerTracker.BLL.Services
 
         public async Task SaveSessionAsync(Session session)
         {
-            using (var database = DbFactory.Create())
+            //using (var database = await DbFactory.CreateAsync())
+            using (var database = new Database("PokerTracker"))
             using (var transaction = await database.GetTransactionAsync())
             {
                 var sessionDao = Mapper.Map<SessionDao>(session);
                 await SessionRepo.SaveAsync(sessionDao, database);
-
                 await TimeEntryRepo.SaveAsync(FinalizeTimeEntries(session), database);
                 transaction.Complete();
             }

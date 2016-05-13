@@ -7,12 +7,16 @@ namespace PokerTracker.BLL.Objects
     [DataContract]
     public class Session : IdObject
     {
-        private readonly List<TimeEntry> _timeEntries = new List<TimeEntry>();
+        private List<TimeEntry> _timeEntries;
 
         [DataMember]
         public List<TimeEntry> TimeEntries
         {
-            get { return _timeEntries; }
+            get
+            {
+                _timeEntries = _timeEntries ?? new List<TimeEntry>();
+                return _timeEntries;
+            }
         }
 
         [DataMember]

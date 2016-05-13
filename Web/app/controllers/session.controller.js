@@ -20,13 +20,13 @@
         activate();
 
         function startSession() {
-            vm.session.StartDate = msDate.from(new Date());
+            vm.session.StartTime = msDate.from(new Date());
             vm.isShown = false;
             $rootScope.$emit('sessionStarted', { StartingStackSize: vm.StartingStackSize });
         }
 
         function saveSession() {
-            vm.session.EndDate = msDate.from(new Date());
+            vm.session.EndTime = msDate.from(new Date());
 
             return session
                 .save(vm.session)
@@ -45,7 +45,7 @@
 
         function addTimeEntry(event, data) {
             vm.session.TimeEntries = vm.session.TimeEntries || [];
-            vm.session.TimeEntries.push(data.timeEntry);
+            vm.session.TimeEntries.push(data);
         }
 
         function activate() {

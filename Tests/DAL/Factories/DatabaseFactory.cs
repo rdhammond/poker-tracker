@@ -20,7 +20,7 @@ namespace PokerTracker.Tests.DAL.Factories
         [TestMethod]
         public void Create_Works()
         {
-            Assert.IsNotNull(_dbFact.Create());
+            Assert.IsNotNull(_dbFact.CreateAsync().Result);
         }
     }
 }

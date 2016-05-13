@@ -140,6 +140,9 @@ namespace PokerTracker.WCF
         {
             try
             {
+                session.Id = Guid.NewGuid();
+                session.TimeEntries.ForEach(x => x.Id = Guid.NewGuid());
+
                 await SessionSvc.SaveSessionAsync(session);
             }
             catch (Exception e)

@@ -1,4 +1,5 @@
-﻿using PokerTracker.DAL.Factories;
+﻿using AsyncPoco;
+using PokerTracker.DAL.Factories;
 using PokerTracker.DAL.Wrappers;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -8,9 +9,11 @@ namespace PokerTracker.DAL.Repositories
     public interface IRepository<T> : IReadOnlyRepository<T>
     {
         Task SaveAsync(T entity);
-        Task SaveAsync(T entity, IDatabaseWrapper database);
+        //Task SaveAsync(T entity, IDatabaseWrapper database);
+        Task SaveAsync(T entity, Database database);
         Task SaveAsync(IEnumerable<T> entities);
-        Task SaveAsync(IEnumerable<T> entities, IDatabaseWrapper database);
+        //Task SaveAsync(IEnumerable<T> entities, IDatabaseWrapper database);
+        Task SaveAsync(IEnumerable<T> entities, Database database);
     }
 
     public abstract class Repository<T> : ReadOnlyRepository<T>, IRepository<T>
@@ -21,26 +24,28 @@ namespace PokerTracker.DAL.Repositories
 
         public async Task SaveAsync(T entity)
         {
-            using (var database = DbFactory.Create())
+            using (var database = await DbFactory.CreateAsync())
             {
-                await SaveAsync(entity, database);
+                await SaveAsync(entity, database as Database);
             }
         }
 
-        public Task SaveAsync(T entity, IDatabaseWrapper database)
+        //public Task SaveAsync(T entity, IDatabaseWrapper database)
+        public async Task SaveAsync(T entity, Database database)
         {
-            return database.SaveAsync(entity);
+            await database.InsertAsync(entity);
         }
 
         public async Task SaveAsync(IEnumerable<T> entities)
         {
-            using (var database = DbFactory.Create())
+            using (var database = await DbFactory.CreateAsync())
             {
-                await SaveAsync(entities, database);
+                await SaveAsync(entities, database as Database);
             }
         }
 
-        public async Task SaveAsync(IEnumerable<T> entities, IDatabaseWrapper database)
+        //public async Task SaveAsync(IEnumerable<T> entities, IDatabaseWrapper database)
+        public async Task SaveAsync(IEnumerable<T> entities, Database database)
         {
             foreach (var entity in entities)
             {

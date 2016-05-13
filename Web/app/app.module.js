@@ -1,4 +1,4 @@
-﻿(function ($) {
+﻿(function () {
     'use strict';
 
     angular
@@ -9,4 +9,4 @@
                     dlgCancel = new Foundation.Reveal($('#dlgCancel'));
             });
         });
-})(jQuery);
+})();

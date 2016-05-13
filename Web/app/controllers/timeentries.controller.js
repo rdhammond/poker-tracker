@@ -1,4 +1,4 @@
-﻿(function ($) {
+﻿(function () {
     'use strict';
 
     angular
@@ -49,4 +49,4 @@
             $('#dlgCancel').foundation('open');
         }
     }
-})(jQuery);
+})();

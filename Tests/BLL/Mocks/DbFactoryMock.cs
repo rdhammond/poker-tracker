@@ -1,5 +1,6 @@
 ﻿using Moq;
 using PokerTracker.DAL.Factories;
+using System.Threading.Tasks;
 
 namespace PokerTracker.Tests.BLL.Mocks
 {
@@ -15,8 +16,8 @@ namespace PokerTracker.Tests.BLL.Mocks
 
         public DatabaseFactoryMock()
         {
-            Setup(x => x.Create())
-                .Returns(() => DatabaseWrapperMock.Object);
+            Setup(x => x.CreateAsync())
+                .Returns(() => Task.FromResult(DatabaseWrapperMock.Object));
         }
     }
 }

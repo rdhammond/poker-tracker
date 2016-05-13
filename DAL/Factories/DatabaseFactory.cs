@@ -1,19 +1,23 @@
-﻿using PokerTracker.DAL.Wrappers;
+﻿using AsyncPoco;
+using PokerTracker.DAL.Wrappers;
+using System.Threading.Tasks;
 
 namespace PokerTracker.DAL.Factories
 {
     public interface IDatabaseFactory
     {
-        IDatabaseWrapper Create();
+        Task<IDatabaseWrapper> CreateAsync();
     }
 
     public class DatabaseFactory : IDatabaseFactory
     {
         public const string CONN_STR_NAME = "PokerTracker";
 
-        public IDatabaseWrapper Create()
+        public async Task<IDatabaseWrapper> CreateAsync()
         {
-            return new DatabaseWrapper(CONN_STR_NAME);
+            var result = new DatabaseWrapper(CONN_STR_NAME);
+            await result.OpenSharedConnectionAsync();
+            return result;
         }
     }
 }

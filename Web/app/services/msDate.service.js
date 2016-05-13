@@ -9,7 +9,7 @@
         return { from: from };
 
         function from(date) {
-            return '/Date(' + date.getTime() + ')/';
+            return '/Date(' + date.getTime() + '+0000)/';
         }
     }
 })();
