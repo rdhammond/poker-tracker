@@ -72,11 +72,7 @@
   <ItemGroup>
     <Compile Include="CustomHeaderMessageInspector.cs" />
     <Compile Include="EnableCrossOriginResourceSharingBehavior.cs" />
-    <Compile Include="Global.asax.cs">
-      <DependentUpon>Global.asax</DependentUpon>
-    </Compile>
     <Compile Include="WCFRegistry.cs" />
-    <Content Include="Global.asax" />
     <Content Include="PokerTrackerService.svc" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">

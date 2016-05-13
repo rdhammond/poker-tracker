@@ -22,6 +22,9 @@ namespace PokerTracker.WCF
         [OperationContract]
         Task<Dictionary<Guid, string>> GetGameTypesAsync();
 
+        [WebInvoke(Method = "OPTIONS", UriTemplate = "Session")]
+        void SaveSessionOPTIONS();
+
         [WebInvoke(
             Method = "POST",
             UriTemplate = "Session",
@@ -144,5 +147,8 @@ namespace PokerTracker.WCF
                 throw new FaultException<Exception>(e);
             }
         }
+
+        public void SaveSessionOPTIONS()
+        { }
     }
 }
