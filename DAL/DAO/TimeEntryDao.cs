@@ -1,14 +1,9 @@
-﻿using AsyncPoco;
+﻿using PokerTracker.DAL.Attributes;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PokerTracker.DAL.DAO
 {
     [TableName("TimeEntries")]
-    [PrimaryKey("Id")]
     public class TimeEntryDao : IdDao
     {
         public Guid SessionId { get; set; }

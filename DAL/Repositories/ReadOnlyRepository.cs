@@ -1,29 +1,36 @@
-﻿using PokerTracker.DAL.Factories;
+﻿using PokerTracker.DAL.DAO;
+using PokerTracker.DAL.Databases;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace PokerTracker.DAL.Repositories
 {
     public interface IReadOnlyRepository<T>
+        where T : IDao
     {
         Task<List<T>> FindAllAsync();
     }
 
     public abstract class ReadOnlyRepository<T> : IReadOnlyRepository<T>
+        where T : IDao
     {
-        protected readonly IDatabaseFactory DbFactory;
+        private readonly IDatabase _database;
 
-        protected ReadOnlyRepository(IDatabaseFactory dbFactory)
+        protected IDatabase Database
         {
-            DbFactory = dbFactory;
+            get { return _database; }
+        }
+
+        protected ReadOnlyRepository(IDatabase database)
+        {
+            _database = database;
         }
 
         public async Task<List<T>> FindAllAsync()
         {
-            using (var database = await DbFactory.CreateAsync())
-            {
-                return await database.FetchAsync<T>(string.Empty);
-            }
+            return (await Database.FetchAllAsync<T>())
+                .ToList();
         }
     }
 }

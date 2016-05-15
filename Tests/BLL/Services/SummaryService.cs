@@ -5,9 +5,12 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using PokerTracker.BLL.Services;
 using PokerTracker.DAL.Repositories;
 using System.Linq;
+using PokerTracker.BLL.Objects;
+using System.Collections.Generic;
 
 namespace PokerTracker.Tests.BLL.Services
 {
+    [TestClass]
     public class SummaryServiceTests
         : LookupServiceTests<ISummaryRepository,SummaryDao,SummaryRepositoryMock>
     {
@@ -25,6 +28,31 @@ namespace PokerTracker.Tests.BLL.Services
                 RepoMock.Object,
                 _totalHourlyRateRepoMock.Object
             );
+        }
+
+        private static void AssertListEquals(SummaryDao[] expected, Dictionary<Guid,Summary> actual)
+        {
+            Assert.AreEqual(expected.Length, actual.Count);
+            
+            foreach (var summary in expected)
+            {
+                Assert.IsTrue(actual.ContainsKey(summary.Id));
+
+                var value = actual[summary.Id];
+                Assert.AreEqual(summary.Cardroom, value.Cardroom);
+                Assert.AreEqual(summary.DayOfMonth, value.DayOfMonth);
+                Assert.AreEqual(summary.DayOfWeek, value.DayOfWeek);
+                Assert.AreEqual(summary.EndTime, value.EndTime);
+                Assert.AreEqual(summary.Game, value.Game);
+                Assert.AreEqual(summary.HourlyRate, value.HourlyRate);
+                Assert.AreEqual(summary.HourlyRateBB, value.HourlyRateBB);
+                Assert.AreEqual(summary.HoursPlayed, value.HoursPlayed);
+                Assert.AreEqual(summary.Id, value.Id);
+                Assert.AreEqual(summary.Limit, value.Limit);
+                Assert.AreEqual(summary.StartTime, value.StartTime);
+                Assert.AreEqual(summary.WinLoss, value.WinLoss);
+                Assert.AreEqual(summary.WinLossBB, value.WinLossBB);
+            }
         }
 
         [TestMethod]
@@ -67,22 +95,7 @@ namespace PokerTracker.Tests.BLL.Services
             var objects = _summarySvc.GetAllAsync().Result
                 .ToDictionary(x => x.Id);
 
-            AssertListEquals(daos, objects, (e, a) =>
-            {
-                return e.Cardroom == a.Cardroom
-                    && e.DayOfMonth == a.DayOfMonth
-                    && e.DayOfWeek == a.DayOfWeek
-                    && e.EndTime == a.EndTime
-                    && e.Game == a.Game
-                    && e.HourlyRate == a.HourlyRate
-                    && e.HourlyRateBB == a.HourlyRateBB
-                    && e.HoursPlayed == a.HoursPlayed
-                    && e.Id == a.Id
-                    && e.Limit == a.Limit
-                    && e.StartTime == a.StartTime
-                    && e.WinLoss == a.WinLoss
-                    && e.WinLossBB == a.WinLossBB;
-            });
+            AssertListEquals(daos, objects);
         }
 
         [TestMethod]

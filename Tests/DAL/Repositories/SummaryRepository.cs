@@ -2,10 +2,6 @@
 using PokerTracker.DAL.DAO;
 using PokerTracker.DAL.Repositories;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PokerTracker.Tests.DAL.Repositories
 {
@@ -14,9 +10,10 @@ namespace PokerTracker.Tests.DAL.Repositories
         : ReadOnlyRepositoryTests<SummaryRepository, SummaryDao>
     {
         [TestInitialize]
-        public void SetUp()
+        public override void SetUp()
         {
-            Setup();
+            base.SetUp();
+            Repo = new SummaryRepository(DatabaseMock.Object);
         }
 
         [TestMethod]

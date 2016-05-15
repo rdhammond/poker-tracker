@@ -5,9 +5,12 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using PokerTracker.BLL.Services;
 using PokerTracker.DAL.Repositories;
 using System.Linq;
+using System.Collections.Generic;
+using PokerTracker.BLL.Objects;
 
 namespace PokerTracker.Tests.BLL.Services
 {
+    [TestClass]
     public class CardRoomsServiceTests
         : LookupServiceTests<ICardRoomRepository, CardRoomDao, CardRoomRepositoryMock>
     {
@@ -18,6 +21,17 @@ namespace PokerTracker.Tests.BLL.Services
         {
             Setup();
             _service = new CardRoomsService(Mapper, RepoMock.Object);
+        }
+
+        private static void AssertListEquals(CardRoomDao[] expected, Dictionary<Guid, CardRoom> actual)
+        {
+            Assert.AreEqual(expected.Length, actual.Count);
+
+            foreach (var cardRoom in expected)
+            {
+                Assert.IsTrue(actual.ContainsKey(cardRoom.Id));
+                Assert.AreEqual(cardRoom.Name, actual[cardRoom.Id].Name);
+            }
         }
 
         [TestMethod]

@@ -1,13 +1,14 @@
 ﻿using Moq;
+using PokerTracker.DAL.DAO;
 using PokerTracker.DAL.Repositories;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace PokerTracker.Tests.BLL.Mocks
 {
-    public abstract class ReadOnlyRepositoryMock<TRepo,TEntity>
-        : Mock<TRepo>
+    public abstract class ReadOnlyRepositoryMock<TRepo,TEntity> : Mock<TRepo>
         where TRepo : class, IReadOnlyRepository<TEntity>
+        where TEntity : IDao
     {
         private readonly List<TEntity> _daoList = new List<TEntity>();
 
@@ -16,10 +17,9 @@ namespace PokerTracker.Tests.BLL.Mocks
             get { return _daoList; }
         }
 
-        public ReadOnlyRepositoryMock()
+        protected ReadOnlyRepositoryMock()
         {
-            Setup(x => x.FindAllAsync())
-                .Returns(() => Task.FromResult(DaoList));
+            Setup(x => x.FindAllAsync()).Returns(() => Task.FromResult(DaoList));
         }
     }
 }

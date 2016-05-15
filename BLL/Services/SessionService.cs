@@ -1,18 +1,14 @@
 ﻿using PokerTracker.BLL.Objects;
-using PokerTracker.DAL.Factories;
 using PokerTracker.DAL.Repositories;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using PokerTracker.DAL.DAO;
 using System.Linq;
-using AsyncPoco;
+using PokerTracker.DAL.Databases;
 
 namespace PokerTracker.BLL.Services
 {
-    using IMapper = AutoMapper.IMapper;
-
     public interface ISessionService
     {
         Task SaveSessionAsync(Session session);
@@ -21,19 +17,16 @@ namespace PokerTracker.BLL.Services
     public class SessionService : ISessionService
     {
         private readonly IMapper Mapper;
-        private readonly IDatabaseFactory DbFactory;
         private readonly ISessionRepository SessionRepo;
         private readonly ITimeEntryRepository TimeEntryRepo;
 
         public SessionService(
             IMapper mapper,
-            IDatabaseFactory dbFactory,
             ISessionRepository sessionRepo,
             ITimeEntryRepository timeEntryRepo
         )
         {
             Mapper = mapper;
-            DbFactory = dbFactory;
             SessionRepo = sessionRepo;
             TimeEntryRepo = timeEntryRepo;
         }
@@ -62,13 +55,12 @@ namespace PokerTracker.BLL.Services
 
         public async Task SaveSessionAsync(Session session)
         {
-            //using (var database = await DbFactory.CreateAsync())
-            using (var database = new Database("PokerTracker"))
-            using (var transaction = await database.GetTransactionAsync())
+            using (var transaction = Database.BeginTransaction())
             {
                 var sessionDao = Mapper.Map<SessionDao>(session);
-                await SessionRepo.SaveAsync(sessionDao, database);
-                await TimeEntryRepo.SaveAsync(FinalizeTimeEntries(session), database);
+                await SessionRepo.AddAsync(sessionDao);
+                await TimeEntryRepo.AddAsync(FinalizeTimeEntries(session));
+
                 transaction.Complete();
             }
         }

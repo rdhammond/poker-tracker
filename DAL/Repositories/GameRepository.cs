@@ -1,5 +1,5 @@
 ﻿using PokerTracker.DAL.DAO;
-using PokerTracker.DAL.Factories;
+using PokerTracker.DAL.Databases;
 
 namespace PokerTracker.DAL.Repositories
 {
@@ -8,8 +8,8 @@ namespace PokerTracker.DAL.Repositories
 
     public class GameRepository : ReadOnlyRepository<GameDao>, IGameRepository
     {
-        public GameRepository(IDatabaseFactory dbFactory)
-            : base(dbFactory)
+        public GameRepository(IDatabase database)
+            : base(database)
         { }
     }
 }

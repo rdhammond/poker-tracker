@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using PokerTracker.BLL.Objects;
+﻿using PokerTracker.BLL.Objects;
 using AutoMapper;
 using PokerTracker.DAL.DAO;
 

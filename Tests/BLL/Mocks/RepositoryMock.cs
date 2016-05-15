@@ -1,30 +1,23 @@
 ﻿using Moq;
+using PokerTracker.DAL.DAO;
 using PokerTracker.DAL.Repositories;
-using PokerTracker.DAL.Wrappers;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace PokerTracker.Tests.BLL.Mocks
 {
     public class RepositoryMock<TRepo,TEntity> : ReadOnlyRepositoryMock<TRepo,TEntity>
+        where TEntity : IDao
         where TRepo : class, IRepository<TEntity>
     {
         public RepositoryMock()
             : base()
         {
-            Setup(x => x.SaveAsync(It.IsAny<TEntity>()))
-                .Returns<TEntity>(e => Task.Run(() => DaoList.Add(e)));
+            Setup(x => x.AddAsync(It.IsAny<TEntity>()))
+                .Returns<TEntity>(e => Task.Run(() => DaoList.Add(e))); 
 
-            Setup(x => x.SaveAsync(It.IsAny<TEntity>(), It.IsAny<IDatabaseWrapper>()))
-                .Returns<TEntity,IDatabaseWrapper>((e,d) => Task.Run(() => DaoList.Add(e)));
-
-            Setup(x => x.SaveAsync(
-                It.IsAny<IEnumerable<TEntity>>(),
-                It.IsAny<IDatabaseWrapper>())
-            )
-                .Returns<IEnumerable<TEntity>, IDatabaseWrapper>((l, d) =>
-                     Task.Run(() => DaoList.AddRange(l))
-                 );
+            Setup(x => x.AddAsync(It.IsAny<IEnumerable<TEntity>>()))
+                .Returns<IEnumerable<TEntity>>(l => Task.Run(() => DaoList.AddRange(l)));
         }
     }
 }

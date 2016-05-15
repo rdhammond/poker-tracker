@@ -1,16 +1,10 @@
-﻿using AsyncPoco;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using PokerTracker.DAL.Attributes;
 
 namespace PokerTracker.DAL.DAO
 {
     [TableName("vw_TotalHourlyRate")]
-    public class TotalHourlyRateDao
+    public class TotalHourlyRateDao : IDao
     {
-        [ResultColumn]
         public decimal TotalHourlyRate { get; set; }
     }
 }

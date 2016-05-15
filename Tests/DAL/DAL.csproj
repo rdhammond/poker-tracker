@@ -35,17 +35,27 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AsyncPoco, Version=1.1.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\AsyncPoco.1.1.2\lib\net45\AsyncPoco.dll</HintPath>
+    <Reference Include="Dapper, Version=1.40.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Dapper.1.42\lib\net45\Dapper.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="Moq, Version=4.2.1510.2205, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Moq.4.2.1510.2205\lib\net40\Moq.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="StructureMap, Version=4.1.3.394, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\structuremap.4.1.3.394\lib\net40\StructureMap.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="StructureMap.Net4, Version=4.1.3.394, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\structuremap.4.1.3.394\lib\net40\StructureMap.Net4.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Transactions" />
   </ItemGroup>
   <Choose>
     <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">
@@ -62,9 +72,14 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="Factories\DatabaseFactory.cs" />
-    <Compile Include="Mocks\DatabaseFactoryMock.cs" />
-    <Compile Include="Mocks\DatabaseWrapper.cs" />
+    <Compile Include="AssertHelper.cs" />
+    <Compile Include="Databases\Database.cs" />
+    <Compile Include="Factories\DbConnectionFactory.cs" />
+    <Compile Include="Mocks\ConfigurationServiceMock.cs" />
+    <Compile Include="Mocks\ContainerMock.cs" />
+    <Compile Include="Mocks\DatabaseMock.cs" />
+    <Compile Include="Mocks\DbConnectionFactoryMock.cs" />
+    <Compile Include="Mocks\DbConnectionMock.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\GameRepository.cs" />
     <Compile Include="Repositories\CardRoomRepository.cs" />
@@ -80,6 +95,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Base\Base.csproj">
+      <Project>{D1E923FA-15FD-4C32-9401-153E18B15011}</Project>
+      <Name>Base</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\DAL\DAL.csproj">
       <Project>{E8893202-7DBD-481D-896B-529DA1FE7AF8}</Project>
       <Name>DAL</Name>

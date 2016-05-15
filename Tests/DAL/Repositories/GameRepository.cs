@@ -10,9 +10,10 @@ namespace PokerTracker.Tests.DAL.Repositories
         : ReadOnlyRepositoryTests<GameRepository, GameDao>
     {
         [TestInitialize]
-        public void SetUp()
+        public override void SetUp()
         {
-            Setup();
+            base.SetUp();
+            Repo = new GameRepository(DatabaseMock.Object);
         }
 
         [TestMethod]

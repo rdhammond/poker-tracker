@@ -16,7 +16,7 @@ namespace PokerTracker.BLL.Objects
         public string Limit { get; set; }
 
         [DataMember]
-        public int HoursPlayed { get; set; }
+        public decimal HoursPlayed { get; set; }
 
         [DataMember]
         public int DayOfMonth { get; set; }
@@ -37,7 +37,7 @@ namespace PokerTracker.BLL.Objects
         public decimal WinLossBB { get; set; }
 
         [DataMember]
-        public int HourlyRate { get; set; }
+        public decimal HourlyRate { get; set; }
 
         [DataMember]
         public decimal HourlyRateBB { get; set; }

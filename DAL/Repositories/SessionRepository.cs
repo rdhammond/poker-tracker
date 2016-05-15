@@ -1,5 +1,5 @@
 ﻿using PokerTracker.DAL.DAO;
-using PokerTracker.DAL.Factories;
+using PokerTracker.DAL.Databases;
 
 namespace PokerTracker.DAL.Repositories
 {
@@ -8,8 +8,8 @@ namespace PokerTracker.DAL.Repositories
 
     public class SessionRepository : Repository<SessionDao>, ISessionRepository
     {
-        public SessionRepository(IDatabaseFactory dbFactory)
-            : base(dbFactory)
+        public SessionRepository(IDatabase database)
+            : base(database)
         { }
     }
 }

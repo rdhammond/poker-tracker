@@ -35,7 +35,7 @@ namespace PokerTracker.Tests.WCF
 
         #region AssertLookupDictionary
 
-        private void AssertLookupDictionary<TExpected>(
+        private static void AssertLookupDictionary<TExpected>(
             IEnumerable<TExpected> expected,
             Dictionary<Guid, string> actual
         )
@@ -48,7 +48,7 @@ namespace PokerTracker.Tests.WCF
             );
         }
 
-        private void AssertLookupDictionary<TExpected, TValue>(
+        private static void AssertLookupDictionary<TExpected, TValue>(
             IEnumerable<TExpected> expected,
             Dictionary<Guid, TValue> actual,
             Action<TExpected, TValue> assertEqual

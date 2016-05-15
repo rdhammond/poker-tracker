@@ -1,7 +1,7 @@
 ﻿using PokerTracker.DAL.DAO;
-using PokerTracker.DAL.Factories;
 using System.Linq;
 using System.Threading.Tasks;
+using PokerTracker.DAL.Databases;
 
 namespace PokerTracker.DAL.Repositories
 {
@@ -10,11 +10,10 @@ namespace PokerTracker.DAL.Repositories
         Task<decimal> GetTotalHourlyRateAsync();
     }
 
-    public class TotalHourlyRateRepository
-        : Repository<TotalHourlyRateDao>, ITotalHourlyRateRepository
+    public class TotalHourlyRateRepository : Repository<TotalHourlyRateDao>, ITotalHourlyRateRepository
     {
-        public TotalHourlyRateRepository(IDatabaseFactory dbFactory)
-            : base(dbFactory)
+        public TotalHourlyRateRepository(IDatabase database)
+            : base(database)
         { }
 
         public async Task<decimal> GetTotalHourlyRateAsync()

@@ -1,56 +1,32 @@
-﻿using AsyncPoco;
-using PokerTracker.DAL.Factories;
-using PokerTracker.DAL.Wrappers;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using PokerTracker.DAL.DAO;
+using PokerTracker.DAL.Databases;
 
 namespace PokerTracker.DAL.Repositories
 {
     public interface IRepository<T> : IReadOnlyRepository<T>
+        where T : IDao
     {
-        Task SaveAsync(T entity);
-        //Task SaveAsync(T entity, IDatabaseWrapper database);
-        Task SaveAsync(T entity, Database database);
-        Task SaveAsync(IEnumerable<T> entities);
-        //Task SaveAsync(IEnumerable<T> entities, IDatabaseWrapper database);
-        Task SaveAsync(IEnumerable<T> entities, Database database);
+        Task AddAsync(T entity);
+        Task AddAsync(IEnumerable<T> entities);
     }
 
     public abstract class Repository<T> : ReadOnlyRepository<T>, IRepository<T>
+        where T : IDao
     {
-        protected Repository(IDatabaseFactory dbFactory)
-            : base(dbFactory)
+        protected Repository(IDatabase database)
+            : base(database)
         { }
 
-        public async Task SaveAsync(T entity)
+        public async Task AddAsync(T entity)
         {
-            using (var database = await DbFactory.CreateAsync())
-            {
-                await SaveAsync(entity, database as Database);
-            }
+            await Database.InsertAsync(entity);
         }
 
-        //public Task SaveAsync(T entity, IDatabaseWrapper database)
-        public async Task SaveAsync(T entity, Database database)
+        public async Task AddAsync(IEnumerable<T> entities)
         {
-            await database.InsertAsync(entity);
-        }
-
-        public async Task SaveAsync(IEnumerable<T> entities)
-        {
-            using (var database = await DbFactory.CreateAsync())
-            {
-                await SaveAsync(entities, database as Database);
-            }
-        }
-
-        //public async Task SaveAsync(IEnumerable<T> entities, IDatabaseWrapper database)
-        public async Task SaveAsync(IEnumerable<T> entities, Database database)
-        {
-            foreach (var entity in entities)
-            {
-                await database.SaveAsync(entity);
-            }
+            await Database.InsertAsync(entities);
         }
     }
 }

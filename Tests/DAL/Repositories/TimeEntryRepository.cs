@@ -5,13 +5,14 @@ using System;
 
 namespace PokerTracker.Tests.DAL.Repositories
 {
-    public class TimeEntryRepositoryTests
-        : RepositoryTests<TimeEntryRepository, TimeEntryDao>
+    [TestClass]
+    public class TimeEntryRepositoryTests : RepositoryTests<TimeEntryRepository, TimeEntryDao>
     {
         [TestInitialize]
-        public void SetUp()
+        public override void SetUp()
         {
-            Setup();
+            base.SetUp();
+            Repo = new TimeEntryRepository(DatabaseMock.Object);
         }
 
         [TestMethod]
@@ -55,9 +56,9 @@ namespace PokerTracker.Tests.DAL.Repositories
         }
 
         [TestMethod]
-        public void SaveAsyncSingle_Works()
+        public void InsertAsyncSingle_Works()
         {
-            TestSaveAsync(new TimeEntryDao
+            TestInsertAsync(new TimeEntryDao
             {
                 DealerTokes = 1,
                 Id = Guid.NewGuid(),
@@ -70,9 +71,9 @@ namespace PokerTracker.Tests.DAL.Repositories
         }
 
         [TestMethod]
-        public void SaveAsyncMultiple_Works()
+        public void InsertAsyncMultiple_Works()
         {
-            TestSaveAsync(new[]
+            TestInsertAsync(new[]
             {
                 new TimeEntryDao
                 {

@@ -5,6 +5,7 @@ using System.Linq;
 using PokerTracker.BLL.Objects;
 using AutoMapper;
 using PokerTracker.BLL.Services;
+using PokerTracker.DAL.DAO;
 
 namespace PokerTracker.Tests.BLL._sessionSvcs
 {
@@ -12,8 +13,7 @@ namespace PokerTracker.Tests.BLL._sessionSvcs
     public class SessionServiceTests
     {
         private IMapper _mapper;
-        private DatabaseFactoryMock _dbFactMock;
-        private DatabaseWrapperMock _dbMock;
+        private DatabaseMock<SessionDao> _databaseMock;
         private SessionRepositoryMock _sessionRepoMock;
         private TimeEntryRepositoryMock _timeEntryRepoMock;
         private ISessionService _sessionSvc;
@@ -22,14 +22,12 @@ namespace PokerTracker.Tests.BLL._sessionSvcs
         public void SetUp()
         {
             _mapper = MapperFactory.Create();
-            _dbFactMock = new DatabaseFactoryMock();
-            _dbMock = _dbFactMock.DatabaseWrapperMock;
+            _databaseMock = new DatabaseMock<SessionDao>();
             _sessionRepoMock = new SessionRepositoryMock();
             _timeEntryRepoMock = new TimeEntryRepositoryMock();
 
             _sessionSvc = new SessionService(
                 _mapper,
-                _dbFactMock.Object,
                 _sessionRepoMock.Object,
                 _timeEntryRepoMock.Object
             );
@@ -95,13 +93,6 @@ namespace PokerTracker.Tests.BLL._sessionSvcs
             }
         }
 
-        public void AssertTransactionSuccessful()
-        {
-            Assert.IsTrue(_dbMock.Transactions.Count == 1);
-            Assert.IsTrue(_dbMock.AllTransactionComplete);
-            Assert.IsTrue(_dbMock.AllTransactionsDisposed);
-        }
-
         [TestMethod]
         public void SaveSessionAsync_NoEntriesWorks()
         {
@@ -127,7 +118,6 @@ namespace PokerTracker.Tests.BLL._sessionSvcs
 
             AssertSessionSaved(expectedSession);
             Assert.IsTrue(!_timeEntryRepoMock.DaoList.Any());
-            AssertTransactionSuccessful();
         }
 
         [TestMethod]
@@ -167,7 +157,6 @@ namespace PokerTracker.Tests.BLL._sessionSvcs
 
             AssertSessionSaved(expectedSession);
             AssertTimeEntriesCorrect(expectedSession);
-            AssertTransactionSuccessful();
         }
 
         [TestMethod]
@@ -223,7 +212,6 @@ namespace PokerTracker.Tests.BLL._sessionSvcs
 
             AssertSessionSaved(expectedSession);
             AssertTimeEntriesCorrect(expectedSession);
-            AssertTransactionSuccessful();
         }
     }
 }

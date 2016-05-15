@@ -5,13 +5,14 @@ using System;
 
 namespace PokerTracker.Tests.DAL.Repositories
 {
-    public class SessionRepositoryTests
-        : RepositoryTests<SessionRepository,SessionDao>
+    [TestClass]
+    public class SessionRepositoryTests : RepositoryTests<SessionRepository,SessionDao>
     {
         [TestInitialize]
-        public void SetUp()
+        public override void SetUp()
         {
-            Setup();
+            base.SetUp();
+            Repo = new SessionRepository(DatabaseMock.Object);
         }
 
         [TestMethod]
@@ -55,9 +56,9 @@ namespace PokerTracker.Tests.DAL.Repositories
         }
 
         [TestMethod]
-        public void SaveAsyncSingle_Works()
+        public void InsertAsyncSingle_Works()
         {
-            TestSaveAsync(new SessionDao
+            TestInsertAsync(new SessionDao
             {
                 Id = Guid.NewGuid(),
                 BigBlind = 4,
@@ -69,9 +70,9 @@ namespace PokerTracker.Tests.DAL.Repositories
         }
 
         [TestMethod]
-        public void SaveAsyncMultiple_Works()
+        public void InsertAsyncMultiple_Works()
         {
-            TestSaveAsync(new[]
+            TestInsertAsync(new[]
             {
                 new SessionDao
                 {

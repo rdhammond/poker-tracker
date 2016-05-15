@@ -1,10 +1,9 @@
-﻿using AsyncPoco;
+﻿using PokerTracker.DAL.Attributes;
 using System;
 
 namespace PokerTracker.DAL.DAO
 {
     [TableName("Sessions")]
-    [PrimaryKey("Id")]
     public class SessionDao : IdDao
     {
         public Guid CardRoomId { get; set; }

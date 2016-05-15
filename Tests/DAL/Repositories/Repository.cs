@@ -1,28 +1,24 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using PokerTracker.DAL.DAO;
 using PokerTracker.DAL.Repositories;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace PokerTracker.Tests.DAL.Repositories
 {
-    public abstract class RepositoryTests<TRepo,TEntity>
-        : ReadOnlyRepositoryTests<TRepo,TEntity>
-        where TRepo : ReadOnlyRepository<TEntity>
+    public abstract class RepositoryTests<TRepo,TEntity> : ReadOnlyRepositoryTests<TRepo,TEntity>
+        where TEntity : IDao
+        where TRepo : Repository<TEntity>
     {
-        protected void TestSaveAsync(TEntity entity)
+        protected void TestInsertAsync(TEntity entity)
         {
-            var repo = (IRepository<TEntity>)Repo;
-
-            repo.SaveAsync(entity).Wait();
+            Repo.AddAsync(entity).Wait();
             Assert.IsTrue(DaoList.Contains(entity));
         }
 
-        protected void TestSaveAsync(IEnumerable<TEntity> entitiesEnum)
+        protected void TestInsertAsync(IEnumerable<TEntity> entities)
         {
-            var entities = entitiesEnum as TEntity[] ?? entitiesEnum.ToArray();
-            var repo = (IRepository<TEntity>)Repo;
-
-            repo.SaveAsync(entities).Wait();
+            Repo.AddAsync(entities).Wait();
             Assert.IsTrue(entities.All(x => DaoList.Contains(x)));
         }
     }

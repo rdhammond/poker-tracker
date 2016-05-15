@@ -1,9 +1,10 @@
-﻿using System;
+﻿using PokerTracker.DAL.Attributes;
+using System;
 
 namespace PokerTracker.DAL.DAO
 {
-    public abstract class IdDao
+    public class IdDao : IDao
     {
-        public Guid Id { get; set; }
+        [IdField] public Guid Id { get; set; }
     }
 }

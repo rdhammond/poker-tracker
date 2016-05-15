@@ -9,8 +9,7 @@ namespace PokerTracker.BLL.Services
     { }
 
     public class CardRoomsService
-        : LookupService<CardRoomDao, CardRoom, ICardRoomRepository>,
-            ICardRoomsService
+        : LookupService<CardRoomDao, CardRoom, ICardRoomRepository>, ICardRoomsService
     {
         public CardRoomsService(IMapper mapper, ICardRoomRepository repository)
             : base(mapper, repository)

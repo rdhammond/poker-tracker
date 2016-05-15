@@ -30,8 +30,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AsyncPoco, Version=1.1.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\AsyncPoco.1.1.2\lib\net45\AsyncPoco.dll</HintPath>
+    <Reference Include="Dapper, Version=1.40.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Dapper.1.42\lib\net45\Dapper.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="StructureMap, Version=4.1.3.394, Culture=neutral, processorArchitecture=MSIL">
@@ -45,6 +45,7 @@
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Transactions" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -53,15 +54,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Attributes\IdFieldAttribute.cs" />
+    <Compile Include="Attributes\TableNameAttribute.cs" />
     <Compile Include="DAO\CardRoomDao.cs" />
     <Compile Include="DAO\GameDao.cs" />
+    <Compile Include="DAO\IDao.cs" />
     <Compile Include="DAO\IdDao.cs" />
     <Compile Include="DAO\IdNameDao.cs" />
     <Compile Include="DAO\SessionDao.cs" />
     <Compile Include="DAO\SummaryDao.cs" />
     <Compile Include="DAO\TimeEntryDao.cs" />
     <Compile Include="DAO\TotalHourlyRateDao.cs" />
-    <Compile Include="Factories\DatabaseFactory.cs" />
+    <Compile Include="Databases\Database.cs" />
+    <Compile Include="Extensions\TypeToSql.cs" />
+    <Compile Include="Factories\DbConnectionFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DALRegistry.cs" />
     <Compile Include="Repositories\CardRoomRepository.cs" />
@@ -72,7 +78,6 @@
     <Compile Include="Repositories\SummaryRepository.cs" />
     <Compile Include="Repositories\TimeEntryRepository.cs" />
     <Compile Include="Repositories\TotalHourlyRateRepository.cs" />
-    <Compile Include="Wrappers\DatabaseWrapper.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -82,6 +87,13 @@
     <Content Include="Scripts\2016-04-23 02 Base DB.sql" />
     <Content Include="Scripts\2016-04-23 03 Load Lookups.sql" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Base\Base.csproj">
+      <Project>{D1E923FA-15FD-4C32-9401-153E18B15011}</Project>
+      <Name>Base</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

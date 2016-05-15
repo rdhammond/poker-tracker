@@ -9,9 +9,10 @@ namespace PokerTracker.Tests.DAL.Repositories
         : ReadOnlyRepositoryTests<TotalHourlyRateRepository, TotalHourlyRateDao>
     {
         [TestInitialize]
-        public void SetUp()
+        public override void SetUp()
         {
-            Setup();
+            base.SetUp();
+            Repo = new TotalHourlyRateRepository(DatabaseMock.Object);
         }
 
         [TestMethod]
@@ -21,8 +22,7 @@ namespace PokerTracker.Tests.DAL.Repositories
 
             DaoList.Add(new TotalHourlyRateDao { TotalHourlyRate = TEST_HOURLY_RATE });
 
-            var repo = CreateRepository();
-            var actual = repo.GetTotalHourlyRateAsync().Result;
+            var actual = Repo.GetTotalHourlyRateAsync().Result;
             Assert.AreEqual(TEST_HOURLY_RATE, actual);
         }
     }

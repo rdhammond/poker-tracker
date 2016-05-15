@@ -11,8 +11,8 @@ namespace PokerTracker.Tests.WCF.Mocks
         public SessionServiceMock()
         {
             Setup(x => x.SaveSessionAsync(It.IsAny<Session>()))
-            .Returns(() => Task.Delay(1))
-            .Verifiable();
+                .Returns(() => Task.Delay(1))
+                .Verifiable();
         }
     }
 }

@@ -1,5 +1,5 @@
 ﻿using PokerTracker.DAL.DAO;
-using PokerTracker.DAL.Factories;
+using PokerTracker.DAL.Databases;
 
 namespace PokerTracker.DAL.Repositories
 {
@@ -8,8 +8,8 @@ namespace PokerTracker.DAL.Repositories
 
     public class SummaryRepository : Repository<SummaryDao>, ISummaryRepository
     {
-        public SummaryRepository(IDatabaseFactory dbFactory)
-            : base(dbFactory)
+        public SummaryRepository(IDatabase database)
+            : base(database)
         { }
     }
 }

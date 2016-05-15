@@ -26,9 +26,9 @@ namespace PokerTracker.BLL.Services
             _totalHourlyRateRepo = totalHourlyRateRepo;
         }
 
-        public Task<decimal> GetTotalHourlyRateAsync()
+        public async Task<decimal> GetTotalHourlyRateAsync()
         {
-            return _totalHourlyRateRepo.GetTotalHourlyRateAsync();
+            return await _totalHourlyRateRepo.GetTotalHourlyRateAsync();
         }
     }
 }

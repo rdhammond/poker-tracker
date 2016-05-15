@@ -1,5 +1,6 @@
 ﻿using Moq;
 using PokerTracker.BLL.Services;
+using PokerTracker.DAL.DAO;
 using PokerTracker.DAL.Repositories;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -13,6 +14,7 @@ namespace PokerTracker.Tests.WCF.Mocks
 
     public abstract class LookupServiceMock<TService,TIn,TOut,TRepo>
         : Mock<TService>, ILookupServiceMock<TOut>
+        where TIn : IDao
         where TRepo : IReadOnlyRepository<TIn>
         where TService : class, ILookupService<TOut>
     {

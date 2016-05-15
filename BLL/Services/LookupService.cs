@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
-using PokerTracker.BLL.Objects;
+using PokerTracker.DAL.DAO;
 using PokerTracker.DAL.Repositories;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -14,6 +13,7 @@ namespace PokerTracker.BLL.Services
 
     public abstract class LookupService<TIn, TOut, TRepo>
         : ILookupService<TOut>
+        where TIn : IDao
         where TRepo : IReadOnlyRepository<TIn>
     {
         protected readonly IMapper _mapper;

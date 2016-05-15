@@ -1,4 +1,5 @@
-﻿using PokerTracker.DAL.Factories;
+﻿using PokerTracker.DAL.Databases;
+using PokerTracker.DAL.Factories;
 using PokerTracker.DAL.Repositories;
 using StructureMap;
 
@@ -8,7 +9,10 @@ namespace PokerTracker.DAL
     {
         public DALRegistry()
         {
-            For<IDatabaseFactory>().Use<DatabaseFactory>().Singleton();
+            IncludeRegistry<BaseRegistry>();
+
+            For<IDatabase>().Use<Database>().Singleton();
+            For<IDbConnectionFactory>().Use<DbConnectionFactory>().Singleton();
             For<ICardRoomRepository>().Use<CardRoomRepository>().Singleton();
             For<IGameRepository>().Use<GameRepository>().Singleton();
             For<ISessionRepository>().Use<SessionRepository>().Singleton();
