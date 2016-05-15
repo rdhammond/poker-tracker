@@ -46,7 +46,7 @@ namespace PokerTracker.Tests.DAL.Repositories
                         && e.CardRoomId == a.CardRoomId
                         && e.EndTime == a.EndTime
                         && e.GameId == a.GameId
-                        && e.HoursActive == a.HoursActive
+                        && e.PercentOfTimePlayed == a.PercentOfTimePlayed
                         && e.Id == a.Id
                         && e.Notes == a.Notes
                         && e.SmallBlind == a.SmallBlind

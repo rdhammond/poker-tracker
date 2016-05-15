@@ -10,7 +10,7 @@ GO
 
 IF NOT EXISTS(SELECT 1 FROM INFORMATION_SCHEMA.COLUMNS WHERE COLUMN_NAME = 'HoursActive' AND TABLE_NAME = 'Sessions')
 ALTER TABLE [dbo].[Sessions]
-ADD [HoursActive] AS (DATEDIFF(minute, [StartTime], [EndTime]) / 60.0 * [PercentOfTimePlayed])
+ADD [HoursActive] AS DATEDIFF(minute, [StartTime], [EndTime]) * ([PercentOfTimePlayed] / 100.0) / 60.0
 GO
 
 INSERT INTO [dbo].[SchemaLastUpdated](Id, LastUpdateDate, LastScriptFile)
