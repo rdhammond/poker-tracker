@@ -19,6 +19,7 @@
                     <legend>Start New Session</legend>
                     <div>
                         <label>
+                            Card Room
                             <select id="ddlCardRoom" required ng-model="vm.session.CardRoomId">
                                 <option ng-repeat="option in vm.cardRooms" value="{{option.Key}}">{{option.Value}}</option>
                             </select>

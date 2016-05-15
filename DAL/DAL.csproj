@@ -88,6 +88,7 @@
     <Content Include="Scripts\2016-04-23 03 Load Lookups.sql" />
     <Content Include="Scripts\2016-05-15 01 Convert HoursActive to PercentOfTimePlayed.sql" />
     <Content Include="Scripts\2016-05-15 02 Add DB Version Tracking.sql" />
+    <Content Include="Scripts\2016-05-15 03 Change HoursActive to Computed Column.sql" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Base\Base.csproj">
