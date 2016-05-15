@@ -32,7 +32,7 @@ namespace PokerTracker.BLL.Objects
         public DateTime? EndTime { get; set; }
 
         [DataMember]
-        public decimal? HoursActive { get; set; }
+        public int? PercentOfTimePlayed { get; set; }
 
         [DataMember]
         public string Notes { get; set; }

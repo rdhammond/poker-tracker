@@ -55,7 +55,7 @@ namespace PokerTracker.Tests.BLL._sessionSvcs
             Assert.AreEqual(expected.SmallBlind, actual.SmallBlind);
             Assert.AreEqual(expected.StartTime, actual.StartTime);
             Assert.AreEqual(expected.EndTime, actual.EndTime);
-            Assert.AreEqual(expected.HoursActive, actual.HoursActive);
+            Assert.AreEqual(expected.PercentOfTimePlayed, actual.PercentOfTimePlayed);
             Assert.AreEqual(expected.Notes, actual.Notes);
         }
 
@@ -97,7 +97,7 @@ namespace PokerTracker.Tests.BLL._sessionSvcs
         public void SaveSessionAsync_NoEntriesWorks()
         {
             const string NOTES = "Test Notes";
-            const decimal HOURS_ACTIVE = 2.1m;
+            const int PERCENT_ACTIVE = 40;
 
             var expectedSession = new Session
             {
@@ -108,7 +108,7 @@ namespace PokerTracker.Tests.BLL._sessionSvcs
                 SmallBlind = 2,
                 StartTime = DateTime.Now.AddHours(-1),
                 EndTime = DateTime.Now,
-                HoursActive = HOURS_ACTIVE,
+                PercentOfTimePlayed = PERCENT_ACTIVE,
                 Notes = NOTES
             };
 
@@ -123,7 +123,7 @@ namespace PokerTracker.Tests.BLL._sessionSvcs
         [TestMethod]
         public void SaveSessionAsync_OneEntryWorks()
         {
-            const decimal HOURS_ACTIVE = 1m;
+            const int PERCENT_ACTIVE = 100;
 
             var expectedSession = new Session
             {
@@ -134,7 +134,7 @@ namespace PokerTracker.Tests.BLL._sessionSvcs
                 SmallBlind = 4,
                 StartTime = DateTime.Now.AddHours(-2),
                 EndTime = DateTime.Now,
-                HoursActive = HOURS_ACTIVE
+                PercentOfTimePlayed = PERCENT_ACTIVE
             };
 
             expectedSession.TimeEntries.AddRange(new[]
@@ -162,7 +162,7 @@ namespace PokerTracker.Tests.BLL._sessionSvcs
         [TestMethod]
         public void SaveSessionAsync_ThreeOrMoreEntriesWork()
         {
-            const decimal HOURS_ACTIVE = 4.11m;
+            const int PERCENT_ACTIVE = 75;
 
             var expectedSession = new Session
             {
@@ -173,7 +173,7 @@ namespace PokerTracker.Tests.BLL._sessionSvcs
                 SmallBlind = 40,
                 StartTime = DateTime.Now.AddDays(-1),
                 EndTime = DateTime.Now.AddDays(-1).AddHours(2),
-                HoursActive = HOURS_ACTIVE
+                PercentOfTimePlayed = PERCENT_ACTIVE
             };
 
             expectedSession.TimeEntries.AddRange(new[]

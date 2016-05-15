@@ -13,6 +13,7 @@ namespace PokerTracker.DAL.DAO
         public DateTime? EndTime { get; set; }
         public string Notes { get; set; }
         public decimal? HoursActive { get; set; }
+        public int? PercentOfTimePlayed { get; set; }
         public Guid GameId { get; set; }
     }
 }
