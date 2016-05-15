@@ -111,6 +111,14 @@
                 expectDeepEqual(controller.timeEntry, {});
             });
         });
+
+        describe('#sessionSaved', function () {
+            it('hides form', function () {
+                controller.isShown = true;
+                $rootScope.$emit('sessionSaved');
+                expect(controller.isShown).toBe(false);
+            });
+        });
     });
 
     function expectDeepEqual(actual, expected) {

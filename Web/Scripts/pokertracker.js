@@ -199,6 +199,7 @@
         $rootScope.$on('sessionStarted', addInitialEntry);
         $rootScope.$on('sessionFinished', resetViewModel);
         $rootScope.$on('sessionCanceled', resetViewModel);
+        $rootScope.$on('sessionSaved', function () { vm.isShown = false; });
 
         function addTimeEntry() {
             vm.timeEntry.RecordedAt = msDate.from(new Date());
