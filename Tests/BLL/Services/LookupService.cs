@@ -54,7 +54,7 @@ namespace PokerTracker.Tests.BLL.Services
         )
             where TIn : IDao
         {
-            Assert.Equals(expected.Count(), actual.Count());
+            Assert.AreEqual(expected.Count(), actual.Count());
 
             var expectedDict = expected.ToDictionary(x => getDaoId(x));
             
