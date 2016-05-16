@@ -6,6 +6,7 @@ using PokerTracker.BLL.Objects;
 using AutoMapper;
 using PokerTracker.BLL.Services;
 using PokerTracker.DAL.DAO;
+using PokerTracker.Tests.Comparers.Objects;
 
 namespace PokerTracker.Tests.BLL._sessionSvcs
 {
@@ -47,16 +48,7 @@ namespace PokerTracker.Tests.BLL._sessionSvcs
 
             var actual = _sessionRepoMock.DaoList.First();
             Assert.IsNotNull(actual);
-
-            Assert.AreEqual(expected.BigBlind, actual.BigBlind);
-            Assert.AreEqual(expected.CardRoomId, actual.CardRoomId);
-            Assert.AreEqual(expected.GameId, actual.GameId);
-            Assert.AreEqual(expected.Id, actual.Id);
-            Assert.AreEqual(expected.SmallBlind, actual.SmallBlind);
-            Assert.AreEqual(expected.StartTime, actual.StartTime);
-            Assert.AreEqual(expected.EndTime, actual.EndTime);
-            Assert.AreEqual(expected.PercentOfTimePlayed, actual.PercentOfTimePlayed);
-            Assert.AreEqual(expected.Notes, actual.Notes);
+            Assert.IsTrue(new SessionComparer().Equals(expected, actual));
         }
 
         public void AssertTimeEntriesCorrect(Session expectedSession)
@@ -66,6 +58,8 @@ namespace PokerTracker.Tests.BLL._sessionSvcs
             var expectedTimeEntriesDict = expectedSession.TimeEntries.ToDictionary(x => x.Id);
             Assert.AreEqual(expectedTimeEntriesDict.Count, _timeEntryRepoMock.DaoList.Count);
 
+            var timeEntryComparer = new TimeEntryComparer();
+
             foreach (var actual in _timeEntryRepoMock.DaoList.OrderBy(x => x.RecordedAt))
             {
                 Assert.IsNotNull(actual);
@@ -73,6 +67,7 @@ namespace PokerTracker.Tests.BLL._sessionSvcs
                 var expected = expectedTimeEntriesDict[actual.Id];
                 Assert.IsNotNull(expected);
                 Assert.AreEqual(expectedSession.Id, actual.SessionId);
+                Assert.IsTrue(timeEntryComparer.Equals(expected, actual));
 
                 Assert.AreEqual(expected.DealerTokes, actual.DealerTokes);
                 Assert.AreEqual(expected.RecordedAt, actual.RecordedAt);

@@ -14,6 +14,7 @@ namespace PokerTracker.BLL
             For<IGamesService>().Use<GamesService>();
             For<ISessionService>().Use<SessionService>();
             For<ISummaryService>().Use<SummaryService>();
+            For<IStatisticsService>().Use<StatisticsService>();
 
             For<IMapper>().Use(
                 () => new MapperConfiguration(x => x.AddProfile<BLLProfile>())

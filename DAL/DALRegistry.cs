@@ -18,7 +18,7 @@ namespace PokerTracker.DAL
             For<ISessionRepository>().Use<SessionRepository>().Singleton();
             For<ISummaryRepository>().Use<SummaryRepository>().Singleton();
             For<ITimeEntryRepository>().Use<TimeEntryRepository>().Singleton();
-            For<ITotalHourlyRateRepository>().Use<TotalHourlyRateRepository>().Singleton();
+            For<IStatisticsRepository>().Use<StatisticsRepository>().Singleton();
         }
     }
 }

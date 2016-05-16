@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using PokerTracker.DAL.DAO;
 using PokerTracker.DAL.Repositories;
+using PokerTracker.Tests.Comparers.Dao;
 using System;
 
 namespace PokerTracker.Tests.DAL.Repositories
@@ -18,47 +19,37 @@ namespace PokerTracker.Tests.DAL.Repositories
         [TestMethod]
         public void FindAll_Works()
         {
-            TestFindAllAsync(
-                new[]
+            var entities = new[]
+            {
+                new SessionDao
                 {
-                    new SessionDao
-                    {
-                        Id = Guid.NewGuid(),
-                        BigBlind = 3,
-                        CardRoomId = Guid.NewGuid(),
-                        GameId = Guid.NewGuid(),
-                        SmallBlind = 1,
-                        StartTime = DateTime.Now
-                    },
-                    new SessionDao
-                    {
-                        Id = Guid.NewGuid(),
-                        BigBlind = 3,
-                        CardRoomId = Guid.NewGuid(),
-                        GameId = Guid.NewGuid(),
-                        SmallBlind = 1,
-                        StartTime = DateTime.Now
-                    }
+                    Id = Guid.NewGuid(),
+                    BigBlind = 3,
+                    CardRoomId = Guid.NewGuid(),
+                    GameId = Guid.NewGuid(),
+                    SmallBlind = 1,
+                    StartTime = DateTime.Now
                 },
-                (e, a) =>
+                new SessionDao
                 {
-                    return e.BigBlind == a.BigBlind
-                        && e.CardRoomId == a.CardRoomId
-                        && e.EndTime == a.EndTime
-                        && e.GameId == a.GameId
-                        && e.PercentOfTimePlayed == a.PercentOfTimePlayed
-                        && e.Id == a.Id
-                        && e.Notes == a.Notes
-                        && e.SmallBlind == a.SmallBlind
-                        && e.StartTime == a.StartTime;
+                    Id = Guid.NewGuid(),
+                    BigBlind = 3,
+                    CardRoomId = Guid.NewGuid(),
+                    GameId = Guid.NewGuid(),
+                    SmallBlind = 1,
+                    StartTime = DateTime.Now
                 }
-            );
+            };
+            DatabaseMock.DaoList.AddRange(entities);
+
+            var actual = Repo.FindAllAsync().Result;
+            AssertListWithId(DatabaseMock.DaoList, actual, new SessionComparer());
         }
 
         [TestMethod]
         public void InsertAsyncSingle_Works()
         {
-            TestInsertAsync(new SessionDao
+            var entity = new SessionDao
             {
                 Id = Guid.NewGuid(),
                 BigBlind = 4,
@@ -66,13 +57,15 @@ namespace PokerTracker.Tests.DAL.Repositories
                 GameId = Guid.NewGuid(),
                 SmallBlind = 2,
                 StartTime = DateTime.Now.AddDays(-2)
-            });
+            };
+
+            TestInsertAsync(entity, new SessionComparer());
         }
 
         [TestMethod]
         public void InsertAsyncMultiple_Works()
         {
-            TestInsertAsync(new[]
+            var entities = new[]
             {
                 new SessionDao
                 {
@@ -92,7 +85,9 @@ namespace PokerTracker.Tests.DAL.Repositories
                     SmallBlind = 1,
                     StartTime = DateTime.Now
                 }
-            });
+            };
+
+            TestInsertAsync(entities, new SessionComparer());
         }
     }
 }

@@ -38,9 +38,9 @@ namespace PokerTracker.WCF
         [OperationContract]
         Task<Dictionary<Guid,Summary>> GetSessionSummariesAsync();
 
-        [WebGet(UriTemplate = "TotalHourlyRate", ResponseFormat = WebMessageFormat.Json)]
+        [WebGet(UriTemplate = "Statistics", ResponseFormat = WebMessageFormat.Json)]
         [OperationContract]
-        Task<decimal> GetTotalHourlyRateAsync();
+        Task<Statistics> GetStatisticsAsync();
     }
 
     [AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Allowed)]
@@ -50,6 +50,7 @@ namespace PokerTracker.WCF
         private IGamesService GamesSvc;
         private ISessionService SessionSvc;
         private ISummaryService SummarySvc;
+        private IStatisticsService StatisticsSvc;
 
         public PokerTrackerService()
         {
@@ -58,7 +59,9 @@ namespace PokerTracker.WCF
                 Initialize(container.GetInstance<ICardRoomsService>(),
                     container.GetInstance<IGamesService>(),
                     container.GetInstance<ISessionService>(),
-                    container.GetInstance<ISummaryService>());
+                    container.GetInstance<ISummaryService>(),
+                    container.GetInstance<IStatisticsService>()
+                );
             }
         }
 
@@ -66,23 +69,26 @@ namespace PokerTracker.WCF
             ICardRoomsService cardRoomsSvc,
             IGamesService gamesSvc,
             ISessionService sessionSvc,
-            ISummaryService summarySvc
+            ISummaryService summarySvc,
+            IStatisticsService statisticsSvc
         )
         {
-            Initialize(cardRoomsSvc, gamesSvc, sessionSvc, summarySvc);
+            Initialize(cardRoomsSvc, gamesSvc, sessionSvc, summarySvc, statisticsSvc);
         }
 
         private void Initialize(
             ICardRoomsService cardRoomsSvc,
             IGamesService gamesSvc,
             ISessionService sessionSvc,
-            ISummaryService summarySvc
+            ISummaryService summarySvc,
+            IStatisticsService statisticsSvc
         )
         {
             CardRoomsSvc = cardRoomsSvc;
             GamesSvc = gamesSvc;
             SessionSvc = sessionSvc;
             SummarySvc = summarySvc;
+            StatisticsSvc = statisticsSvc;
         }
 
         public async Task<Dictionary<Guid, string>> GetCardRoomsAsync()
@@ -124,11 +130,11 @@ namespace PokerTracker.WCF
             }
         }
 
-        public async Task<decimal> GetTotalHourlyRateAsync()
+        public async Task<Statistics> GetStatisticsAsync()
         {
             try
             {
-                return await SummarySvc.GetTotalHourlyRateAsync();
+                return await StatisticsSvc.GetAsync();
             }
             catch (Exception e)
             {

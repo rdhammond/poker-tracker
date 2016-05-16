@@ -7,6 +7,7 @@ using PokerTracker.DAL.Repositories;
 using System.Linq;
 using PokerTracker.BLL.Objects;
 using System.Collections.Generic;
+using PokerTracker.Tests.Comparers.Objects;
 
 namespace PokerTracker.Tests.BLL.Services
 {
@@ -23,29 +24,17 @@ namespace PokerTracker.Tests.BLL.Services
             _service = new GamesService(Mapper, RepoMock.Object);
         }
 
-        private static void AssertListEqual(GameDao[] expected, Dictionary<Guid, Game> actual)
-        {
-            Assert.AreEqual(expected.Length, actual.Count);
-
-            foreach (var game in expected)
-            {
-                Assert.IsTrue(actual.ContainsKey(game.Id));
-                Assert.AreEqual(game.Name, actual[game.Id].Name);
-            }
-        }
-
         [TestMethod]
         public void FindAllAsync_Works()
         {
-            var daos = new[] {
+            var expected = new[] {
                 new GameDao { Id = Guid.NewGuid(), Name = "Limit Hold 'Em" },
                 new GameDao { Id = Guid.NewGuid(), Name = "Razz" }
             };
+            RepoMock.DaoList.AddRange(expected);
 
-            DaoList.AddRange(daos);
-
-            var objects = _service.GetAllAsync().Result
-                .ToDictionary(x => x.Id);
+            var actual = _service.GetAllAsync().Result;
+            AssertDaoToListWithId(expected, actual, new IdNameComparer<GameDao, Game>());
         }
     }
 }

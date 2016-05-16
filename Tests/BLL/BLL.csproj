@@ -74,13 +74,14 @@
     <Compile Include="Mocks\ReadOnlyRepositoryMock.cs" />
     <Compile Include="Mocks\RepositoryMock.cs" />
     <Compile Include="Mocks\SessionRepositoryMock.cs" />
+    <Compile Include="Mocks\StatisticsRepositoryMock.cs" />
     <Compile Include="Mocks\SummaryRepositoryMock.cs" />
     <Compile Include="Mocks\TimeEntryRepositoryMock.cs" />
-    <Compile Include="Mocks\TotalHourlyRateRepositoryMock.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Mocks\DatabaseMock.cs" />
     <Compile Include="Services\LookupService.cs" />
     <Compile Include="Services\SessionService.cs" />
+    <Compile Include="Services\StatisticsService.cs" />
     <Compile Include="Services\SummaryService.cs" />
     <Compile Include="Services\GamesService.cs" />
     <Compile Include="Services\CardRoomsService.cs" />
@@ -97,6 +98,10 @@
     <ProjectReference Include="..\..\BLL\BLL.csproj">
       <Project>{CB410F14-84F5-4DA4-8620-320600A444E3}</Project>
       <Name>BLL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Comparers\Comparers.csproj">
+      <Project>{06C2408C-2E34-4F15-8A1D-43DDBA8803D0}</Project>
+      <Name>Comparers</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\DAL\DAL.csproj">
       <Project>{E8893202-7DBD-481D-896B-529DA1FE7AF8}</Project>

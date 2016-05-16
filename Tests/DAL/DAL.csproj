@@ -86,9 +86,9 @@
     <Compile Include="Repositories\ReadOnlyRepository.cs" />
     <Compile Include="Repositories\Repository.cs" />
     <Compile Include="Repositories\SessionRepository.cs" />
+    <Compile Include="Repositories\StatisticsRepository.cs" />
     <Compile Include="Repositories\SummaryRepository.cs" />
     <Compile Include="Repositories\TimeEntryRepository.cs" />
-    <Compile Include="Repositories\TotalHourlyRateRepository.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -98,6 +98,14 @@
     <ProjectReference Include="..\..\Base\Base.csproj">
       <Project>{D1E923FA-15FD-4C32-9401-153E18B15011}</Project>
       <Name>Base</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\BLL\BLL.csproj">
+      <Project>{cb410f14-84f5-4da4-8620-320600a444e3}</Project>
+      <Name>BLL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Comparers\Comparers.csproj">
+      <Project>{06C2408C-2E34-4F15-8A1D-43DDBA8803D0}</Project>
+      <Name>Comparers</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\DAL\DAL.csproj">
       <Project>{E8893202-7DBD-481D-896B-529DA1FE7AF8}</Project>

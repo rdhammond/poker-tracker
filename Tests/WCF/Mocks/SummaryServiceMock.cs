@@ -12,16 +12,5 @@ namespace PokerTracker.Tests.WCF.Mocks
         Summary,
         ISummaryRepository
     >
-    {
-        public decimal TotalHourlyRate { get; set; }
-
-        public SummaryServiceMock()
-        {
-            Setup(x => x.GetAllAsync())
-                .Returns(() => Task.FromResult(List.ToArray()));
-
-            Setup(x => x.GetTotalHourlyRateAsync())
-                .Returns(() => Task.FromResult(TotalHourlyRate));
-        }
-    }
+    { }
 }

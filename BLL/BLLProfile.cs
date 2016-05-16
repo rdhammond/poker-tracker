@@ -10,7 +10,10 @@ namespace PokerTracker.BLL
         {
             CreateMap<CardRoomDao, CardRoom>();
             CreateMap<GameDao, Game>();
-            CreateMap<SummaryDao, Summary>();
+            CreateMap<StatisticsDao, Statistics>();
+
+            CreateMap<SummaryDao, Summary>()
+                .AfterMap((dao, obj) => obj.Id = dao.SessionId);
 
             CreateMap<TimeEntry, TimeEntryDao>();
             CreateMap<Session, SessionDao>();

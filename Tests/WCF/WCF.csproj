@@ -49,6 +49,7 @@
     <Compile Include="Mocks\GamesServiceMock.cs" />
     <Compile Include="Mocks\LookupServiceMock.cs" />
     <Compile Include="Mocks\SessionServiceMock.cs" />
+    <Compile Include="Mocks\StatisticsServiceMock.cs" />
     <Compile Include="Mocks\SummaryServiceMock.cs" />
     <Compile Include="PokerTrackerService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -64,6 +65,10 @@
       <Project>{CB410F14-84F5-4DA4-8620-320600A444E3}</Project>
       <Name>BLL</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Comparers\Comparers.csproj">
+      <Project>{06C2408C-2E34-4F15-8A1D-43DDBA8803D0}</Project>
+      <Name>Comparers</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\DAL\DAL.csproj">
       <Project>{e8893202-7dbd-481d-896b-529da1fe7af8}</Project>
       <Name>DAL</Name>
@@ -73,6 +78,7 @@
       <Name>WCF</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

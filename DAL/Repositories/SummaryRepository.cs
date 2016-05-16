@@ -3,10 +3,10 @@ using PokerTracker.DAL.Databases;
 
 namespace PokerTracker.DAL.Repositories
 {
-    public interface ISummaryRepository : IRepository<SummaryDao>
+    public interface ISummaryRepository : IReadOnlyRepository<SummaryDao>
     { }
 
-    public class SummaryRepository : Repository<SummaryDao>, ISummaryRepository
+    public class SummaryRepository : ReadOnlyRepository<SummaryDao>, ISummaryRepository
     {
         public SummaryRepository(IDatabase database)
             : base(database)

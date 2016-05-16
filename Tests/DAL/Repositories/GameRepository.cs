@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using PokerTracker.DAL.DAO;
 using PokerTracker.DAL.Repositories;
+using PokerTracker.Tests.Comparers.Dao;
 using System;
 
 namespace PokerTracker.Tests.DAL.Repositories
@@ -19,11 +20,15 @@ namespace PokerTracker.Tests.DAL.Repositories
         [TestMethod]
         public void FindAllAsync_Works()
         {
-            TestFindAllAsync(new[]
+            var entities = new[]
             {
                 new GameDao { Id = Guid.NewGuid(), Name = "Limit Hold 'Em" },
                 new GameDao { Id = Guid.NewGuid(), Name = "No Limit Hold 'Em" }
-            });
+            };
+            DatabaseMock.DaoList.AddRange(entities);
+
+            var actual = Repo.FindAllAsync().Result;
+            AssertListWithId(DatabaseMock.DaoList, actual, new IdNameComparer<GameDao>());
         }
     }
 }

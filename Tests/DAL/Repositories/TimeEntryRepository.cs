@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using PokerTracker.DAL.DAO;
 using PokerTracker.DAL.Repositories;
+using PokerTracker.Tests.Comparers.Dao;
 using System;
 
 namespace PokerTracker.Tests.DAL.Repositories
@@ -18,41 +19,33 @@ namespace PokerTracker.Tests.DAL.Repositories
         [TestMethod]
         public void FindAllAsync_Works()
         {
-            TestFindAllAsync(
-                new[]
+            var entities = new[]
+            {
+                new TimeEntryDao
                 {
-                    new TimeEntryDao
-                    {
-                        DealerTokes = 2,
-                        Id = Guid.NewGuid(),
-                        RecordedAt = DateTime.Now,
-                        ServerTips = 1,
-                        SessionId = Guid.NewGuid(),
-                        StackDifferential = -4,
-                        StackSize = 12
-                    },
-                    new TimeEntryDao
-                    {
-                        DealerTokes = 0,
-                        Id = Guid.NewGuid(),
-                        RecordedAt = DateTime.Now.AddDays(-2),
-                        ServerTips = 1,
-                        SessionId = Guid.NewGuid(),
-                        StackDifferential = 40,
-                        StackSize = 140
-                    }
+                    DealerTokes = 2,
+                    Id = Guid.NewGuid(),
+                    RecordedAt = DateTime.Now,
+                    ServerTips = 1,
+                    SessionId = Guid.NewGuid(),
+                    StackDifferential = -4,
+                    StackSize = 12
                 },
-                (e,a) =>
+                new TimeEntryDao
                 {
-                    return e.DealerTokes == a.DealerTokes
-                        && e.Id == a.Id
-                        && e.RecordedAt == a.RecordedAt
-                        && e.ServerTips == a.ServerTips
-                        && e.SessionId == a.SessionId
-                        && e.StackDifferential == a.StackDifferential
-                        && e.StackSize == a.StackSize;
+                    DealerTokes = 0,
+                    Id = Guid.NewGuid(),
+                    RecordedAt = DateTime.Now.AddDays(-2),
+                    ServerTips = 1,
+                    SessionId = Guid.NewGuid(),
+                    StackDifferential = 40,
+                    StackSize = 140
                 }
-            );
+            };
+            DatabaseMock.DaoList.AddRange(entities);
+
+            var actual = Repo.FindAllAsync().Result;
+            AssertListWithId(DatabaseMock.DaoList, actual, new TimeEntryComparer());
         }
 
         [TestMethod]
@@ -67,13 +60,13 @@ namespace PokerTracker.Tests.DAL.Repositories
                 SessionId = Guid.NewGuid(),
                 StackDifferential = -14,
                 StackSize = 200
-            });
+            }, new TimeEntryComparer());
         }
 
         [TestMethod]
         public void InsertAsyncMultiple_Works()
         {
-            TestInsertAsync(new[]
+            var entities = new[]
             {
                 new TimeEntryDao
                 {
@@ -95,7 +88,9 @@ namespace PokerTracker.Tests.DAL.Repositories
                     StackDifferential = 12,
                     StackSize = 100
                 }
-            });
+            };
+
+            TestInsertAsync(entities, new TimeEntryComparer());
         }
     }
 }
