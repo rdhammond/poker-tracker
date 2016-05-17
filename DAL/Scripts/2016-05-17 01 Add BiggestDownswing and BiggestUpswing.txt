@@ -1,0 +1,170 @@
+﻿USE [PokerTracker]
+GO
+
+CREATE PROCEDURE [dbo].[usp_BiggestDownswing]
+(
+	@StartTimeRange DATETIME = NULL,
+	@EndTimeRange DATETIME = NULL
+)
+AS
+BEGIN
+	SET NOCOUNT ON
+
+	DECLARE SESSION_TOTALS CURSOR FAST_FORWARD
+	FOR 
+	SELECT
+		s.StartTime,
+		s.EndTime,
+		SUM(te.StackDifferential)
+	FROM
+		Sessions s
+		INNER JOIN TimeEntries te ON s.Id = te.SessionId
+	WHERE
+		s.StartTime >= COALESCE(@StartTimeRange, s.StartTime)
+		AND s.StartTime <= COALESCE(@EndTimeRange, s.EndTime)
+		AND te.StackDifferential IS NOT NULL
+	GROUP BY
+		s.Id, s.StartTime, s.EndTime
+	ORDER BY
+		StartTime
+
+	DECLARE
+		@Biggest INT = 0,
+		@BiggestStart DATETIME = NULL,
+		@BiggestEnd DATETIME = NULL,
+		@Current INT = 0,
+		@CurrentStartTime DATETIME = NULL,
+		@CurrentEndTime DATETIME = NULL,
+		@StartTime DATETIME,
+		@EndTime DATETIME,
+		@SessionTotal INT
+
+	OPEN SESSION_TOTALS
+	FETCH NEXT FROM SESSION_TOTALS INTO @StartTime, @EndTime, @SessionTotal
+
+	WHILE @@FETCH_STATUS = 0
+	BEGIN
+		SELECT @CurrentStartTime = COALESCE(@CurrentStartTime, @StartTime)
+		PRINT @CurrentStartTime
+
+		IF @SessionTotal > 0
+		BEGIN
+			IF @Current < @Biggest
+			BEGIN
+				SET @Biggest = @Current
+				SET @BiggestStart = @CurrentStartTime
+				SET @BiggestEnd = @CurrentEndTime
+			END
+
+			SET @Current = 0
+			SET @CurrentStartTime = NULL
+			SET @CurrentEndTime = NULL
+			FETCH NEXT FROM SESSION_TOTALS INTO @StartTime, @EndTime, @SessionTotal
+			CONTINUE
+		END
+
+		SET @Current = @Current + @SessionTotal
+		SET @CurrentEndTime = @EndTime
+		FETCH NEXT FROM SESSION_TOTALS INTO @StartTime, @EndTime, @SessionTotal
+	END
+
+	IF @Current < @Biggest
+	BEGIN
+		SET @Biggest = @Current
+		SET @BiggestStart = @CurrentStartTime
+		SET @BiggestEnd = @CurrentEndTime
+	END
+	
+	CLOSE SESSION_TOTALS
+	DEALLOCATE SESSION_TOTALS
+
+	SELECT
+		@Biggest As BiggestSwing,
+		@BiggestStart As StartTime,
+		@BiggestEnd As EndTime
+END
+GO
+
+CREATE PROCEDURE [dbo].[usp_BiggestUpswing]
+(
+	@StartTimeRange DATETIME = NULL,
+	@EndTimeRange DATETIME = NULL
+)
+AS
+BEGIN
+	SET NOCOUNT ON
+
+	DECLARE SESSION_TOTALS CURSOR FAST_FORWARD
+	FOR 
+	SELECT
+		s.StartTime,
+		s.EndTime,
+		SUM(te.StackDifferential)
+	FROM
+		Sessions s
+		INNER JOIN TimeEntries te ON s.Id = te.SessionId
+	WHERE
+		s.StartTime >= COALESCE(@StartTimeRange, s.StartTime)
+		AND s.StartTime <= COALESCE(@EndTimeRange, s.EndTime)
+		AND te.StackDifferential IS NOT NULL
+	GROUP BY
+		s.Id, s.StartTime, s.EndTime
+	ORDER BY
+		StartTime
+
+	DECLARE
+		@Biggest INT = 0,
+		@BiggestStart DATETIME = NULL,
+		@BiggestEnd DATETIME = NULL,
+		@Current INT = 0,
+		@CurrentStartTime DATETIME = NULL,
+		@CurrentEndTime DATETIME = NULL,
+		@StartTime DATETIME,
+		@EndTime DATETIME,
+		@SessionTotal INT
+
+	OPEN SESSION_TOTALS
+	FETCH NEXT FROM SESSION_TOTALS INTO @StartTime, @EndTime, @SessionTotal
+
+	WHILE @@FETCH_STATUS = 0
+	BEGIN
+		SELECT @CurrentStartTime = COALESCE(@CurrentStartTime, @StartTime)
+		PRINT @CurrentStartTime
+
+		IF @SessionTotal < 0
+		BEGIN
+			IF @Current > @Biggest
+			BEGIN
+				SET @Biggest = @Current
+				SET @BiggestStart = @CurrentStartTime
+				SET @BiggestEnd = @CurrentEndTime
+			END
+
+			SET @Current = 0
+			SET @CurrentStartTime = NULL
+			SET @CurrentEndTime = NULL
+			FETCH NEXT FROM SESSION_TOTALS INTO @StartTime, @EndTime, @SessionTotal
+			CONTINUE
+		END
+
+		SET @Current = @Current + @SessionTotal
+		SET @CurrentEndTime = @EndTime
+		FETCH NEXT FROM SESSION_TOTALS INTO @StartTime, @EndTime, @SessionTotal
+	END
+
+	IF @Current > @Biggest
+	BEGIN
+		SET @Biggest = @Current
+		SET @BiggestStart = @CurrentStartTime
+		SET @BiggestEnd = @CurrentEndTime
+	END
+	
+	CLOSE SESSION_TOTALS
+	DEALLOCATE SESSION_TOTALS
+
+	SELECT
+		@Biggest As BiggestSwing,
+		@BiggestStart As StartTime,
+		@BiggestEnd As EndTime
+END
+GO
