@@ -1,0 +1,42 @@
+﻿<form id="frmSession" ng-hide="!vm.isShown" ng-submit="vm.startSession()">
+    <fieldset>
+        <legend>Start New Session</legend>
+        <div>
+            <label>
+                Card Room
+                <select id="ddlCardRoom" required ng-model="vm.session.CardRoomId">
+                    <option ng-repeat="option in vm.cardRooms" value="{{option.Key}}">{{option.Value}}</option>
+                </select>
+            </label>
+        </div>
+        <div>
+            <label>
+                Game
+                <select id="ddlGame" required ng-model="vm.session.GameId">
+                    <option ng-repeat="option in vm.gameTypes" value="{{option.Key}}">{{option.Value}}</option>
+                </select>
+            </label>
+        </div>
+        <div>
+            <label>
+                Small Blind
+                <input id="txtSmallBlind" type="number" min="1" ng-model="vm.session.SmallBlind" required>
+            </label>
+        </div>
+        <div>
+            <label>
+                Big Blind
+                <input id="txtBigBlind" type="number" min="1" ng-model="vm.session.BigBlind" required>
+            </label>
+        </div>
+        <div>
+            <label>
+                Starting Stack Size
+                <input id="txtStartingStackSize" type="number" min="1" ng-model="vm.StartingStackSize" required>
+            </label>
+        </div>
+        <div>
+            <button type="submit" class="button">Start Session</button>
+        </div>
+    </fieldset>
+</form>

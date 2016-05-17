@@ -1,0 +1,14 @@
+﻿<!-- SessionController -->
+<zf-dialog id="dlgCancel">
+    <h1>Cancel Session</h1>
+    <p class="lead"><strong>This will discard all time entries and stop the session.</strong> Are you sure this is what you want?</p>
+    <form ng-submit="vm.cancelSession()">
+        <fieldset>
+            <legend>Cancel Session</legend>
+            <div>
+                <button type="submit" class="alert button" data-close>Yep, Do It</button>
+                <button type="button" class="secondary button" data-close>Never mind</button>
+            </div>
+        </fieldset>
+    </form>
+</zf-dialog>

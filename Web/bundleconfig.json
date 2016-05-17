@@ -12,5 +12,11 @@
       "app/controllers/session.controller.js",
       "app/controllers/timeentries.controller.js"
     ]
+  },
+  {
+    "outputFileName": "Styles/pokertracker.css",
+    "inputFiles": [
+      "scss/pokertracker.css"
+    ]
   }
 ]

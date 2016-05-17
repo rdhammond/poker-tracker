@@ -1,0 +1,29 @@
+﻿<!-- TimeEntriesController -->
+<form id="frmTimeEntries" ng-hide="!vm.isShown" ng-submit="vm.addTimeEntry()">
+    <fieldset>
+        <legend>Time Entry</legend>
+        <div>
+            <label>
+                Stack Size
+                <input id="txtStackSize" type="number" min="0" ng-model="vm.timeEntry.StackSize" required>
+            </label>
+        </div>
+        <div>
+            <label>
+                Dealer Tokes
+                <input id="txtDealerTokes" type="number" min="0" ng-model="vm.timeEntry.DealerTokes" required>
+            </label>
+        </div>
+        <div>
+            <label>
+                Server Tips
+                <input id="txtServerTips" type="number" min="0" ng-model="vm.timeEntry.ServerTips" required>
+            </label>
+        </div>
+        <div>
+            <button id="btnAddTimeEntry" type="submit" class="button">Add Time Entry</button>
+            <button id="btnFinishSession" type="button" class="success button" ng-click="vm.openFinishDialog()">Finish Session</button>
+            <a id="btnCancelSession" href="#" class="alert button" ng-click="vm.openCancelDialog()">Cancel Session</a>
+        </div>
+    </fieldset>
+</form>

@@ -1,0 +1,26 @@
+﻿<!-- SessionController -->
+<zf-dialog id="dlgFinish">
+    <h1>Finish Session</h1>
+    <p class="lead">Fill out the following information to finish your session.</p>
+    <form ng-submit="vm.saveSession()">
+        <fieldset>
+            <legend>End of Session</legend>
+            <div>
+                <label>
+                    Percent of Time Played
+                    <input id="txtPercentOfTimePlayed" type="number" min="1" max="100" step="1" required ng-model="vm.session.PercentOfTimePlayed" placeholder="i.e. 40 = 40%">
+                </label>
+            </div>
+            <div>
+                <label>
+                    Notes (optional)
+                    <textarea id="txtNotes" ng-model="vm.session.Notes" placeholder="Optional Note"></textarea>
+                </label>
+            </div>
+            <div>
+                <button type="submit" class="button" data-close>Save It</button>
+                <button type="button" class="secondary button" data-close>Wait, I'm Not Done</button>
+            </div>
+        </fieldset>
+    </form>
+</zf-dialog>

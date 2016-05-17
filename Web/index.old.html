@@ -1,0 +1,144 @@
+﻿<!DOCTYPE html>
+<html class="no-js" lang="en" ng-app="app">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Poker Tracker</title>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/foundation/6.2.1/foundation.min.css">
+</head>
+<body>
+    <header class="top-bar">
+        <section class="top-bar-title">Poker Tracker</section>
+    </header>
+
+    <main class="container">
+        <section class="row column" ng-controller="SessionController as vm">
+            <form id="frmSession" ng-hide="!vm.isShown" ng-submit="vm.startSession()" ng->
+                <fieldset>
+                    <legend>Start New Session</legend>
+                    <div>
+                        <label>
+                            Card Room
+                            <select id="ddlCardRoom" required ng-model="vm.session.CardRoomId">
+                                <option ng-repeat="option in vm.cardRooms" value="{{option.Key}}">{{option.Value}}</option>
+                            </select>
+                        </label>
+                    </div>
+                    <div>
+                        <label>
+                            Game
+                            <select id="ddlGame" required ng-model="vm.session.GameId">
+                                <option ng-repeat="option in vm.gameTypes" value="{{option.Key}}">{{option.Value}}</option>
+                            </select>
+                        </label>
+                    </div>
+                    <div>
+                        <label>
+                            Small Blind
+                            <input id="txtSmallBlind" type="number" min="1" ng-model="vm.session.SmallBlind" required>
+                        </label>
+                    </div>
+                    <div>
+                        <label>
+                            Big Blind
+                            <input id="txtBigBlind" type="number" min="1" ng-model="vm.session.BigBlind" required>
+                        </label>
+                    </div>
+                    <div>
+                        <label>
+                            Starting Stack Size
+                            <input id="txtStartingStackSize" type="number" min="1" ng-model="vm.StartingStackSize" required>
+                        </label>
+                    </div>
+                    <div>
+                        <button type="submit" class="button">Start Session</button>
+                    </div>
+                </fieldset>
+            </form>
+
+            <zf-dialog id="dlgFinish">
+                <h1>Finish Session</h1>
+                <p class="lead">Fill out the following information to finish your session.</p>
+                <form ng-submit="vm.saveSession()">
+                    <fieldset>
+                        <legend>End of Session</legend>
+                        <div>
+                            <label>
+                                Percent of Time Played
+                                <input id="txtPercentOfTimePlayed" type="number" min="1" max="100" step="1" required ng-model="vm.session.PercentOfTimePlayed" placeholder="i.e. 40 = 40%">
+                            </label>
+                        </div>
+                        <div>
+                            <label>
+                                Notes (optional)
+                                <textarea id="txtNotes" ng-model="vm.session.Notes" placeholder="Optional Note"></textarea>
+                            </label>
+                        </div>
+                        <div>
+                            <button type="submit" class="button" data-close>Save It</button>
+                            <button type="button" class="secondary button" data-close>Wait, I'm Not Done</button>
+                        </div>
+                    </fieldset>
+                </form>
+            </zf-dialog>
+
+            <zf-dialog id="dlgCancel">
+                <h1>Cancel Session</h1>
+                <p class="lead"><strong>This will discard all time entries and stop the session.</strong> Are you sure this is what you want?</p>
+                <form ng-submit="vm.cancelSession()">
+                    <fieldset>
+                        <legend>Cancel Session</legend>
+                        <div>
+                            <button type="submit" class="alert button" data-close>Yep, Do It</button>
+                            <button type="button" class="secondary button" data-close>Never mind</button>
+                        </div>
+                    </fieldset>
+                </form>
+            </zf-dialog>
+        </section>
+
+        <section class="row column" ng-controller="TimeEntriesController as vm">
+            <form id="frmTimeEntries" ng-hide="!vm.isShown" ng-submit="vm.addTimeEntry()">
+                <fieldset>
+                    <legend>Time Entry</legend>
+                    <div>
+                        <label>
+                            Stack Size
+                            <input id="txtStackSize" type="number" min="0" ng-model="vm.timeEntry.StackSize" required>
+                        </label>
+                    </div>
+                    <div>
+                        <label>
+                            Dealer Tokes
+                            <input id="txtDealerTokes" type="number" min="0" ng-model="vm.timeEntry.DealerTokes" required>
+                        </label>
+                    </div>
+                    <div>
+                        <label>
+                            Server Tips
+                            <input id="txtServerTips" type="number" min="0" ng-model="vm.timeEntry.ServerTips" required>
+                        </label>
+                    </div>
+                    <div>
+                        <button id="btnAddTimeEntry" type="submit" class="button">Add Time Entry</button>
+                        <button id="btnFinishSession" type="button" class="success button" ng-click="vm.openFinishDialog()">Finish Session</button>
+                        <a id="btnCancelSession" href="#" class="alert button" ng-click="vm.openCancelDialog()">Cancel Session</a>
+                    </div>
+                </fieldset>
+            </form>
+        </section>
+    </main>
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.2.3/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/what-input/2.0.1/what-input.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/foundation/6.2.1/foundation.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/foundation/6.2.1/plugins/foundation.reveal.js"></script>
+    <script src="Scripts/angular.min.js"></script>
+    <script src="Scripts/pokertracker.min.js"></script>
+
+    <script>
+        $(document).foundation();
+    </script>
+</body>
+</html>
