@@ -90,6 +90,7 @@
     <Content Include="Scripts\2016-05-15 02 Add DB Version Tracking.sql" />
     <Content Include="Scripts\2016-05-15 03 Change HoursActive to Computed Column.sql" />
     <Content Include="Scripts\2016-05-15 04 Add Statistics View.sql" />
+    <Content Include="Scripts\2016-05-17 01 Add BiggestDownswing and BiggestUpswing.txt" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Base\Base.csproj">

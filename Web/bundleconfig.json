@@ -1,22 +1,19 @@
 [
   {
-    "outputFileName": "Scripts/pokertracker.js",
-    "inputFiles": [
-      "app/app.module.js",
-      "app/constants.js",
-      "app/directives/zfdialog.directive.js",
-      "app/services/cardrooms.service.js",
-      "app/services/gametypes.service.js",
-      "app/services/msDate.service.js",
-      "app/services/session.service.js",
-      "app/controllers/session.controller.js",
-      "app/controllers/timeentries.controller.js"
-    ]
-  },
-  {
     "outputFileName": "Styles/pokertracker.css",
     "inputFiles": [
-      "scss/pokertracker.css"
-    ]
+      "scss/**/*.css",
+      "!scss/**/*.min.css"
+    ],
+    "minify": {
+      "enabled": true
+    }
+  },
+  {
+    "outputFileName": "Scripts/pokertracker.js",
+    "inputFiles": [
+      "Scripts/pokertracker.js"
+    ],
+    "sourceMap": true
   }
 ]

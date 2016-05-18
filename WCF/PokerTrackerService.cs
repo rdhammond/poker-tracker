@@ -8,6 +8,7 @@ using System.ServiceModel;
 using System.ServiceModel.Activation;
 using System.ServiceModel.Web;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace PokerTracker.WCF
 {
@@ -32,7 +33,7 @@ namespace PokerTracker.WCF
             ResponseFormat = WebMessageFormat.Json
         )]
         [OperationContract]
-        Task SaveSessionAsync(Session session);
+        Task<bool> SaveSessionAsync(Session session);
 
         [WebGet(UriTemplate = "Summaries", ResponseFormat = WebMessageFormat.Json)]
         [OperationContract]
@@ -142,7 +143,7 @@ namespace PokerTracker.WCF
             }
         }
 
-        public async Task SaveSessionAsync(Session session)
+        public async Task<bool> SaveSessionAsync(Session session)
         {
             try
             {
@@ -150,6 +151,7 @@ namespace PokerTracker.WCF
                 session.TimeEntries.ForEach(x => x.Id = Guid.NewGuid());
 
                 await SessionSvc.SaveSessionAsync(session);
+                return true;
             }
             catch (Exception e)
             {

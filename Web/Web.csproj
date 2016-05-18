@@ -118,8 +118,12 @@
     <Content Include="Styles\pokertracker.min.css">
       <DependentUpon>pokertracker.css</DependentUpon>
     </Content>
+    <Content Include="views\cancel-dialog.html" />
+    <Content Include="views\finish-dialog.html" />
     <Content Include="views\record-session-panel.html" />
+    <Content Include="views\session-form.html" />
     <Content Include="views\stats-panel.html" />
+    <Content Include="views\time-entries-form.html" />
     <Content Include="views\zf-dialog.html" />
     <Content Include="Web.config" />
   </ItemGroup>

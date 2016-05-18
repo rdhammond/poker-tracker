@@ -1,14 +1,7 @@
 (function () {
     'use strict';
 
-    angular
-        .module('app', [])
-        .run(function() {
-            $(function () {
-                var dlgFinish = new Foundation.Reveal($('#dlgFinish')),
-                    dlgCancel = new Foundation.Reveal($('#dlgCancel'));
-            });
-        });
+    angular.module('app', []);
 })();
 (function () {
     'use strict';
@@ -36,8 +29,17 @@
             restrict: 'E',
             transclude: true,
             replace: true,
+            link: link,
             templateUrl: 'views/zf-dialog.html'
         };
+
+        function link(scope, element, attrs) {
+            var dialog = new Foundation.Reveal(element);
+
+            element.on('$destroy', function () {
+                dialog.foundation('destroy');
+            });
+        }
     }
 })();
 (function () {
