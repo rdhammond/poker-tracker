@@ -19,5 +19,11 @@ namespace PokerTracker.BLL.Objects
 
         [DataMember]
         public decimal TotalHoursPlayed { get; set; }
+
+        [DataMember]
+        public Swing BiggestUpswing { get; set; }
+
+        [DataMember]
+        public Swing BiggestDownswing { get; set; }
     }
 }

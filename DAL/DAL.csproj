@@ -64,6 +64,7 @@
     <Compile Include="DAO\SessionDao.cs" />
     <Compile Include="DAO\StatisticsDao.cs" />
     <Compile Include="DAO\SummaryDao.cs" />
+    <Compile Include="DAO\SwingDao.cs" />
     <Compile Include="DAO\TimeEntryDao.cs" />
     <Compile Include="Databases\Database.cs" />
     <Compile Include="Extensions\TypeToSql.cs" />

@@ -11,6 +11,7 @@ namespace PokerTracker.BLL
             CreateMap<CardRoomDao, CardRoom>();
             CreateMap<GameDao, Game>();
             CreateMap<StatisticsDao, Statistics>();
+            CreateMap<SwingDao, Swing>();
 
             CreateMap<SummaryDao, Summary>()
                 .AfterMap((dao, obj) => obj.Id = dao.SessionId);

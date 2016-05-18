@@ -8,7 +8,6 @@ using System.ServiceModel;
 using System.ServiceModel.Activation;
 using System.ServiceModel.Web;
 using System.Threading.Tasks;
-using System.Web;
 
 namespace PokerTracker.WCF
 {

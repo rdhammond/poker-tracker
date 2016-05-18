@@ -18,17 +18,17 @@ WITH PerSessionRates AS
 	GROUP BY s.HoursActive
 )
 SELECT
-	CAST(AVG(HourlyRate) AS DECIMAL(8,2)) As AvgHourlyRatePerSession,
-	CAST(VAR(HourlyRate) AS DECIMAL(8,2)) As HourlyRateVariance,
-	CAST(STDEV(HourlyRate) AS DECIMAL(8,2)) AS HourlyRateStdDev,
+	CAST(COALESCE(AVG(HourlyRate), 0) AS DECIMAL(8,2)) As AvgHourlyRatePerSession,
+	CAST(COALESCE(VAR(HourlyRate), 0) AS DECIMAL(8,2)) As HourlyRateVariance,
+	CAST(COALESCE(STDEV(HourlyRate), 0) AS DECIMAL(8,2)) AS HourlyRateStdDev,
 	(
-		SELECT CAST(SUM(te.StackDifferential / s.BigBlind) / SUM(s.HoursActive) AS DECIMAL(8,2))
+		SELECT CAST(COALESCE(SUM(te.StackDifferential / s.BigBlind) / SUM(s.HoursActive), 0) AS DECIMAL(8,2))
 		FROM [dbo].[Sessions] s
 		INNER JOIN [dbo].[TimeEntries] te ON s.Id = te.SessionId
 		WHERE s.HoursActive > 0
 		AND te.StackDifferential IS NOT NULL
 	) As TotalHourlyRate,
-	(SELECT CAST(SUM(HoursActive) AS DECIMAL(8,2)) FROM [dbo].[Sessions]) AS TotalHoursPlayed
+	(SELECT CAST(COALESCE(SUM(HoursActive), 0) AS DECIMAL(8,2)) FROM [dbo].[Sessions]) AS TotalHoursPlayed
 FROM
 	PerSessionRates'
 GO

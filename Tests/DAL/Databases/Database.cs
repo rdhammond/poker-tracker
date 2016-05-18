@@ -94,7 +94,7 @@ namespace PokerTracker.Tests.DAL.Databases
         }
 
         [TestMethod]
-        public void InsertSql_NotTableName_Throws()
+        public void InsertSql_NoTableName_Throws()
         {
             AssertHelper.Throws(() => { Database.InsertSql<BadClass>(); });
         }

@@ -19,6 +19,16 @@ namespace PokerTracker.BLL.Services
         protected readonly IMapper _mapper;
         protected readonly TRepo _repo;
 
+        protected IMapper Mapper
+        {
+            get { return _mapper; }
+        }
+
+        protected TRepo Repository
+        {
+            get { return _repo; }
+        } 
+
         protected LookupService(IMapper mapper, TRepo repository)
         {
             _mapper = mapper;

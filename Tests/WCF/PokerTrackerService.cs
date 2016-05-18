@@ -172,11 +172,47 @@ namespace PokerTracker.Tests.WCF
             };
             StatisticsSvcMock.List.Add(expected);
 
+            StatisticsSvcMock.BiggestUpswing = new Swing
+            {
+                BiggestSwing = 149,
+                StartTime = DateTime.Now.AddMinutes(-1),
+                EndTime = DateTime.Now
+            };
+
+            StatisticsSvcMock.BiggestDownswing = new Swing
+            {
+                BiggestSwing = -144,
+                StartTime = DateTime.Now.AddYears(-1),
+                EndTime = DateTime.Now.AddMonths(-6)
+            };
+
             var actual = Service.GetStatisticsAsync().Result;
 
             Assert.IsTrue(
                 new StatisticsComparer().Equals(expected, actual)
+                && new SwingComparer().Equals(StatisticsSvcMock.BiggestUpswing, actual.BiggestUpswing)
+                && new SwingComparer().Equals(StatisticsSvcMock.BiggestDownswing, actual.BiggestDownswing)
             );
+        }
+
+        [TestMethod]
+        public void GetStatisticsAsync_NullSwings_Works()
+        {
+            var expected = new Statistics
+            {
+                AvgHourlyRatePerSession = 21.1m,
+                HourlyRateStdDev = 14m,
+                HourlyRateVariance = 11m,
+                TotalHourlyRate = -44.14m,
+                TotalHoursPlayed = 22.1m
+            };
+            StatisticsSvcMock.List.Add(expected);
+
+            var actual = Service.GetStatisticsAsync().Result;
+
+            Assert.IsTrue(new StatisticsComparer().Equals(expected, actual));
+            Assert.IsNull(actual.BiggestUpswing);
+            Assert.IsNull(actual.BiggestDownswing);
         }
     }
 }

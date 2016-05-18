@@ -45,11 +45,13 @@
     <Compile Include="Dao\SessionComparer.cs" />
     <Compile Include="Dao\StatisticsComparer.cs" />
     <Compile Include="Dao\SummaryComparer.cs" />
+    <Compile Include="Dao\SwingComparer.cs" />
     <Compile Include="Dao\TimeEntryComparer.cs" />
     <Compile Include="Objects\IdNameComparer.cs" />
     <Compile Include="Objects\SessionComparer.cs" />
     <Compile Include="Objects\StatisticsComparer.cs" />
     <Compile Include="Objects\SummaryComparer.cs" />
+    <Compile Include="Objects\SwingComparer.cs" />
     <Compile Include="Objects\TimeEntryComparer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -21,7 +21,21 @@ namespace PokerTracker.BLL.Services
 
         public async Task<Statistics> GetAsync()
         {
-            return (await GetAllAsync()).FirstOrDefault();
+            var statisticsTask = Repository.FindAllAsync();
+            var biggestUpswingTask = Repository.GetBiggestUpswingAsync();
+            var biggestDownswingTask = Repository.GetBiggestDownswingAsync();
+
+            await Task.WhenAll(statisticsTask, biggestUpswingTask, biggestDownswingTask);
+
+            var statistics = Mapper.Map<Statistics>(statisticsTask.Result.FirstOrDefault());
+
+            if (statistics != null)
+            {
+                statistics.BiggestUpswing = Mapper.Map<Swing>(biggestUpswingTask.Result);
+                statistics.BiggestDownswing = Mapper.Map<Swing>(biggestDownswingTask.Result);
+            }
+
+            return statistics;
         }
     }
 }

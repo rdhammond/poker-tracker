@@ -16,6 +16,7 @@ namespace PokerTracker.DAL.Databases
         Task<List<T>> FetchAllAsync<T>() where T : IDao;
         Task InsertAsync<T>(T dao) where T : IDao;
         Task InsertAsync<T>(IEnumerable<T> daos) where T : IDao;
+        Task<IEnumerable<T>> RunAsync<T>(string storedProc, object parameters = null) where T : IDao;
         Task PulseTestAsync();
     }
 
@@ -56,7 +57,7 @@ namespace PokerTracker.DAL.Databases
         public static string SelectAllSql<T>()
             where T : IDao
         {
-            return "SELECT * FROM [" + typeof(T).GetTableName() + "]";
+            return string.Format("SELECT * FROM [{0}]", typeof(T).GetTableName());
         }
 
         public async Task<List<T>> FetchAllAsync<T>()
@@ -94,6 +95,19 @@ namespace PokerTracker.DAL.Databases
             using (var connection = await ConnectAsync())
             {
                 await connection.ExecuteAsync(InsertSql<T>(), daos);
+            }
+        }
+
+        public async Task<IEnumerable<T>> RunAsync<T>(string storedProc, object parameters = null)
+            where T : IDao
+        {
+            using (var connection = await ConnectAsync())
+            {
+                return await connection.QueryAsync<T>(
+                    storedProc,
+                    parameters,
+                    commandType: CommandType.StoredProcedure
+                );
             }
         }
 

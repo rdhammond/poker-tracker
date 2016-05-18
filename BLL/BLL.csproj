@@ -63,6 +63,7 @@
     <Compile Include="Objects\Session.cs" />
     <Compile Include="Objects\Statistics.cs" />
     <Compile Include="Objects\Summary.cs" />
+    <Compile Include="Objects\Swing.cs" />
     <Compile Include="Objects\TimeEntry.cs" />
     <Compile Include="BLLProfile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
